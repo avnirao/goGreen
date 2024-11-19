@@ -21,7 +21,7 @@ class Entry {
   final DateTime emissionsDate;
 
   /// the types of emissions for this entry
-  final List<EmissionFactor> emissionTypes;
+  final EmissionFactor emissionType;
 
   /// Constructs an Entry using all fields
   Entry({
@@ -30,12 +30,12 @@ class Entry {
     required this.updatedAt,
     required this.createdAt,
     required this.emissionsDate,
-    required this.emissionTypes
+    required this.emissionType
   });
 
   /// Constructs a new entry given a list of emission types.
   /// Optionally pass in notes for the day and a date. If no date is passed, sets the date to now.
-  factory Entry.fromEmissions({required List<EmissionFactor> emissionTypes, notes = '', emissionsDate}) {
+  factory Entry.fromEmissions({required EmissionFactor emissionType, notes = '', emissionsDate}) {
     final when = DateTime.now();
     return Entry (
       id: SequentialIDMaker.nextID(),
@@ -44,7 +44,7 @@ class Entry {
       createdAt: when,
       // sets the date for this entry to the given date, or DateTime.now if it's not provided
       emissionsDate: emissionsDate ?? when,
-      emissionTypes: emissionTypes
+      emissionType: emissionType
     );
   }
 
