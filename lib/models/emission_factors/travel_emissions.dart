@@ -57,44 +57,44 @@ class TravelEmissions extends EmissionFactor{
     required PassengerAmount passengerAmt,
     required bool isDomestic,
   }): passengers = switch(size) {
-      // Assumes personal planes have ~4-8 people
-      VehicleSize.personal => switch(passengerAmt) {
-        PassengerAmount.empty => 2,
-        PassengerAmount.almostEmpty => 4,
-        PassengerAmount.average => 6,
-        PassengerAmount.almostFull => 7,
-        PassengerAmount.full => 8,
-        PassengerAmount.overloaded => 10,
-      },
-      // According to regulations, small planes carry 19 people max
-      VehicleSize.small => switch(passengerAmt) {
-        PassengerAmount.empty => 4,
-        PassengerAmount.almostEmpty => 8,
-        PassengerAmount.average => 12,
-        PassengerAmount.almostFull => 16,
-        PassengerAmount.full => 19,
-        PassengerAmount.overloaded => 20,
-      },
-      // Assumes meduim commercial planes can carry about 175 people
-      VehicleSize.medium => switch(passengerAmt) {
-        PassengerAmount.empty => 25,
-        PassengerAmount.almostEmpty => 50,
-        PassengerAmount.average => 100,
-        PassengerAmount.almostFull => 125,
-        PassengerAmount.full => 175,
-        PassengerAmount.overloaded => 200,
-      },
-      // Assumes large commercial planes can carry about 500 people
-      VehicleSize.large => switch(passengerAmt) {
-        PassengerAmount.empty => 50,
-        PassengerAmount.almostEmpty => 100,
-        PassengerAmount.average => 250,
-        PassengerAmount.almostFull => 375,
-        PassengerAmount.full => 500,
-        PassengerAmount.overloaded => 600,
-      },
-    }, 
-    // Uses the 2nd ID if this is an international flight
+        // Assumes personal planes have ~4-8 people
+        VehicleSize.personal => switch(passengerAmt) {
+          PassengerAmount.empty => 2,
+          PassengerAmount.almostEmpty => 4,
+          PassengerAmount.average => 6,
+          PassengerAmount.almostFull => 7,
+          PassengerAmount.full => 8,
+          PassengerAmount.overloaded => 10,
+        },
+        // According to regulations, small planes carry 19 people max
+        VehicleSize.small => switch(passengerAmt) {
+          PassengerAmount.empty => 4,
+          PassengerAmount.almostEmpty => 8,
+          PassengerAmount.average => 12,
+          PassengerAmount.almostFull => 16,
+          PassengerAmount.full => 19,
+          PassengerAmount.overloaded => 20,
+        },
+        // Assumes meduim commercial planes can carry about 175 people
+        VehicleSize.medium => switch(passengerAmt) {
+          PassengerAmount.empty => 25,
+          PassengerAmount.almostEmpty => 50,
+          PassengerAmount.average => 100,
+          PassengerAmount.almostFull => 125,
+          PassengerAmount.full => 175,
+          PassengerAmount.overloaded => 200,
+        },
+        // Assumes large commercial planes can carry about 500 people
+        VehicleSize.large => switch(passengerAmt) {
+          PassengerAmount.empty => 50,
+          PassengerAmount.almostEmpty => 100,
+          PassengerAmount.average => 250,
+          PassengerAmount.almostFull => 375,
+          PassengerAmount.full => 500,
+          PassengerAmount.overloaded => 600,
+        },
+      }, 
+      // Uses the 2nd ID if this is an international flight
       super(id: isDomestic ? "passenger_flight-route_type_domestic-aircraft_type_na-distance_na-class_na-rf_included-distance_uplift_included"
                            : "passenger_flight-route_type_international-aircraft_type_na-distance_long_haul_gt_3700km-class_economy-rf_included-distance_uplift_included");
 

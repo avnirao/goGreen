@@ -4,7 +4,7 @@ abstract class EmissionFactor {
   /// The data version to query from the API
   final String dataVersion;
 
-  /// Constructs an Emission Factor with an id. 
+  /// Constructs an Emission Factor with the ID used to call the API
   /// 
   /// Parameters:
   ///  - id: the activity id for the emission factor
