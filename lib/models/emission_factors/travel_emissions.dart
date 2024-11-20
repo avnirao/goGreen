@@ -4,6 +4,8 @@ enum PassengerAmount{empty, almostEmpty, average, almostFull, full, overloaded}
 
 enum VehicleSize{personal, small, medium, large}
 
+enum VehicleType{bus, gasCar, fullElectricCar, hybridCar, flight, lightRailTram}
+
 class TravelEmissions extends EmissionFactor{
   final double distance;
   final String distanceUnit;
@@ -150,5 +152,12 @@ class TravelEmissions extends EmissionFactor{
           PassengerAmount.overloaded => 350,
         },
         super(id: "passenger_ferry-route_type_${withCar ? "car" : "foot"}_passenger-fuel_source_na");
-    
+  
+  @override String toString() {
+    String result = '${super.toString()},\n';
+    result += 'distance: $distance,\n';
+    result += 'distance unit: $distanceUnit,\n';
+    result += 'passengers: $passengers';
+    return result;
+  }
 }

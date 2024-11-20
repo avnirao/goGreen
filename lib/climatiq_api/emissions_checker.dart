@@ -1,53 +1,16 @@
 import 'dart:convert';
 
+import 'package:go_green/climatiq_api/emission_estimate.dart';
 import 'package:go_green/models/emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/travel_emissions.dart';
 // possible fix if this fails: try 'as https' instead
 import 'package:http/http.dart' as http;
-
-/** API INFO: 
- ** GENERAL:
- * Base url: https://api.climatiq.io
- * Errors: uses HTTP codes.
- *  - 200 for OK
- *  - 400 for Bad Request
- *  - full error code list: https://www.climatiq.io/docs/api-reference/errors
- * 
- ** AUTHENTIFICATION:
- * Every operation requires authentification using an API Key.
- * Always provide the Authorization header containing your API key as bearer token:
- *  Authorization: Bearer CLIMATIQ_API_KEY
- * 
- ** SELECTOR:
- * This is the model we'll use so we can select emission factors ourselves. 2 methods:
- * 1. Use the activity ID for the chosen activity (get this from EmissionFactors.id)
- * 2. Use a unique ID which will always refer to the same emission factor
- * 
- * Most relevant info to pass to the API: 
- *  - data_version (String): The data version. Access from EmissionFactors.dataVersion
- *  - activity_id (String): The activity id. Access from EmissionFactors.id
- *  - region (String, optional): the geographical region the emission factor is from
- *  - region_fallback (boolean, optional): Set this to true if you're willing to accept a less specific geographical region than the one you've specified. 
- *        Climatiq will then attempt to fall back to the larger region if it does not find any emission factors with the initial region. 
- *        Only one fallback can be specified at a time. Default is false
- *  - year (int, optional): The year in which the emission factor is considered most relevant, according to the source. Access from the entry date.
- * Full list: https://www.climatiq.io/docs/api-reference/models/selector
- * 
- * A Selector for a specific activity might look like this: 
-  "emission_factor": {
-    "data_version": "^3",
-    "activity_id": "electricity-supply_grid-source_production_mix",
-    "source": "MfE",
-    "region": "NZ",
-    "year": 2020
-  }
- *
- * 
- */
 
 /// Used to check the amount of emissions for activities
 class EmissionsChecker {
   /// The client that will call the web service
   final http.Client client;
+  static const String _apiKey = 'WSNXKPDRPH4MN2TVSHRHM29DHW';
 
   /// Constructs an Emissions Checker.
   /// 
@@ -56,31 +19,94 @@ class EmissionsChecker {
   EmissionsChecker([http.Client? client])
     : client = client ?? http.Client();
 
-  /// Retrieves the emissions data for a given emission type from climatiq
+  /// Retrieves the emissions data for a given emission type from climatiq.
   /// 
   /// Parameters:
   ///  - factor: the type of emissions to parse. 
-  Future<http.Response> _fetchEmissions(EmissionFactor factor) {
-    return client.get(Uri.parse('https://api.climatiq.io/${factor.id}'));
+  Future<http.Response> _fetchEmissions(EmissionFactor factor) async {
+    // Reference: https://pub.dev/packages/http
+    return client.post(
+      Uri.parse('https://api.climatiq.io/v1/estimate',),
+      headers: {'Authorization': 'Bearer $_apiKey'},
+      body: jsonEncode(<String, dynamic>{
+        'data': _createRequestData(factor)
+      }),
+    );
   }
 
-  /// Converts the emissions data into a double.
+  /// Converts the emissions data into an Emissions Estimate.
   /// 
   /// Parameters: 
   ///  - responseBody: the data to be parsed
   /// Returns the emissions data as a double
-  double _parseEmissions(String responseBody) {
+  EmissionEstimate _parseEmissions(String responseBody) {
     final parsed = (jsonDecode(responseBody) as Map<String, dynamic>);
-    return parsed['co2e'] as double;
+    return EmissionEstimate.fromJson(parsed);
   }
 
   /// Get emissions data for a given emission factor.
   /// 
   /// Parameters:
   ///  - factor: the type of emissions to parse. 
-  /// Returns the amount of emissions in kg as a double
-  Future<double> getEmissions(EmissionFactor factor) async {
+  /// Returns the amount of emissions as an Emissions Estimate
+  Future<EmissionEstimate> getEmissions(EmissionFactor factor) async {
     final response = await _fetchEmissions(factor);
     return _parseEmissions(response.body);
+  }
+
+
+  // METHODS FOR SENDING DATA TO THE API BELOW
+
+  /// Creates the request data to send to the API.
+  /// 
+  /// Parameter:
+  ///  - factor: the EmissionFactor to use for the data
+  /// Returns a map representation of the data to send to the API.
+  Map<String, dynamic> _createRequestData(EmissionFactor factor) {
+    return  {
+              'emission_factor': {
+                'emission_factor': {
+                  'activity_id': factor.id,
+                  'data_version': factor.dataVersion
+                },
+              },
+              'parameters': _createRequestParameters(factor)
+            };
+  }
+
+  /// Creates the request parameters to send to the API.
+  /// 
+  /// Parameter:
+  ///  - factor: the EmissionFactor to use for the parameters
+  /// Returns a map representation of the parameters to send to the API.
+  Map<String, dynamic> _createRequestParameters(EmissionFactor factor) {
+    // Sets the parameters based on what type of emission factor this is
+    Map<String, dynamic>? parameters = switch(factor) {
+      // Case: type TravelEmissions
+      TravelEmissions travel => 
+        switch (travel.passengers) {
+          // if passengers is -1, this call doesn't require that parameter
+          -1 => {
+                  'distance': travel.distance,
+                  'distance_unit': travel.distanceUnit
+                },
+          // if passengers is anything else, use that value
+          _ =>  {
+                  'passengers': travel.passengers,
+                  'distance': travel.distance,
+                  'distance_unit': travel.distanceUnit
+                },
+        },
+        
+      // Case: not a supported Emission Factor
+      _ => null
+    };
+
+    // Throw an error if this emission factor is unsupported
+    if (parameters == null) {
+      throw UnsupportedError('Unsupported Emission Factor ${factor.runtimeType}');
+    }
+
+    return parameters;
   }
 }

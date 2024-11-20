@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_green/climatiq_api/emission_estimate.dart';
+import 'package:go_green/climatiq_api/emissions_checker.dart';
+import 'package:go_green/models/emission_factors/travel_emissions.dart';
 
-void main() {
+void main() async{
+  EmissionsChecker checker = EmissionsChecker();
+  TravelEmissions busExample = TravelEmissions.bus(distance: 10, distanceUnit: "km", passengerAmt: PassengerAmount.full);
+  print('bus example data: $busExample');
+  EmissionEstimate exampleEstimate = await checker.getEmissions(busExample);
+  print('example estimate: $exampleEstimate');
   runApp(const MyApp());
 }
 
