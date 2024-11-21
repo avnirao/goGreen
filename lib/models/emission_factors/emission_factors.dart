@@ -9,7 +9,7 @@ abstract class EmissionFactor {
   /// Parameters:
   ///  - id: the activity id for the emission factor
   ///  - dataVersion: the data version to query from the API
-  EmissionFactor({required this.id, this.dataVersion = "^19"});
+  EmissionFactor({required this.id, this.dataVersion = "19"});
 
   @override String toString() {
     return 'id: $id';
