@@ -208,7 +208,7 @@ class TravelEmissions extends EmissionFactor{
   String toString() {
     String result = '${super.toString()},\n';
     result += 'distance: $_distance,\n';
-    result += 'distance unit: $_distanceUnit,\n';
+    result += 'distance unit: ${_distanceUnit.toString()},\n';
     result += 'passengers: $_passengers';
     return result;
   }
