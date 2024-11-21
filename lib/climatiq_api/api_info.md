@@ -1,7 +1,32 @@
+# How to call the API
+Steps for making a call to the API:
+1. create an EmissionChecker
+2. create an EmissionFactor
+3. get an EmissionEstimate by calling the EmissionsChecker and passing it the EmissionFactor
+
+The following code will make a call to the API and print the results to the debug console:
+```
+EmissionChecker checker = EmissionsChecker();
+TravelEmissions busExample = TravelEmissions.bus(distance: 10, distanceUnit: "km", passengerAmt: PassengerAmount.full);
+EmissionEstimate? exampleEstimate = await checker.getEmissions(busExample);
+if (exampleEstimate != null) {
+  print('example estimate: $exampleEstimate');
+} else {
+  print('failed');
+}
+```
+Notes: 
+ - The EmissionEstimate will be null if the call to the API fails. 
+ - Getting an EmissionEstimate requires you to await a response from the API. Any time you call the API it has to be in an async method
+ - This process will likely change slightly once we start using a provider for API calls
+
+
 # API INFO
+The rest of this file are notes I took to figure out how to use the API.
 
 ## General
 Base url: https://api.climatiq.io
+URL to call for post/get requests: https://api.climatiq.io/data/v1/estimate
 Errors: uses HTTP codes.
  - 200 for OK
  - 400 for Bad Request
@@ -63,7 +88,7 @@ Many endpoints return 1 or more Estimation models. See https://www.climatiq.io/d
  - 'co2e_unit' provides the unit in which the co2e field is expressed
 
 ## Data Versioning
-See https://www.climatiq.io/docs/api-reference/data-version for more info. By default, EmissionFactors use ^19.
+See https://www.climatiq.io/docs/api-reference/data-version for more info. EmissionFactors sets this value by default.
 
  - For repeatable results, choose the latest fixed version. This is currently: 19
  - For up-to-date emission factors, use the latest dynamic version. This is currently: ^19
