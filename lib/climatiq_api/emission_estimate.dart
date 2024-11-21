@@ -13,16 +13,14 @@ class EmissionEstimate {
   /// Parameter:
   ///  - json: the data to parse
   factory EmissionEstimate.fromJson(Map<String, dynamic> json) {
-    // Throws an error if the 'error' key is found, or the 'co2e' key doesn't exist
-    if (json.containsKey('error')) {
-      throw ArgumentError('Invalid emission factor passed. Error: \n$json');
-    } else if (!json.containsKey('co2e')) {
+    // Throws an error if the 'co2e' key doesn't exist
+    if (!json.containsKey('co2e')) {
       throw ArgumentError('co2 estimate not found. json: \n$json');
     }
-
+    
     return EmissionEstimate(
       co2: json['co2e'] as double,
-      unit: json['co2e_unit'],
+      unit: json['co2e_unit'] as String,
     );
   }
 
