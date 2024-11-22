@@ -41,7 +41,7 @@ class FoodEmissions extends EmissionFactor {
   @override 
   String toString() {
     String result = 'type: ${foodType.toString()},\n';
-    result += '  id: ${super.toString()},\n';
+    result += '  ${super.toString()},\n';
     result += '  money: $money,\n';
     result += '  money unit: ${moneyUnit.toString()}';
     return result;
