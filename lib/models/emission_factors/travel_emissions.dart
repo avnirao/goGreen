@@ -199,11 +199,11 @@ class TravelEmissions extends EmissionFactor{
   
   @override 
   String toString() {
-    String result = 'type: ${travelType.toString()},\n';
-    result += '  id: ${super.toString()},\n';
+    String result = '${super.toString()},\n';
     result += '  distance: $distance,\n';
     result += '  distance unit: ${distanceUnit.toString()},\n';
     result += '  passengers: $passengers';
+    result += '  type: ${travelType.toString()}';
     return result;
   }
 }
