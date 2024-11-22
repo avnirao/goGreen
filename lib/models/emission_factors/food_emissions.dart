@@ -6,7 +6,6 @@ import 'package:go_green/models/emission_factors/base_emission_factors/emission_
 enum FoodType {beef, pork, fish, generalFood, beverage, dairy, sugar, tobacco}
 
 /// Represents emissions from food, beverage, and tobacco.
-/// Does not use named parameters. Instead, input the food type as a parameter to the constructor.
 class FoodEmissions extends EmissionFactor {
   /// The cost of food purchased
   final double money;
@@ -46,70 +45,4 @@ class FoodEmissions extends EmissionFactor {
     result += '  money unit: ${moneyUnit.toString()}';
     return result;
   }
-
-  /** Below is (incomplete) code for using named constructors in case we want to switch to that instead
-  // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_meat_products_beef
-  FoodEmissions.beef({
-    required double money, 
-    required MoneyUnit moneyUnit
-  }): _money = money,
-      _moneyUnit = moneyUnit,
-      super(id: 'consumer_goods-type_meat_products_beef');
-  
-  // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_meat_products_pork
-  FoodEmissions.pork({
-    required double money, 
-    required MoneyUnit moneyUnit
-  }): _money = money,
-      _moneyUnit = moneyUnit,
-      super(id: 'consumer_goods-type_meat_products_pork');
-  
-  // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_fish_products
-  FoodEmissions.fish({
-    required double money, 
-    required MoneyUnit moneyUnit
-  }): _money = money,
-      _moneyUnit = moneyUnit,
-      super(id: 'consumer_goods-type_fish_products');
-  
-  // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_food_products_not_elsewhere_specified
-  FoodEmissions.generalFood({
-    required double money, 
-    required MoneyUnit moneyUnit
-  }): _money = money,
-      _moneyUnit = moneyUnit,
-      super(id: 'consumer_goods-type_food_products_not_elsewhere_specified');
-  
-  // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_beverages
-  FoodEmissions.beverage({
-    required double money, 
-    required MoneyUnit moneyUnit
-  }): _money = money,
-      _moneyUnit = moneyUnit,
-      super(id: 'consumer_goods-type_beverages');
-  
-  // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_dairy_products
-  FoodEmissions.dairy({
-    required double money, 
-    required MoneyUnit moneyUnit
-  }): _money = money,
-      _moneyUnit = moneyUnit,
-      super(id: 'consumer_goods-type_dairy_products');
-  
-  // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_sugar
-  FoodEmissions.sugar({
-    required double money, 
-    required MoneyUnit moneyUnit
-  }): _money = money,
-      _moneyUnit = moneyUnit,
-      super(id: 'consumer_goods-type_sugar');
-  
-  // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_tobacco_products
-  FoodEmissions.tobacco({
-    required double money, 
-    required MoneyUnit moneyUnit
-  }): _money = money,
-      _moneyUnit = moneyUnit,
-      super(id: 'consumer_goods-type_tobacco_products');
-  */
 }
