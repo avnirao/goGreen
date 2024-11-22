@@ -1,5 +1,5 @@
 import 'package:go_green/models/emission_factors/emission_data_enums.dart';
-import 'package:go_green/models/emission_factors/money_emission_factor.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
 
 /// Represents types of furniture.
 enum FurnitureType{otherFurniture, blinds, matress, officeFurniture, woodCabinet, woodCountertop, carpet}

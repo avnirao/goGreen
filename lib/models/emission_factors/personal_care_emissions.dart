@@ -1,5 +1,5 @@
 import 'package:go_green/models/emission_factors/emission_data_enums.dart';
-import 'package:go_green/models/emission_factors/money_emission_factor.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
 
 enum PersonalCareType{jewellery, perfume, toiletries, soap, toiletPaper, feminineHygiene, disposableDiaper}
 

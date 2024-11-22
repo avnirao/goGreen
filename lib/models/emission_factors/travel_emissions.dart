@@ -1,5 +1,5 @@
 import 'package:go_green/models/emission_factors/emission_data_enums.dart';
-import 'package:go_green/models/emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 
 /// Reresents how full a vehicle is based on how many passengers there are.
 /// 

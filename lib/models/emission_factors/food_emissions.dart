@@ -1,5 +1,5 @@
 import 'package:go_green/models/emission_factors/emission_data_enums.dart';
-import 'package:go_green/models/emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 
 /// Represents types of food, beverage, or tobacco.
 /// FoodType should be the same as the name of the constructor it's used with.
