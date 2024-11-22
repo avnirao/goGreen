@@ -1,7 +1,8 @@
 // Enums used by multiple Emission Factors
 
 /// Represents each of the categories of emissions
-enum EmissionCategory{clothing, food, energy, householdItems, shopping, travel}
+enum EmissionCategory{
+  clothing, energy, food, furniture, personalCareAndAccessories, shopping, travel, foodWaste}
 
 // Full list of available currencies, if we want to add more: 
 // https://www.climatiq.io/docs/api-reference/models/parameters#supported-currencies
