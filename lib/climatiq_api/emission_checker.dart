@@ -114,27 +114,22 @@ class EmissionChecker {
       // Case: type TravelEmissions
       TravelEmissions travel => 
         switch (travel.passengers) {
-          // if passengers is -1, this call doesn't require that parameter
-          -1 => {
+          // don't use passengers parameter if it's null
+          null => {
                   'distance': travel.distance,
-                  'distance_unit': travel.distanceUnit
+                  'distance_unit': travel.distanceUnit.toString()
                 },
-          // if passengers is anything else, use that value
+          // if passengers has a value, use that value
           _ =>  {
                   'passengers': travel.passengers,
                   'distance': travel.distance,
-                  'distance_unit': travel.distanceUnit
+                  'distance_unit': travel.distanceUnit.toString()
                 },
         },
         
       // Case: not a supported Emission Factor
-      _ => null
+      _ => throw UnsupportedError('Unsupported Emission Factor ${factor.runtimeType}')
     };
-
-    // Throw an error if this emission factor is unsupported
-    if (parameters == null) {
-      throw UnsupportedError('Unsupported Emission Factor ${factor.runtimeType}');
-    }
 
     return parameters;
   }
