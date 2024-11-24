@@ -1,8 +1,12 @@
 import 'dart:convert';
 
 import 'package:go_green/climatiq_api/emission_estimate.dart';
-import 'package:go_green/models/emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/weight_emission_factor.dart';
 import 'package:go_green/models/emission_factors/travel_emissions.dart';
+import 'package:go_green/models/emission_factors/clothing_emissions.dart';
+import 'package:go_green/models/emission_factors/energy_emissions.dart';
 import 'package:http/http.dart' as http;
 
 /// Used to check the amount of emissions for activities
@@ -69,7 +73,7 @@ class EmissionChecker {
       // for now, just prints the error message
       // TODO: Find better way to relay error information
       // ignore: avoid_print
-      print(e);
+      print('${response.statusCode}: $e');
     }
 
     return null;
@@ -111,20 +115,66 @@ class EmissionChecker {
   Map<String, dynamic> _createRequestParameters(EmissionFactor factor) {
     // Sets the parameters based on what type of emission factor this is
     Map<String, dynamic>? parameters = switch(factor) {
+      // Case: a Money Emission Factor (food, furniture, or personal care)
+      MoneyEmissionFactor moneyFactor => 
+        {
+          'money': moneyFactor.money,
+          'money_unit': moneyFactor.moneyUnit.toString()
+        },
+
+      // Case: a Weight Emission Factor (food waste or general waste)
+      WeightEmissionFactor weightFactor => 
+        {
+          'weight': weightFactor.weight,
+          'weight_unit': weightFactor.weightUnit.toString()
+        },
+        
       // Case: type TravelEmissions
-      TravelEmissions travel => 
-        switch (travel.passengers) {
+      TravelEmissions travelEmission => 
+        switch (travelEmission.passengers) {
           // don't use passengers parameter if it's null
           null => {
-                  'distance': travel.distance,
-                  'distance_unit': travel.distanceUnit.toString()
-                },
+                    'distance': travelEmission.distance,
+                    'distance_unit': travelEmission.distanceUnit.toString()
+                  },
           // if passengers has a value, use that value
           _ =>  {
-                  'passengers': travel.passengers,
-                  'distance': travel.distance,
-                  'distance_unit': travel.distanceUnit.toString()
+                  'passengers': travelEmission.passengers,
+                  'distance': travelEmission.distance,
+                  'distance_unit': travelEmission.distanceUnit.toString()
                 },
+        },
+
+      // Case: type ClothingEmissions
+      ClothingEmissions clothingEmission => 
+        switch (clothingEmission.money) {
+          // if money is null, this clothing calculates emissions based on weight instead
+          null => {
+                    'weight': clothingEmission.weight,
+                    'weight_unit': clothingEmission.weightUnit.toString()
+                  },
+          // if money has a value, use it
+          _ =>  {
+                  'money': clothingEmission.money,
+                  'money_unit': clothingEmission.moneyUnit.toString()
+                },
+        },
+
+      // Case: type EnergyEmissions
+      EnergyEmissions energyEmission => 
+        switch (energyEmission.energyType) {
+          // electricity uses energy and energyType
+          EnergyType.electricity => 
+            {
+              'energy': energyEmission.energy,
+              'energy_unit': energyEmission.energyUnit
+            },
+          // natural gas uses volume and volumeType
+          EnergyType.naturalGas =>  
+            {
+              'volume': energyEmission.energy,
+              'volume_unit': energyEmission.volumeUnit
+            },
         },
         
       // Case: not a supported Emission Factor

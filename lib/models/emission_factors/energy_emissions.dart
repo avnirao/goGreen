@@ -54,7 +54,7 @@ class EnergyEmissions extends EmissionFactor {
         EnergyAmount.aboveAverage => 220,
         EnergyAmount.wellAboveAverage => 250
       },
-      energyType = EnergyType.electricity,
+      energyType = EnergyType.naturalGas,
       super(
         category: EmissionCategory.energy,
         id: 'electricity-supply_grid-source_supplier_mix'
