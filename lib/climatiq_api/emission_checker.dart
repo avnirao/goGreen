@@ -68,6 +68,8 @@ class EmissionChecker {
           throw ArgumentError('Something went wrong on Climatiq\'s end. Please try again a bit later.\n$parsed');
         case 503: // Service Unavailable
           throw ArgumentError('Service unavailable.\n$parsed');
+        default: // Threw an error, but did not receive a known error code
+          throw ArgumentError('Unknown error.\n$parsed');
       }
     } catch (e) {
       // for now, just prints the error message
