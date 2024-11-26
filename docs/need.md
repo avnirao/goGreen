@@ -22,7 +22,8 @@ Targeted Reduction Strategies: They allow users to identify their highest emissi
 
 In conclusion, the growing public awareness and concern for climate change, combined with a strong desire for personal action, highlight the need for accessible tools like carbon footprint calculators. These tools provide actionable insights, foster education, and empower individuals and businesses to take meaningful steps toward reducing their environmental impact, making them an essential part of the fight against climate change.
 
-**Our Sources: **
+**Our Sources:**
+
 https://climatetrade.com/how-to-track-and-offset-your-own-carbon-footprint/,
 
 https://www.cleanenergywire.org/factsheets/global-surveys-show-peoples-growing-concern-about-climate-change,
