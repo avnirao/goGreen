@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_green/models/activity_history.dart';
-import 'package:go_green/models/emission_factors/travel_emissions.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/entry.dart';
 import 'package:go_green/providers/activity_provider.dart';
 import 'package:go_green/views/entry_view.dart';
@@ -37,17 +37,23 @@ class HomePageState extends State<HomePage> {
             ),
 
             // Weekly Goal - under GoGreen title
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Weekly Goal: 52 Co2g',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Color(0xFF6A994E),
-                  fontWeight: FontWeight.bold
-                ),
-              ),
+            Consumer<ActivityProvider>(
+              builder: (context, activityProvider, child) {
+                double co2 = activityProvider.activityHistory.totalCo2;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    'Weekly Goal: $co2 g Co2',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Color(0xFF6A994E),
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                );
+              }
             ),
+          
 
             const SizedBox(height: 30),
 
@@ -66,8 +72,9 @@ class HomePageState extends State<HomePage> {
                     ElevatedButton(
                       onPressed: () {
                         // Navigate to the Track Page
-                        final Entry newEntry = Entry.fromEmissions(emissionType: Tr);
-                        
+                        final Entry newEntry = Entry.fromEmissions(category: EmissionCategory.clothing);
+                        activityHistory.upsertEntry(newEntry);
+                        _navigateToEntry(context, newEntry);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFBC4749), // Red accent
@@ -155,7 +162,7 @@ class HomePageState extends State<HomePage> {
 
     // If an updated entry is returned, upsert it into the journal provider
     final activityProvider = Provider.of<ActivityProvider>(context, listen: false);
-    activityProvider.upsertEntry(entry);
+    activityProvider.upsertEntry(newEntry);
 
   }
 }
