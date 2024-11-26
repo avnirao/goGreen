@@ -1,4 +1,4 @@
-import 'package:go_green/models/emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 
 /// Class to represent an emissions entry
 class Entry {

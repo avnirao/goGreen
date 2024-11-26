@@ -6,6 +6,10 @@ class EmissionEstimate {
   final String unit;
 
   /// Creates an Emissions Estimate with all fields
+  /// 
+  /// Parameters:
+  ///  - co2: the estimated amount of co2 emitted
+  ///  - unit: the units of measurement for the co2 estimate
   EmissionEstimate({required this.co2, required this.unit});
 
   /// Creates an EmissionEstimate from json data.
