@@ -23,7 +23,7 @@ class Entry {
   /// the types of emissions for this entry
   final EmissionFactor emissionType;
 
-  final double CO2;
+  final double co2;
 
   /// Constructs an Entry using all fields
   Entry({
@@ -33,7 +33,7 @@ class Entry {
     required this.createdAt,
     required this.emissionsDate,
     required this.emissionType,
-    this.CO2 = -1
+    this.co2 = -1
   });
 
   /// Constructs a new entry given a list of emission types.
