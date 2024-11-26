@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'entry_view.dart'; // Import the HistoryTab file
+import 'locations.dart'; // Import the MapTab file
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,78 +11,19 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   int _currentIndex = 0; // Tracks the selected tab
 
+  // List of widget pages for the tabs
+  final List<Widget> _pages = [
+    const HomeTab(),
+    //const EntryView(),
+    //const LocationsPage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2E8CF), // Background color
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // App Title - GoGreen
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              child: Text(
-                'GoGreen',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF386641), // Dark green
-                ),
-              ),
-            ),
-
-            // Weekly Goal - under GoGreen title
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Weekly Goal: 52 Co2g',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Color(0xFF6A994E),
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            // Center Section
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Go Green Text (centralized)
-                   const Icon(Icons.eco, size: 100, color: Color(0xFF6A994E)),
-
-                    const SizedBox(height: 30),
-
-                    // Track Button
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigate to the Track Page
-                        Navigator.pushNamed(context,'/Users/avnirao/gogreen/lib/views/activity_log.dart');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFBC4749), // Red accent
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Track',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: _pages[_currentIndex], // Display content based on selected index
       ),
 
       // Bottom Navigation Bar
@@ -99,21 +42,19 @@ class HomePageState extends State<HomePage> {
           currentIndex: _currentIndex,
           onTap: (index) {
             setState(() {
-              _currentIndex = index;
+              _currentIndex = index; // Update the current index to switch views
             });
           },
           backgroundColor: const Color(0xFFF2E8CF), // Matches the app background
           selectedItemColor: const Color(0xFFBC4749), // Red accent
-          unselectedItemColor: const Color(0xFF386641),  // Light green
+          unselectedItemColor: const Color(0xFF386641), // Light green
           showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
           elevation: 0, // Disable built-in elevation
           items: const [
             BottomNavigationBarItem(
-
               icon: Icon(Icons.home),
               label: 'Home',
-
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history),
@@ -126,6 +67,83 @@ class HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+// Home Tab
+class HomeTab extends StatefulWidget {
+  const HomeTab({super.key});
+
+  @override
+  _HomeTabState createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  int _count = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          child: Text(
+            'GoGreen',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF386641), // Dark green
+            ),
+          ),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            'Weekly Goal: 52 Co2g',
+            style: TextStyle(
+              fontSize: 20,
+              color: Color(0xFF6A994E),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 30),
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.eco, size: 100, color: Color(0xFF6A994E)),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EntryView(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFBC4749), // Red accent
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'Track',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
