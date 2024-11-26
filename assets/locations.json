@@ -112,5 +112,29 @@
         "latitude": 47.55706444481498,
         "longitude": -122.32833525542053,
         "url": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://mrjunkbgoneseattle.com/&ved=2ahUKEwjk55Ck9faJAxUWJjQIHWi0GXwQFnoECFEQAQ&usg=AOvVaw10pKUEZx-Wmg6ecVlbq1mm"
+    },
+    {
+        "name": "Crossroads Trading",
+        "latitude": 47.661950493724284,
+        "longitude": -122.31215565553593,
+        "url": "http://www.crossroadstrading.com/"
+    },
+    {
+        "name": "Out of the Closet - Seattle",
+        "latitude": 47.61645997599103,
+        "longitude": -122.3191773851395,
+        "url": "https://outofthecloset.org/"
+    }, 
+    {
+        "name": "Capitol Hill Goodwill",
+        "latitude": 47.6222107162727,
+        "longitude": -122.32473672376756,
+        "url": "https://evergreengoodwill.org/locations/81-capitol-hill?utm_source=gmb&utm_medium=yext"
+    }, 
+    {
+        "name": "Crossroads Trading",
+        "latitude": 47.624256262764014,
+        "longitude": -122.32131226239562,
+        "url": "http://www.crossroadstrading.com/"
     }
 ]
