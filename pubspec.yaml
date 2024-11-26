@@ -37,7 +37,6 @@ dependencies:
   flutter_platform_widgets: ^6.1.0
   geolocator: ^11.0.0
   google_fonts: ^6.2.1
-  http: ^1.2.1
   json_annotation: ^4.8.1
   latlong2: ^0.9.1
   maps_launcher: ^2.2.1
@@ -46,7 +45,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_map: ^6.2.1
   url_launcher: ^6.3.1
-
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
