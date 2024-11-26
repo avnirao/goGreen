@@ -22,7 +22,7 @@ class _EntryViewState extends State<EntryView>{
   late DateTime createdAt;
   late DateTime emissionsDate;
   late EmissionFactor emissionType;
-  late double CO2;
+  late double co2;
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _EntryViewState extends State<EntryView>{
     createdAt = widget.curEntry.createdAt;
     emissionsDate = widget.curEntry.emissionsDate;
     emissionType = widget.curEntry.emissionType;
-    CO2 = widget.curEntry.CO2;
+    co2 = widget.curEntry.co2;
   }
 
   // Saves the current state of the entry and returns to the previous screen.
@@ -46,7 +46,7 @@ class _EntryViewState extends State<EntryView>{
       createdAt: widget.curEntry.createdAt,
       emissionsDate: widget.curEntry.emissionsDate,
       emissionType: widget.curEntry.emissionType,
-      CO2: widget.curEntry.CO2,
+      co2: widget.curEntry.co2,
     );
 
     // Pass the updated entry back to the previous screen and close this view
