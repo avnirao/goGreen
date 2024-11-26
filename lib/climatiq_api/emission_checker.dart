@@ -1,15 +1,19 @@
 import 'dart:convert';
 
 import 'package:go_green/climatiq_api/emission_estimate.dart';
-import 'package:go_green/models/emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/weight_emission_factor.dart';
 import 'package:go_green/models/emission_factors/travel_emissions.dart';
+import 'package:go_green/models/emission_factors/clothing_emissions.dart';
+import 'package:go_green/models/emission_factors/energy_emissions.dart';
 import 'package:http/http.dart' as http;
 
 /// Used to check the amount of emissions for activities
 class EmissionChecker {
   /// The client that will call the web service
   final http.Client client;
-  // TODO(Mason): Encrypt API key
+  // TODO: Encrypt API key
   static const String _apiKey = 'R58VCG52QD6GF27J7DFZR19BQM';
 
   /// Constructs an Emissions Checker.
@@ -23,6 +27,8 @@ class EmissionChecker {
   /// 
   /// Parameters:
   ///  - factor: the type of emissions to parse. 
+  /// 
+  /// Returns a future http response from the climatiq server
   Future<http.Response> _fetchEmissions(EmissionFactor factor) async {
     // Reference: https://pub.dev/packages/http
     return await client.post(
@@ -39,8 +45,9 @@ class EmissionChecker {
   /// 
   /// Parameters: 
   ///  - responseBody: the data to be parsed
+  /// 
   /// Returns the emissions data as a double.
-  /// Throws an Argument Error if the web service returns an invalid response.
+  /// Returns null if the web service returns an invalid response.
   EmissionEstimate? _parseEmissions(http.Response response) {
     final parsed = (jsonDecode(response.body) as Map<String, dynamic>);
 
@@ -64,12 +71,14 @@ class EmissionChecker {
           throw ArgumentError('Something went wrong on Climatiq\'s end. Please try again a bit later.\n$parsed');
         case 503: // Service Unavailable
           throw ArgumentError('Service unavailable.\n$parsed');
+        default: // Threw an error, but did not receive a known error code
+          throw ArgumentError('Unknown error.\n$parsed');
       }
     } catch (e) {
-      // for now, just prints the error message
       // TODO: Find better way to relay error information
+      // for now, just prints the error message
       // ignore: avoid_print
-      print(e);
+      print('${response.statusCode}: $e');
     }
 
     return null;
@@ -79,19 +88,21 @@ class EmissionChecker {
   /// 
   /// Parameters:
   ///  - factor: the type of emissions to parse. 
-  /// Returns the amount of emissions as an Emissions Estimate
+  /// 
+  /// Returns the amount of emissions as a future Emissions Estimate
   Future<EmissionEstimate?> getEmissions(EmissionFactor factor) async {
     final response = await _fetchEmissions(factor);
     return _parseEmissions(response);
   }
 
 
-  // METHODS FOR SENDING DATA TO THE API BELOW
+  // METHODS FOR SENDING DATA TO THE API BELOW //
 
   /// Creates the request data to send to the API.
   /// 
   /// Parameter:
   ///  - factor: the EmissionFactor to use for the data
+  /// 
   /// Returns a map representation of the data to send to the API.
   Map<String, dynamic> _createRequestData(EmissionFactor factor) {
     return  {
@@ -107,34 +118,77 @@ class EmissionChecker {
   /// 
   /// Parameter:
   ///  - factor: the EmissionFactor to use for the parameters
+  /// 
   /// Returns a map representation of the parameters to send to the API.
   Map<String, dynamic> _createRequestParameters(EmissionFactor factor) {
     // Sets the parameters based on what type of emission factor this is
     Map<String, dynamic>? parameters = switch(factor) {
+      // Case: a Money Emission Factor (food, furniture, or personal care)
+      MoneyEmissionFactor moneyFactor => 
+        {
+          'money': moneyFactor.money,
+          'money_unit': moneyFactor.moneyUnit.toString()
+        },
+
+      // Case: a Weight Emission Factor (food waste or general waste)
+      WeightEmissionFactor weightFactor => 
+        {
+          'weight': weightFactor.weight,
+          'weight_unit': weightFactor.weightUnit.toString()
+        },
+        
       // Case: type TravelEmissions
-      TravelEmissions travel => 
-        switch (travel.passengers) {
-          // if passengers is -1, this call doesn't require that parameter
-          -1 => {
-                  'distance': travel.distance,
-                  'distance_unit': travel.distanceUnit
-                },
-          // if passengers is anything else, use that value
+      TravelEmissions travelEmission => 
+        switch (travelEmission.passengers) {
+          // don't use passengers parameter if it's null
+          null => {
+                    'distance': travelEmission.distance,
+                    'distance_unit': travelEmission.distanceUnit.toString()
+                  },
+          // if passengers has a value, use that value
           _ =>  {
-                  'passengers': travel.passengers,
-                  'distance': travel.distance,
-                  'distance_unit': travel.distanceUnit
+                  'passengers': travelEmission.passengers,
+                  'distance': travelEmission.distance,
+                  'distance_unit': travelEmission.distanceUnit.toString()
                 },
+        },
+
+      // Case: type ClothingEmissions
+      ClothingEmissions clothingEmission => 
+        switch (clothingEmission.money) {
+          // if money is null, this clothing calculates emissions based on weight instead
+          null => {
+                    'weight': clothingEmission.weight,
+                    'weight_unit': clothingEmission.weightUnit.toString()
+                  },
+          // if money has a value, use it
+          _ =>  {
+                  'money': clothingEmission.money,
+                  'money_unit': clothingEmission.moneyUnit.toString()
+                },
+        },
+
+      // Case: type EnergyEmissions
+      EnergyEmissions energyEmission => 
+        switch (energyEmission.energyType) {
+          // electricity uses energy and energyType
+          'Electricity' => 
+            {
+              'energy': energyEmission.energy,
+              'energy_unit': energyEmission.energyUnit
+            },
+          // natural gas uses volume and volumeType
+          'Natural Gas' =>  
+            {
+              'volume': energyEmission.energy,
+              'volume_unit': energyEmission.volumeUnit
+            },
+          _ => {'unsupported energy type' : energyEmission.energyType}
         },
         
       // Case: not a supported Emission Factor
-      _ => null
+      _ => throw UnsupportedError('Unsupported Emission Factor ${factor.runtimeType}')
     };
-
-    // Throw an error if this emission factor is unsupported
-    if (parameters == null) {
-      throw UnsupportedError('Unsupported Emission Factor ${factor.runtimeType}');
-    }
 
     return parameters;
   }
