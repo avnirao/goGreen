@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_green/models/activity_history.dart';
+import 'package:go_green/models/emission_factors/travel_emissions.dart';
+import 'package:go_green/models/entry.dart';
+import 'package:go_green/providers/activity_provider.dart';
+import 'package:go_green/views/entry_view.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int _currentIndex = 0; // Tracks the selected tab
+  final ActivityHistory activityHistory = ActivityHistory();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +66,8 @@ class HomePageState extends State<HomePage> {
                     ElevatedButton(
                       onPressed: () {
                         // Navigate to the Track Page
-                        Navigator.pushNamed(context,'/Users/avnirao/gogreen/lib/views/activity_log.dart');
+                        final Entry newEntry = Entry.fromEmissions(emissionType: Tr);
+                        
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFBC4749), // Red accent
@@ -132,5 +140,22 @@ class HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  // Navigates to EntryView to edit or add a journal entry. After returning, it upserts the entry into the provider.
+  Future<void> _navigateToEntry(BuildContext context, Entry entry) async {
+    // Navigate to EntryView, where user can edit the entry
+    final newEntry = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EntryView(curEntry: entry))
+    );
+
+    // Ensure that context is still valid after the navigation
+    if (!context.mounted) return;
+
+    // If an updated entry is returned, upsert it into the journal provider
+    final activityProvider = Provider.of<ActivityProvider>(context, listen: false);
+    activityProvider.upsertEntry(entry);
+
   }
 }

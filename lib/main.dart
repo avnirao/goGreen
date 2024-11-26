@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:go_green/models/activity_history.dart';
 import 'package:go_green/models/recycling_center_db.dart';
+import 'package:go_green/providers/activity_provider.dart';
 import 'package:go_green/views/home_page.dart';
 import 'package:provider/provider.dart';
 import 'providers/position_provider.dart';
@@ -20,6 +22,7 @@ void main() {
         providers: [
           // Provide PositionProvider and WeatherProvider
           ChangeNotifierProvider(create: (_) => PositionProvider()),
+          ChangeNotifierProvider(create: (_) => ActivityProvider())
         ],
         child: MyApp(recyclingCenters: value),
       ),
