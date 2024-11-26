@@ -7,8 +7,9 @@ plugins {
 
 android {
     namespace = "com.example.go_green"
-    compileSdk = flutter.compileSdkVersion
+    // compileSdk = flutter.compileSdkVersion
     // ndkVersion = flutter.ndkVersion
+    compileSdkVersion 34
     ndkVersion = "25.1.8937393"
 
     compileOptions {
