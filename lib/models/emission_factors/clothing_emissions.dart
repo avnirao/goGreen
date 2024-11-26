@@ -1,9 +1,10 @@
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_data/emission_subtypes.dart';
 
 /// Represents types of clothing.
 /// ClothingType should be the same as the name of the constructor it's used with.
-enum ClothingType {leather, footwear, newClothing, usedClothing, infantClothing}
+// enum ClothingType {leather, footwear, newClothing, usedClothing, infantClothing}
 
 /// Represents the emissions from clothing
 class ClothingEmissions extends EmissionFactor {
@@ -14,7 +15,7 @@ class ClothingEmissions extends EmissionFactor {
   /// The units for weight
   final WeightUnit? _weightUnit;
   /// The type of clothing
-  final ClothingType _clothingType;
+  final String _clothingType;
 
   // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_leather_leather_products
   /// Creates an Emission Factor for leather products.
@@ -28,9 +29,9 @@ class ClothingEmissions extends EmissionFactor {
   }): _amount = money,
       _moneyUnit = moneyUnit,
       _weightUnit = null,
-      _clothingType = ClothingType.leather,
+      _clothingType = 'Leather',
       super(category: EmissionCategory.clothing,
-        id: 'consumer_goods-type_leather_leather_products');
+        id: EmissionSubtypes().clothingTypes['Leather'] ?? 'type not found');
 
   // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_footwear
   /// Creates an Emission Factor for footwear.
@@ -44,9 +45,9 @@ class ClothingEmissions extends EmissionFactor {
   }): _amount = money,
       _moneyUnit = moneyUnit,
       _weightUnit = null,
-      _clothingType = ClothingType.footwear,
+      _clothingType = 'Footwear',
       super(category: EmissionCategory.clothing,
-        id: 'consumer_goods-type_footwear');
+        id: EmissionSubtypes().clothingTypes['Footwear'] ?? 'type not found');
 
   // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_mens_womens_boys_and_girls_clothing
   /// Creates an Emission Factor for new clothing.
@@ -60,9 +61,9 @@ class ClothingEmissions extends EmissionFactor {
   }): _amount = money,
       _moneyUnit = moneyUnit,
       _weightUnit = null,
-      _clothingType = ClothingType.newClothing,
+      _clothingType = 'New Clothing',
       super(category: EmissionCategory.clothing,
-        id: 'consumer_goods-type_mens_womens_boys_and_girls_clothing');
+        id: EmissionSubtypes().clothingTypes['New Clothing'] ?? 'type not found');
 
   // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_infant_clothing
   /// Creates an Emission Factor for infant clothing.
@@ -76,9 +77,9 @@ class ClothingEmissions extends EmissionFactor {
   }): _amount = money,
       _moneyUnit = moneyUnit,
       _weightUnit = null,
-      _clothingType = ClothingType.infantClothing,
+      _clothingType = 'Infant Clothing',
       super(category: EmissionCategory.clothing,
-        id: 'consumer_goods-type_infant_clothing');
+        id: EmissionSubtypes().clothingTypes['Infant Clothing'] ?? 'type not found');
   
   // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_clothing_reused
   /// Creates an Emission Factor for used clothing.
@@ -92,9 +93,9 @@ class ClothingEmissions extends EmissionFactor {
   }): _amount = weight,
       _moneyUnit = null,
       _weightUnit = weightUnit,
-      _clothingType = ClothingType.usedClothing,
+      _clothingType = 'Used Clothing',
       super(category: EmissionCategory.clothing,
-        id: 'consumer_goods-type_clothing_reused');
+        id: EmissionSubtypes().clothingTypes['Used Clothing'] ?? 'type not found');
 
 
   // GETTER METHODS //
@@ -116,7 +117,7 @@ class ClothingEmissions extends EmissionFactor {
   WeightUnit? get weightUnit => _weightUnit;
 
   /// Returns the type of clothing
-  ClothingType get clothingType => _clothingType;
+  String get clothingType => _clothingType;
 
 
   @override 

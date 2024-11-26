@@ -1,13 +1,14 @@
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
 
 /// Represents types of furniture.
-enum FurnitureType{otherFurniture, blinds, matress, officeFurniture, woodCabinet, woodCountertop, carpet}
+// enum FurnitureType{otherFurniture, blinds, matress, officeFurniture, woodCabinet, woodCountertop, carpet}
 
 /// Represents the emissions from household items and furniture
 class FurnitureEmissions extends MoneyEmissionFactor {
   /// The type of clothing
-  final FurnitureType furnitureType;
+  final String furnitureType;
 
   // API Reference: https://www.climatiq.io/data/activity/consumer_goods-type_household_furniture
   /// Creates an Emission Factor for furniture.
@@ -21,20 +22,7 @@ class FurnitureEmissions extends MoneyEmissionFactor {
     required this.furnitureType
   }): super(
     category: EmissionCategory.furniture,
-    id: switch (furnitureType) {
-      FurnitureType.blinds => 
-        'consumer_goods-type_blinds_shades_and_curtain_fixtures',
-      FurnitureType.matress => 
-        'consumer_goods-type_mattresses_and_foundations',
-      FurnitureType.officeFurniture => 
-        'consumer_goods-type_blinds_shades_and_curtain_fixtures',
-      FurnitureType.woodCabinet || FurnitureType.woodCountertop => 
-        'consumer_goods-type_wood_cabinets_and_counter_tops',
-      FurnitureType.carpet => 
-        'consumer_goods-type_carpets_rugs',
-      FurnitureType.otherFurniture => 
-        'consumer_goods-type_household_furniture',
-    }
+    id: EmissionSubtypes().furnitureTypes[furnitureType] ?? 'type not found'
   );
   
   @override 

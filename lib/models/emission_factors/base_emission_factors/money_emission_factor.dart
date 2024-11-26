@@ -1,4 +1,4 @@
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 
 /// Abstract class to represent Emissions Factors that are calculated based on money spent.

@@ -1,4 +1,4 @@
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
 
 /// Abstract class to represent an Emission Factor with an id, data version, and category
 abstract class EmissionFactor {

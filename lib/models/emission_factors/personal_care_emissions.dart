@@ -1,4 +1,5 @@
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
 
 enum PersonalCareType{jewellery, perfume, toiletries, soap, toiletPaper, feminineHygiene, disposableDiaper}
@@ -6,7 +7,7 @@ enum PersonalCareType{jewellery, perfume, toiletries, soap, toiletPaper, feminin
 /// Represents emissions from personal care and accessory items
 class PersonalCareEmissions extends MoneyEmissionFactor {
   /// The type of personal care or accessory
-  final PersonalCareType personalCareType;
+  final String personalCareType;
 
   /// Creates an Emission Factor for furniture.
   /// 
@@ -19,18 +20,7 @@ class PersonalCareEmissions extends MoneyEmissionFactor {
     required this.personalCareType
   }): super(
     category: EmissionCategory.furniture,
-    id: switch (personalCareType) {
-      PersonalCareType.jewellery => 
-        'consumer_goods-type_jewellery_and_silverware',
-      PersonalCareType.perfume || PersonalCareType.toiletries => 
-        'consumer_goods-type_perfumes_and_toiletries',
-      PersonalCareType.soap => 
-        'consumer_goods-type_soaps_and_cleaning_compounds',
-      PersonalCareType.toiletPaper => 
-        'consumer_goods-type_sanitary_paper_products',
-      PersonalCareType.feminineHygiene || PersonalCareType.disposableDiaper => 
-        'consumer_goods-type_disposable_diapers_and_feminine_hygiene_products',
-    }
+    id: EmissionSubtypes().foodWasteTypes[personalCareType] ?? 'type not found'
   );
   
   @override 

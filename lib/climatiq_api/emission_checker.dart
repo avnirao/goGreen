@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 class EmissionChecker {
   /// The client that will call the web service
   final http.Client client;
-  // TODO(Mason): Encrypt API key
+  // TODO: Encrypt API key
   static const String _apiKey = 'R58VCG52QD6GF27J7DFZR19BQM';
 
   /// Constructs an Emissions Checker.
@@ -27,6 +27,8 @@ class EmissionChecker {
   /// 
   /// Parameters:
   ///  - factor: the type of emissions to parse. 
+  /// 
+  /// Returns a future http response from the climatiq server
   Future<http.Response> _fetchEmissions(EmissionFactor factor) async {
     // Reference: https://pub.dev/packages/http
     return await client.post(
@@ -43,8 +45,9 @@ class EmissionChecker {
   /// 
   /// Parameters: 
   ///  - responseBody: the data to be parsed
+  /// 
   /// Returns the emissions data as a double.
-  /// Throws an Argument Error if the web service returns an invalid response.
+  /// Returns null if the web service returns an invalid response.
   EmissionEstimate? _parseEmissions(http.Response response) {
     final parsed = (jsonDecode(response.body) as Map<String, dynamic>);
 
@@ -72,8 +75,8 @@ class EmissionChecker {
           throw ArgumentError('Unknown error.\n$parsed');
       }
     } catch (e) {
-      // for now, just prints the error message
       // TODO: Find better way to relay error information
+      // for now, just prints the error message
       // ignore: avoid_print
       print('${response.statusCode}: $e');
     }
@@ -85,19 +88,21 @@ class EmissionChecker {
   /// 
   /// Parameters:
   ///  - factor: the type of emissions to parse. 
-  /// Returns the amount of emissions as an Emissions Estimate
+  /// 
+  /// Returns the amount of emissions as a future Emissions Estimate
   Future<EmissionEstimate?> getEmissions(EmissionFactor factor) async {
     final response = await _fetchEmissions(factor);
     return _parseEmissions(response);
   }
 
 
-  // METHODS FOR SENDING DATA TO THE API BELOW
+  // METHODS FOR SENDING DATA TO THE API BELOW //
 
   /// Creates the request data to send to the API.
   /// 
   /// Parameter:
   ///  - factor: the EmissionFactor to use for the data
+  /// 
   /// Returns a map representation of the data to send to the API.
   Map<String, dynamic> _createRequestData(EmissionFactor factor) {
     return  {
@@ -113,6 +118,7 @@ class EmissionChecker {
   /// 
   /// Parameter:
   ///  - factor: the EmissionFactor to use for the parameters
+  /// 
   /// Returns a map representation of the parameters to send to the API.
   Map<String, dynamic> _createRequestParameters(EmissionFactor factor) {
     // Sets the parameters based on what type of emission factor this is
@@ -166,17 +172,18 @@ class EmissionChecker {
       EnergyEmissions energyEmission => 
         switch (energyEmission.energyType) {
           // electricity uses energy and energyType
-          EnergyType.electricity => 
+          'Electricity' => 
             {
               'energy': energyEmission.energy,
               'energy_unit': energyEmission.energyUnit
             },
           // natural gas uses volume and volumeType
-          EnergyType.naturalGas =>  
+          'Natural Gas' =>  
             {
               'volume': energyEmission.energy,
               'volume_unit': energyEmission.volumeUnit
             },
+          _ => {'unsupported energy type' : energyEmission.energyType}
         },
         
       // Case: not a supported Emission Factor

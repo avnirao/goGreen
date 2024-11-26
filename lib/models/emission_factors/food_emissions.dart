@@ -1,14 +1,20 @@
+import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
 
 /// Represents types of food, beverage, or tobacco.
 /// FoodType should be the same as the name of the constructor it's used with.
-enum FoodType {beef, pork, fish, generalFood, beverage, dairy, sugar, tobacco}
+// enum FoodType {beef, pork, fish, otherFood, beverage, dairy, sugar, tobacco}
+
+class FoodTypeTest {
+  final String beefDisplayName = 'Beef';
+  final String beefId = 'consumer_goods-type_meat_products_beef';
+}
 
 /// Represents emissions from food, beverage, and tobacco.
 class FoodEmissions extends MoneyEmissionFactor {
   /// The type of food
-  final FoodType foodType;
+  final String foodType;
 
   /// Creates an Emission Factor for food, beverage, or tobacco.
   /// 
@@ -22,16 +28,7 @@ class FoodEmissions extends MoneyEmissionFactor {
     required this.foodType
   }): super(
         category: EmissionCategory.food,
-        id: switch (foodType) {
-          FoodType.beef => 'consumer_goods-type_meat_products_beef',
-          FoodType.pork => 'consumer_goods-type_meat_products_pork',
-          FoodType.fish => 'consumer_goods-type_fish_products',
-          FoodType.generalFood => 'consumer_goods-type_food_products_not_elsewhere_specified',
-          FoodType.beverage => 'consumer_goods-type_beverages',
-          FoodType.dairy => 'consumer_goods-type_dairy_products',
-          FoodType.sugar => 'consumer_goods-type_sugar',
-          FoodType.tobacco => 'consumer_goods-type_tobacco_products',
-        }
+        id: EmissionSubtypes().foodTypes[foodType] ?? 'type not found'
       );
 
   @override 

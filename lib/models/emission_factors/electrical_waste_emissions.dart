@@ -1,13 +1,14 @@
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/weight_emission_factor.dart';
 
 /// Represents types of electronic waste.
-enum ElectricalWasteType{batteries, monitors, otherSmallDevices}
+// enum ElectricalWasteType{batteries, monitors, otherSmallDevices}
 
 /// Represents emissions from food waste
 class ElectricalWasteEmissions extends WeightEmissionFactor {
   /// The type of food waste
-  final ElectricalWasteType electricalWasteType;
+  final String electricalWasteType;
 
   /// Creates an Emission Factor for furniture.
   /// 
@@ -19,18 +20,10 @@ class ElectricalWasteEmissions extends WeightEmissionFactor {
   ElectricalWasteEmissions({
     required super.weight, 
     required super.weightUnit,
-    required this.electricalWasteType,
-    required bool recycled
+    required this.electricalWasteType
   }): super(
     category: EmissionCategory.electricalWaste,
-    id: switch (electricalWasteType) {
-      ElectricalWasteType.batteries => 
-        'waste-type_batteries-disposal_method_${recycled ? 'open_loop' : 'landfill'}',
-      ElectricalWasteType.monitors => 
-        'waste-type_flat_panel_displays-disposal_method_${recycled ? 'recycled' : 'landfilled'}',
-      ElectricalWasteType.otherSmallDevices => 
-        'waste-type_electronic_peripherals-disposal_method_${recycled ? 'recycled' : 'landfilled'}',
-    }
+    id: EmissionSubtypes().electricalWasteTypes[electricalWasteType] ?? 'type not found'
   );
   
   @override 

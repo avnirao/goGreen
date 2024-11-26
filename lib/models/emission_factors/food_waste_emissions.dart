@@ -1,13 +1,14 @@
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/weight_emission_factor.dart';
 
 /// Represents types of food waste.
-enum FoodWasteType{meat, grain, dairy, fruitsAndVegetables, mixedOrganics, otherFoodWaste}
+// enum FoodWasteType{meat, grain, dairy, fruitsAndVegetables, mixedOrganics, otherFoodWaste}
 
 /// Represents emissions from food waste
 class FoodWasteEmissions extends WeightEmissionFactor {
   /// The type of food waste
-  final FoodWasteType foodWasteType;
+  final String foodWasteType;
 
   /// Creates an Emission Factor for furniture.
   /// 
@@ -19,24 +20,10 @@ class FoodWasteEmissions extends WeightEmissionFactor {
   FoodWasteEmissions({
     required super.weight, 
     required super.weightUnit,
-    required this.foodWasteType,
-    required bool composted
+    required this.foodWasteType
   }): super(
     category: EmissionCategory.foodWaste,
-    id: switch (foodWasteType) {
-      FoodWasteType.meat => 
-        'waste-type_food_waste_meat_only-disposal_method_${composted ? 'composted' : 'landfilled'}',
-      FoodWasteType.grain => 
-        'waste-type_grains-disposal_method_${composted ? 'composted' : 'landfilled'}',
-      FoodWasteType.dairy => 
-        'waste-type_dairy_products-disposal_method_${composted ? 'composted' : 'landfilled'}',
-      FoodWasteType.fruitsAndVegetables => 
-        'waste-type_fruits_and_vegetables-disposal_method_${composted ? 'composted' : 'landfilled'}',
-      FoodWasteType.mixedOrganics => 
-        'waste-type_mixed_organics-disposal_method_${composted ? 'composted' : 'landfilled'}',
-      FoodWasteType.otherFoodWaste => 
-        'waste-type_food_waste-disposal_method_${composted ? 'composted' : 'landfilled'}',
-    }
+    id: EmissionSubtypes().foodWasteTypes[foodWasteType] ?? 'type not found'
   );
   
   @override 

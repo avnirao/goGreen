@@ -1,12 +1,13 @@
 // Average amount of electricity used by US household: 899 kWh per month, or ~29.966 kWh per day
 // source: https://www.eia.gov/tools/faqs/faq.php?id=97&t=3 
 
+import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
-import 'package:go_green/models/emission_factors/emission_data_enums.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
 
 enum EnergyAmount{wellBelowAverage, belowAverage, average, aboveAverage, wellAboveAverage}
 
-enum EnergyType{electricity, naturalGas}
+// enum EnergyType{electricity, naturalGas}
 
 /// Represents emissions from energy usage
 class EnergyEmissions extends EmissionFactor {
@@ -17,7 +18,7 @@ class EnergyEmissions extends EmissionFactor {
   /// the units for volume
   final String volumeUnit = 'standard_cubic_feet';
   /// the type of energy consumed
-  final EnergyType energyType;
+  final String energyType;
 
   /// Creates an Emission Factor for electricity.
   /// 
@@ -34,10 +35,10 @@ class EnergyEmissions extends EmissionFactor {
         EnergyAmount.aboveAverage => 35,
         EnergyAmount.wellAboveAverage => 40
       },
-      energyType = EnergyType.electricity,
+      energyType = 'Electricity',
       super(
         category: EmissionCategory.energy,
-        id: 'electricity-supply_grid-source_supplier_mix'
+        id: EmissionSubtypes().energyTypes['Electricity'] ?? 'type not found'
       );
 
   /// Creates an Emission Factor for natural gas.
@@ -54,10 +55,10 @@ class EnergyEmissions extends EmissionFactor {
         EnergyAmount.aboveAverage => 220,
         EnergyAmount.wellAboveAverage => 250
       },
-      energyType = EnergyType.naturalGas,
+      energyType = 'Natural Gas',
       super(
         category: EmissionCategory.energy,
-        id: 'electricity-supply_grid-source_supplier_mix'
+        id: EmissionSubtypes().energyTypes['Electricity'] ?? 'type not found'
       );
 
   @override 
