@@ -17,7 +17,6 @@ class HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // App Title - GoGreen
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               child: Text(
@@ -97,11 +96,19 @@ class HomePageState extends State<HomePage> {
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
-          onTap: (index) {
+          onTap: (index) { // When an item is tapped, the index of that item is passed here
             setState(() {
-              _currentIndex = index;
+              _currentIndex = index; // Update currentIndex to the tapped index
             });
-          },
+
+            if (index == 2) {
+              // Navigate to MapView when the Map icon is tapped
+              Navigator.pushNamed(context, '/location');
+            } else if (index == 1) {
+              // Navigate to EntryView when the History icon is tapped
+              Navigator.pushNamed(context, '/history');
+            }
+  },
           backgroundColor: const Color(0xFFF2E8CF), // Matches the app background
           selectedItemColor: const Color(0xFFBC4749), // Red accent
           unselectedItemColor: const Color(0xFF386641),  // Light green
@@ -110,10 +117,8 @@ class HomePageState extends State<HomePage> {
           elevation: 0, // Disable built-in elevation
           items: const [
             BottomNavigationBarItem(
-
               icon: Icon(Icons.home),
               label: 'Home',
-
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history),

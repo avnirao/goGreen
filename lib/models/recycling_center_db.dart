@@ -19,4 +19,5 @@ class RecyclingCentersDB {
     }).toList();
     return theList;
   }
+
 }

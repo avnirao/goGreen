@@ -1,12 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:go_green/models/recycling_center_db.dart';
 import 'package:go_green/views/home_page.dart';
+import 'package:provider/provider.dart';
+import 'providers/position_provider.dart';
+import 'views/map_view.dart';
+
+Future<RecyclingCentersDB> loadRecyclingDB(String dataPath) async {
+  return RecyclingCentersDB.initializeFromJson(await rootBundle.loadString(dataPath));
+}
 
 void main() {
-  runApp(const MyApp());
+  const dataPath = 'assets/locations.json';
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  loadRecyclingDB(dataPath).then((value) {
+    runApp(
+      MultiProvider(
+        providers: [
+          // Provide PositionProvider and WeatherProvider
+          ChangeNotifierProvider(create: (_) => PositionProvider()),
+        ],
+        child: MyApp(recyclingCenters: value),
+      ),
+    );
+  });
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final RecyclingCentersDB recyclingCenters;
+
+  const MyApp({super.key, required this.recyclingCenters});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +39,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const HomePage(), // Set HomePage as the home screen
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomePage(),
+        '/location': (context) => MapView(positionProvider: PositionProvider(), recyclingCenters: recyclingCenters), // Register route for MapView
+        //'/history': (context) => , // Register route for History Page
+      }, // Set HomePage as the home screen
     );
   }
 }
