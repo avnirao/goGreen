@@ -7,26 +7,8 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 import 'package:go_green/models/emission_factors/clothing_emissions.dart';
+import 'package:go_green/models/emission_factors/food_emissions.dart';
 import 'package:go_green/models/entry.dart';
-import 'package:intl/intl.dart';
-
-// list for the dropdown menu
-final List<DropdownMenuEntry<EmissionCategory>> dropdownMenuEntries = <DropdownMenuEntry<EmissionCategory>>[
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.clothing, label: 'Clothing'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.energy, label: 'Energy'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.food, label: 'Food'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.furniture, label: 'Furniture'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.personalCareAndAccessories, label: 'Personal Care and Accessories'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.shopping, label: 'Shopping'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.travel, label: 'Travel'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.foodWaste, label: 'Food Waste'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.generalWaste, label: 'General Waste'),
-  const DropdownMenuEntry<EmissionCategory>(value: EmissionCategory.electricalWaste, label: 'Electrical Waste'),
-];
-
-// Subtype dropdown menu entries
-List<DropdownMenuEntry<String>> subtypeDropdownMenuEntries = [];
-
 
 /// A StatefulWidget that displays and allows editing of a single Entry.
 class EntryView extends StatefulWidget{
@@ -48,13 +30,24 @@ class _EntryViewState extends State<EntryView>{
   String subtype = '';
   double co2 = 0;
   EmissionChecker checker = EmissionChecker();
+  List<EmissionCategory> categories = EmissionCategory.values;
+
+  // Moved this list here
+  List<DropdownMenuEntry<String>> subtypeDropdownMenuEntries = [];  
+
+  // Moved dropdown list for categories here & simplified its initialization
+  List<DropdownMenuEntry<EmissionCategory>> dropdownMenuEntries = EmissionCategory.values.map((item) {
+    return DropdownMenuEntry<EmissionCategory>(value: item, label: item.toString());
+  }).toList();
+
 
   // Input fields for estimation
 
   // for clothing
   double amount = 0;
-  MoneyUnit? moneyUnit;
-  WeightUnit? weightUnit;
+  // Gave money and weight unit default values
+  MoneyUnit moneyUnit = MoneyUnit.usd;
+  WeightUnit weightUnit = WeightUnit.lb;
   String curEst = 'N/A';
 
   @override
@@ -70,7 +63,8 @@ class _EntryViewState extends State<EntryView>{
     subtype = widget.curEntry.subtype;
 
     // intialize the dropdown menus
-    _updateSubtypeDropdown(category ?? EmissionCategory.clothing);
+    // removed null check, category is never null
+    _updateSubtypeDropdown(category);
   }
 
 
@@ -134,7 +128,8 @@ class _EntryViewState extends State<EntryView>{
                             value: weightUnit,
                             onChanged: (WeightUnit? value) {
                               setState(() {
-                                weightUnit = value;
+                                // no change if value is null
+                                weightUnit = value ?? weightUnit;
                               });
                             },
                             items: WeightUnit.values
@@ -165,7 +160,8 @@ class _EntryViewState extends State<EntryView>{
                             value: moneyUnit,
                             onChanged: (MoneyUnit? value) {
                               setState(() {
-                                moneyUnit = value;
+                                // no change if value is null
+                                moneyUnit = value ?? moneyUnit;
                               });
                             },
                             items: MoneyUnit.values
@@ -224,18 +220,24 @@ class _EntryViewState extends State<EntryView>{
       // clothing case
       case EmissionCategory.clothing:
         switch (subtype) {
-          case 'consumer_goods-type_leather_leather_products':
-            return ClothingEmissions.leather(money: amount, moneyUnit: moneyUnit!);
-          case 'consumer_goods-type_footwear':
-            return ClothingEmissions.footwear(money: amount, moneyUnit: moneyUnit!);
-          case 'consumer_goods-type_clothing_reused':
-            return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit!);
+          case 'Leather':
+            return ClothingEmissions.leather(money: amount, moneyUnit: moneyUnit);
+          case 'Footwear':
+            return ClothingEmissions.footwear(money: amount, moneyUnit: moneyUnit);
+          case 'New Clothing':
+            return ClothingEmissions.newClothing(money: amount, moneyUnit: moneyUnit);
+          case 'Infant Clothing':
+            return ClothingEmissions.infantClothing(money: amount, moneyUnit: moneyUnit);
+          case 'Used Clothing':
+            return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
           default:
-            return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit!);
+            return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
         }
+      case EmissionCategory.food: 
+        return FoodEmissions(money: amount, moneyUnit: moneyUnit, foodType: subtype);
       // Add other category cases for emission estimation here
       default:
-        return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit!);
+        return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
     }
   }
 
@@ -308,12 +310,13 @@ class _EntryViewState extends State<EntryView>{
                 label: e.key,
               ))
           .toList();
-      subtype = subtypeMap.values.first;
+      // Use keys instead of values with these maps - the values are just for the API to use
+      subtype = subtypeMap.keys.first;
     });
   }
 
-  // Helper method to format a DateTime as a readable string.
-  String _formatDateTime(DateTime when) {
-    return DateFormat.yMd().add_jm().format(when);
-  }
+  // // Helper method to format a DateTime as a readable string.
+  // String _formatDateTime(DateTime when) {
+  //   return DateFormat.yMd().add_jm().format(when);
+  // }
 }
