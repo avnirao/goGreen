@@ -3,7 +3,32 @@
 /// Represents each of the categories of emissions
 enum EmissionCategory{
   clothing, energy, food, furniture, personalCareAndAccessories, shopping, travel, 
-  foodWaste, generalWaste, electricalWaste,
+  foodWaste, generalWaste, electricalWaste;
+
+  /// Returns the value of this enum as a String.
+  @override
+  String toString() {
+    String result = super.toString();
+    if (result.isEmpty) return result;
+
+    // get rid of the 'Instrument.' at the beginning of the string
+    final int startIndex = result.indexOf('.') + 1;
+    result = result.substring(startIndex);
+
+    // Check for uppercase letters - that means that the name contains multiple words
+    for (int i = 0; i < result.length; i++) {
+      final String copy = result;
+      if (copy[i] == copy[i].toUpperCase()) {
+        // uppercase letter found, add space before it
+        result = '${result.substring(0, i)} ${result.substring(i, result.length)}';
+        // increment since a character was added to the string
+        i++; 
+      }
+    }
+
+    // Make the 1st letter uppercase
+    return result[0].toUpperCase() + result.substring(1);
+  }
 }
 
 // Full list of available currencies, if we want to add more: 

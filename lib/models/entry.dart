@@ -38,7 +38,7 @@ class Entry {
     required this.emissionsDate,
     required this.category,
     required this.subtype,
-    this.co2 = -1
+    this.co2 = 0
   });
 
   /// Constructs a new entry given a list of emission types.
