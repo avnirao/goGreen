@@ -43,7 +43,7 @@ class TravelEmissions extends EmissionFactor{
     required this.passengers,
   }): travelType = 'Gas Car',
       super(category: EmissionCategory.travel,
-          id: EmissionSubtypes().foodWasteTypes['Gas Car'] ?? 'type not found');
+          id: EmissionSubtypes().travelTypes['Gas Car'] ?? 'type not found');
 
   /// API Reference: https://www.climatiq.io/data/activity/passenger_vehicle-vehicle_type_car-fuel_source_bev-distance_na-engine_size_na
   /// Note: this is currently for medium sized cars only
@@ -53,7 +53,7 @@ class TravelEmissions extends EmissionFactor{
     required this.passengers,
   }): travelType = 'Electric Car',
       super(category: EmissionCategory.travel,
-          id: EmissionSubtypes().foodWasteTypes['Electric Car'] ?? 'type not found');
+          id: EmissionSubtypes().travelTypes['Electric Car'] ?? 'type not found');
 
   /// API Referece: https://www.climatiq.io/data/activity/passenger_vehicle-vehicle_type_car-fuel_source_phev-engine_size_na-vehicle_age_na-vehicle_weight_na
   TravelEmissions.hybridCar({
@@ -62,7 +62,7 @@ class TravelEmissions extends EmissionFactor{
   }): passengers = null, // not required for this API call
       travelType = 'Hybrid Car',
       super(category: EmissionCategory.travel,
-          id: EmissionSubtypes().foodWasteTypes['Hybrid Car'] ?? 'type not found');
+          id: EmissionSubtypes().travelTypes['Hybrid Car'] ?? 'type not found');
 
   // API Reference: https://www.climatiq.io/data/activity/passenger_vehicle-vehicle_type_local_bus_not_london-fuel_source_na-distance_na-engine_size_na
   /// Creates an emission factor for bus travel.
@@ -84,7 +84,7 @@ class TravelEmissions extends EmissionFactor{
         },
         travelType = 'Bus',
         super(category: EmissionCategory.travel,
-          id: EmissionSubtypes().foodWasteTypes['Bus'] ?? 'type not found');
+          id: EmissionSubtypes().travelTypes['Bus'] ?? 'type not found');
 
   /// API Reference: 
   ///  - Domestic: https://www.climatiq.io/data/activity/passenger_flight-route_type_domestic-aircraft_type_na-distance_na-class_na-rf_included-distance_uplift_included
@@ -136,7 +136,7 @@ class TravelEmissions extends EmissionFactor{
       // Uses the 2nd ID if this is an international flight
       travelType = isDomestic ? 'Domestic Flight' : 'International Flight',
       super(category: EmissionCategory.travel,
-            id: EmissionSubtypes().foodWasteTypes[isDomestic ? 'Domestic Flight' : 'International Flight'] ?? 'type not found');
+            id: EmissionSubtypes().travelTypes[isDomestic ? 'Domestic Flight' : 'International Flight'] ?? 'type not found');
 
   /// API Reference: https://www.climatiq.io/data/activity/passenger_train-route_type_light_rail_and_tram-fuel_source_na
   TravelEmissions.lightRailTram({
@@ -155,7 +155,7 @@ class TravelEmissions extends EmissionFactor{
         },
         travelType = 'Light Rail/Tram',
         super(category: EmissionCategory.travel,
-          id: EmissionSubtypes().foodWasteTypes['Light Rail/Tram'] ?? 'type not found');
+          id: EmissionSubtypes().travelTypes['Light Rail/Tram'] ?? 'type not found');
   
   /// API Reference: https://www.climatiq.io/data/activity/passenger_train-route_type_national_rail-fuel_source_na
   TravelEmissions.train({
@@ -173,7 +173,7 @@ class TravelEmissions extends EmissionFactor{
         },
         travelType = 'Train',
         super(category: EmissionCategory.travel,
-          id: EmissionSubtypes().foodWasteTypes['Train'] ?? 'type not found');
+          id: EmissionSubtypes().travelTypes['Train'] ?? 'type not found');
   
   /// API Reference: 
   ///  - Board with car: https://www.climatiq.io/data/activity/passenger_ferry-route_type_car_passenger-fuel_source_na
@@ -195,7 +195,7 @@ class TravelEmissions extends EmissionFactor{
         },
         travelType = onFoot ? 'Ferry: On Foot' : 'Ferry: With a Car',
         super(category: EmissionCategory.travel,
-          id: EmissionSubtypes().foodWasteTypes[onFoot ? 'Ferry: On Foot' : 'Ferry: With a Car'] ?? 'type not found');
+          id: EmissionSubtypes().travelTypes[onFoot ? 'Ferry: On Foot' : 'Ferry: With a Car'] ?? 'type not found');
   
   @override 
   String toString() {

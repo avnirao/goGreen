@@ -20,7 +20,7 @@ class PersonalCareEmissions extends MoneyEmissionFactor {
     required this.personalCareType
   }): super(
     category: EmissionCategory.furniture,
-    id: EmissionSubtypes().foodWasteTypes[personalCareType] ?? 'type not found'
+    id: EmissionSubtypes().personalCareTypes[personalCareType] ?? 'type not found'
   );
   
   @override 
