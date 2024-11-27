@@ -5,19 +5,23 @@ import 'package:go_green/models/entry.dart';
 import 'package:go_green/providers/activity_provider.dart';
 import 'package:go_green/views/entry_view.dart';
 import 'package:provider/provider.dart';
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
   HomePageState createState() => HomePageState();
 }
 
+// HomePageState is the state of HomePage
+// It contains the current tab index and the build method
+// The build method returns the layout of the HomePage
 class HomePageState extends State<HomePage> {
+  // _currentIndex is the index of the selected tab
   int _currentIndex = 0; // Tracks the selected tab
   final ActivityHistory activityHistory = ActivityHistory();
 
   @override
   Widget build(BuildContext context) {
+    // Scaffold is the main layout structure of the app
     return Scaffold(
       backgroundColor: const Color(0xFFF2E8CF), // Background color
       body: SafeArea(
@@ -63,8 +67,13 @@ class HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Go Green Text (centralized)
-                   const Icon(Icons.eco, size: 100, color: Color(0xFF6A994E)),
+                    // Go Green Icon (centralized)
+                    const Icon(
+                      Icons.eco, 
+                      size: 100, 
+                      color: Color(0xFF6A994E),
+                      semanticLabel: 'Go Green Icon', // Semantic label added
+                    ),
 
                     const SizedBox(height: 30),
 
@@ -123,7 +132,7 @@ class HomePageState extends State<HomePage> {
               // Navigate to EntryView when the History icon is tapped
               Navigator.pushNamed(context, '/history');
             }
-  },
+          },
           backgroundColor: const Color(0xFFF2E8CF), // Matches the app background
           selectedItemColor: const Color(0xFFBC4749), // Red accent
           unselectedItemColor: const Color(0xFF386641),  // Light green
