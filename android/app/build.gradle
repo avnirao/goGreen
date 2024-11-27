@@ -7,13 +7,13 @@ plugins {
 
 android {
     defaultConfig {
-        applicationId "com.finalProject.go_green"
+        applicationId "com.example.go_green"
         minSdkVersion 15
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
-    namespace = "com.finalProject.go_green"
+    namespace = "com.example.go_green"
     testNamespace = "com.finalProject.go_green_test"
     compileSdk = flutter.compileSdkVersion
     // ndkVersion = flutter.ndkVersion
