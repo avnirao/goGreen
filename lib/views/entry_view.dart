@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:go_green/climatiq_api/emission_checker.dart';
 import 'package:go_green/climatiq_api/emission_estimate.dart';
