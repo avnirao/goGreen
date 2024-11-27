@@ -7,6 +7,7 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 import 'package:go_green/models/emission_factors/clothing_emissions.dart';
+import 'package:go_green/models/emission_factors/energy_emissions.dart';
 import 'package:go_green/models/entry.dart';
 import 'package:intl/intl.dart';
 
@@ -56,6 +57,12 @@ class _EntryViewState extends State<EntryView>{
   MoneyUnit? moneyUnit;
   WeightUnit? weightUnit;
   String curEst = 'N/A';
+
+  // for electrical waste
+  String electricalWasteType = '';
+
+  // for energy
+  EnergyAmount energyAmount = EnergyAmount.average;
 
   @override
   void initState() {
@@ -111,17 +118,18 @@ class _EntryViewState extends State<EntryView>{
               const SizedBox(height: 20),
 
               // pumping the user to give parameters
+              // clothing category
               if (category == EmissionCategory.clothing)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    // used clothing
                     if (subtype == 'consumer_goods-type_clothing_reused')
                       Column(
                         children: [
                           TextField(
                             decoration: const InputDecoration(
                               labelText: 'Weight',
-                              suffixText: 'kg',
                             ),
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
@@ -131,6 +139,7 @@ class _EntryViewState extends State<EntryView>{
                             },
                           ),
                           DropdownButton<WeightUnit>(
+                            hint: const Text('Weight Unit'),
                             value: weightUnit,
                             onChanged: (WeightUnit? value) {
                               setState(() {
@@ -146,13 +155,13 @@ class _EntryViewState extends State<EntryView>{
                           ),
                         ],
                       )
+                    // non used clothing
                     else
                       Column(
                         children: [
                           TextField(
                             decoration: const InputDecoration(
                               labelText: 'Money',
-                              suffixText: 'currency',
                             ),
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
@@ -162,6 +171,7 @@ class _EntryViewState extends State<EntryView>{
                             },
                           ),
                           DropdownButton<MoneyUnit>(
+                            hint: const Text('Money Unit'),
                             value: moneyUnit,
                             onChanged: (MoneyUnit? value) {
                               setState(() {
@@ -178,7 +188,78 @@ class _EntryViewState extends State<EntryView>{
                         ],
                       ),
                   ],
-                ),
+                )
+              // electrical waste category
+              else if (category == EmissionCategory.electricalWaste)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // for weight
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Weight',
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        setState(() {
+                          amount = double.tryParse(value) ?? 0;
+                        });
+                      },
+                    ),
+                    // for waste type
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Electrical Waste Type',
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        setState(() {
+                          electricalWasteType = value;
+                        });
+                      },
+                    ),
+                    // for unit
+                    DropdownButton<WeightUnit>(
+                      hint: const Text('Weight Unit'),
+                      value: weightUnit,
+                      onChanged: (WeightUnit? value) {
+                        setState(() {
+                          weightUnit = value;
+                        });
+                      },
+                      items: WeightUnit.values
+                          .map((unit) => DropdownMenuItem<WeightUnit>(
+                                value: unit,
+                                child: Text(unit.toString().split('.').last),
+                              ))
+                          .toList(),
+                    ),
+                  ],
+                )
+              // energy category
+              else if (category == EmissionCategory.energy) 
+                Column(
+                  children: [
+                    DropdownButton<EnergyAmount>(
+                      hint: const Text('Energy used'),
+                      value: energyAmount,
+                      onChanged: (EnergyAmount? value) {
+                        setState(() {
+                          energyAmount = value!;
+                        });
+                      },
+                      items: EnergyAmount.values
+                          .map((unit) => DropdownMenuItem<EnergyAmount>(
+                                value: unit,
+                                child: Text(unit.toString().split('.').last),
+                              ))
+                          .toList(),
+                    ),
+                  ]
+                )
+              //else if (category == EmissionCategory.food)
+              ,
+              
 
               ElevatedButton(
                 onPressed: () async {
