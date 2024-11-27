@@ -2,7 +2,7 @@
 
 /// Represents each of the categories of emissions
 enum EmissionCategory{
-  clothing, energy, food, furniture, personalCareAndAccessories, shopping, travel, 
+  clothing, energy, food, furniture, personalCareAndAccessories, travel, 
   foodWaste, generalWaste, electricalWaste;
 
   /// Returns the value of this enum as a String.

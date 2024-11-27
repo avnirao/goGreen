@@ -31,8 +31,7 @@ class EntryView extends StatefulWidget{
 class _EntryViewState extends State<EntryView>{
 
   List<DropdownMenuEntry<EmissionCategory>> dropdownMenuEntries = EmissionCategory.values.map((category) {
-    return DropdownMenuEntry<EmissionCategory>(value: category, label: category.toString(), 
-    labelWidget: Text(category.toString()));
+    return DropdownMenuEntry<EmissionCategory>(value: category, label: category.toString(), );
   }).toList();
 
   List<DropdownMenuEntry<String>> subtypeDropdownMenuEntries = [];
@@ -272,6 +271,7 @@ class _EntryViewState extends State<EntryView>{
                     print('example estimate: $estimate');
                     setState(() {
                       curEst = estimate.toString();
+                      co2 = estimate.co2;
                     });
                   } else {
                     setState(() {
@@ -311,7 +311,7 @@ class _EntryViewState extends State<EntryView>{
               ),
             ),
 
-            const SizedBox(height: 130),
+            const SizedBox(height: 40),
 
             // Save Button
             SizedBox(
@@ -370,17 +370,17 @@ class _EntryViewState extends State<EntryView>{
           case 'Natural Gas':
             return EnergyEmissions.naturalGas(volume: energyAmount);
         }
-      case EmissionCategory.food:
+      case 'food':
         FoodEmissions(foodType: subtype, money: amount, moneyUnit: moneyUnit);
-      case EmissionCategory.foodWaste:
+      case 'foodWaste':
         FoodWasteEmissions(foodWasteType: subtype, weight: amount, weightUnit: weightUnit);
-      case EmissionCategory.furniture:
+      case 'furniture':
         FurnitureEmissions(furnitureType: subtype, money: amount, moneyUnit: moneyUnit);
-      case EmissionCategory.generalWaste:
+      case 'generalWaste':
         GeneralWasteEmissions(wasteType: subtype, weight: amount, weightUnit: weightUnit);
-      case EmissionCategory.personalCareAndAccessories:
+      case 'personalCareAndAccessories':
         PersonalCareEmissions(money: amount, moneyUnit: moneyUnit, personalCareType: subtype);
-      case EmissionCategory.travel:
+      case 'Travel':
         switch(subtype){
           case 'Gas Car':
             TravelEmissions.gasCar(distance: amount, distanceUnit: distanceUnit, passengers: passengers);
@@ -740,7 +740,8 @@ class _EntryViewState extends State<EntryView>{
           ),
           if (subtype == 'Gas Car' || subtype == 'Electric Car' || subtype == 'Bus' ||
               subtype == 'Light Rail/Tram' || subtype == 'Train' ||
-              subtype == 'Ferry: On Foot' || subtype == 'Ferry: With a Car')
+              subtype == 'Ferry: On Foot' || subtype == 'Ferry: With a Car' 
+              || subtype == 'International Flight' || subtype == 'Domestic Flight')
             ...[
               const SizedBox(height: 20), // Increased spacing between dropdowns
               // Passenger Amount Dropdown
@@ -781,6 +782,43 @@ class _EntryViewState extends State<EntryView>{
                 ),
               ),
             ],
+          if (subtype == 'International Flight' || subtype == 'Domestic Flight')
+            SizedBox(
+                width: 200,
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+                  ),
+                  child: DropdownButtonFormField<VehicleSize>(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    hint: const Text('Passenger Amount'),
+                    value: size,
+                    onChanged: (VehicleSize? value) {
+                      setState(() {
+                        size = value!;
+                      });
+                    },
+                    items: VehicleSize.values
+                        .map((unit) => DropdownMenuItem<VehicleSize>(
+                              value: unit,
+                              child: Text(
+                                unit.toString().split('.').last,
+                                style: const TextStyle(
+                                  color: Colors.black, // Set text color for dropdown items
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ),
+              ),
         ],
       ),
     );
