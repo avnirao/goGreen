@@ -1,3 +1,12 @@
+/* What I Changed:
+ *  - moved & simplified the initialization of dropdownMenuEntries
+ *  - moved initialization of subtypeDropdownEntries
+ *  - gave moneyUnit and weightUnit fields default values. They should never be null in this file because they're required to make calls to the API
+ *  - removed some null checks that became unneccessary because of my other changes
+ *  - modified subtype to use the keys of the EmissionSubtypes maps. The keys are the names we display to the user, values are just used for the API. You shouldn't have to use the values :)
+ *  - added code to handle ElectricalWasteEmissions
+ */
+
 // select type first -> different params -> get CO2
 import 'dart:core';
 import 'package:flutter/material.dart';
@@ -7,7 +16,7 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 import 'package:go_green/models/emission_factors/clothing_emissions.dart';
-import 'package:go_green/models/emission_factors/food_emissions.dart';
+import 'package:go_green/models/emission_factors/electrical_waste_emissions.dart';
 import 'package:go_green/models/entry.dart';
 
 /// A StatefulWidget that displays and allows editing of a single Entry.
@@ -36,8 +45,9 @@ class _EntryViewState extends State<EntryView>{
   List<DropdownMenuEntry<String>> subtypeDropdownMenuEntries = [];  
 
   // Moved dropdown list for categories here & simplified its initialization
-  List<DropdownMenuEntry<EmissionCategory>> dropdownMenuEntries = EmissionCategory.values.map((item) {
-    return DropdownMenuEntry<EmissionCategory>(value: item, label: item.toString());
+  // I added a toString override to EmissionCategory in my own branch that will make these category names display more cleanly to the user
+  List<DropdownMenuEntry<EmissionCategory>> dropdownMenuEntries = EmissionCategory.values.map((category) {
+    return DropdownMenuEntry<EmissionCategory>(value: category, label: category.toString());
   }).toList();
 
 
@@ -182,6 +192,7 @@ class _EntryViewState extends State<EntryView>{
                   if (estimate != null) {
                     print('example estimate: $estimate');
                     setState(() {
+                      // If you want to get this as a double, you can also call estimate.co2
                       curEst = estimate.toString();
                     });
                   } else {
@@ -233,8 +244,8 @@ class _EntryViewState extends State<EntryView>{
           default:
             return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
         }
-      case EmissionCategory.food: 
-        return FoodEmissions(money: amount, moneyUnit: moneyUnit, foodType: subtype);
+      case EmissionCategory.electricalWaste: 
+        return ElectricalWasteEmissions(weight: amount, weightUnit: weightUnit, electricalWasteType: subtype);
       // Add other category cases for emission estimation here
       default:
         return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
@@ -306,7 +317,7 @@ class _EntryViewState extends State<EntryView>{
     setState(() {
       subtypeDropdownMenuEntries = subtypeMap.entries
           .map((e) => DropdownMenuEntry<String>(
-                value: e.value,
+                value: e.key,
                 label: e.key,
               ))
           .toList();
