@@ -127,14 +127,14 @@ class EmissionChecker {
       MoneyEmissionFactor moneyFactor => 
         {
           'money': moneyFactor.money,
-          'money_unit': moneyFactor.moneyUnit.toString()
+          'money_unit': moneyFactor.moneyUnit.name
         },
 
       // Case: a Weight Emission Factor (food waste or general waste)
       WeightEmissionFactor weightFactor => 
         {
           'weight': weightFactor.weight,
-          'weight_unit': weightFactor.weightUnit.toString()
+          'weight_unit': weightFactor.weightUnit.name
         },
         
       // Case: type TravelEmissions
@@ -143,13 +143,13 @@ class EmissionChecker {
           // don't use passengers parameter if it's null
           null => {
                     'distance': travelEmission.distance,
-                    'distance_unit': travelEmission.distanceUnit.toString()
+                    'distance_unit': travelEmission.distanceUnit.name
                   },
           // if passengers has a value, use that value
           _ =>  {
                   'passengers': travelEmission.passengers,
                   'distance': travelEmission.distance,
-                  'distance_unit': travelEmission.distanceUnit.toString()
+                  'distance_unit': travelEmission.distanceUnit.name
                 },
         },
 
@@ -159,12 +159,12 @@ class EmissionChecker {
           // if money is null, this clothing calculates emissions based on weight instead
           null => {
                     'weight': clothingEmission.weight,
-                    'weight_unit': clothingEmission.weightUnit.toString()
+                    'weight_unit': clothingEmission.weightUnit?.name
                   },
           // if money has a value, use it
           _ =>  {
                   'money': clothingEmission.money,
-                  'money_unit': clothingEmission.moneyUnit.toString()
+                  'money_unit': clothingEmission.moneyUnit?.name
                 },
         },
 

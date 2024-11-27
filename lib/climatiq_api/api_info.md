@@ -5,20 +5,64 @@ Steps for making a call to the API:
 3. get an EmissionEstimate by calling the EmissionsChecker and passing it the EmissionFactor
 
 The following code will make a call to the API and print the results to the debug console:
-```
-EmissionChecker checker = EmissionsChecker();
-TravelEmissions busExample = TravelEmissions.bus(distance: 10, distanceUnit: "km", passengerAmt: PassengerAmount.full);
-EmissionEstimate? exampleEstimate = await checker.getEmissions(busExample);
-if (exampleEstimate != null) {
-  print('example estimate: $exampleEstimate');
+
+```dart
+// Create an Emission Checker
+EmissionChecker checker = EmissionChecker();
+
+// Create an Emission Factor
+TravelEmissions intlFlight = TravelEmissions.flight(
+  distance: 3000, 
+  distanceUnit: DistanceUnit.km, 
+  size: VehicleSize.medium, 
+  passengerAmt: PassengerAmount.almostFull, 
+  isDomestic: false
+);
+
+// Pass the Emission Factor to the Emission Checker. Returns the value as an Emission Estimate.
+EmissionEstimate? singleExampleEstimate = await checker.getEmissions(intlFlight);
+
+// Print results to console.
+if (singleExampleEstimate != null) {
+  print('Category: ${intlFlight.category}. Type: ${intlFlight.travelType}. Estimate: $singleExampleEstimate');
 } else {
   print('failed');
 }
 ```
+
 Notes: 
  - The EmissionEstimate will be null if the call to the API fails. 
  - Getting an EmissionEstimate requires you to await a response from the API. Any time you call the API it has to be in an async method
  - This process will likely change slightly once we start using a provider for API calls
+
+Here's an example where all of the emission types are called:
+```dart
+EmissionChecker checker = EmissionChecker();
+
+final List<EmissionFactor> testFactors = <EmissionFactor>[
+  ClothingEmissions.footwear(money: 100, moneyUnit: MoneyUnit.usd),
+  ElectricalWasteEmissions(weight: 30, weightUnit: WeightUnit.lb, electricalWasteType: 'Batteries: Recycled'),
+  // This does the same thing as the other Electrical Waste Emissions, but without having to know the exact key for electricalWasteType
+  ElectricalWasteEmissions(weight: 30, weightUnit: WeightUnit.lb, electricalWasteType: List.from(EmissionSubtypes().electricalWasteTypes.keys)[0]),
+  EnergyEmissions.electricity(energy: EnergyAmount.average),
+  FoodEmissions(money: 380.25, moneyUnit: MoneyUnit.nok, foodType: List.from(EmissionSubtypes().foodTypes.keys)[2]),
+  FoodWasteEmissions(weight: 52, weightUnit: WeightUnit.g, foodWasteType: List.from(EmissionSubtypes().foodWasteTypes.keys)[1]),
+  FurnitureEmissions(money: 1400, moneyUnit: MoneyUnit.gtq, furnitureType: List.from(EmissionSubtypes().furnitureTypes.keys)[5]),
+  GeneralWasteEmissions(weight: 5, weightUnit: WeightUnit.kg, wasteType: List.from(EmissionSubtypes().generalWasteTypes.keys)[3]),
+  PersonalCareEmissions(money: 122.99, moneyUnit: MoneyUnit.cad, personalCareType: List.from(EmissionSubtypes().personalCareTypes.keys)[4]),
+  TravelEmissions.bus(distance: 10, distanceUnit: DistanceUnit.km, passengerAmt: PassengerAmount.full),
+];
+
+for (EmissionFactor factor in testFactors) {
+  EmissionEstimate? exampleEstimate = await checker.getEmissions(factor);
+  if (exampleEstimate != null) {
+    print('Category: ${factor.category}. Estimate: $exampleEstimate');
+  } else {
+    print('failed');
+  }
+  
+}
+```
 
 
 # API INFO
