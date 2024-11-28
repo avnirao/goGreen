@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:go_green/models/activity_history.dart';
 import 'package:go_green/models/recycling_center_db.dart';
+import 'package:go_green/providers/activity_provider.dart';
+import 'package:go_green/views/activity_log_view.dart';
 import 'package:go_green/views/home_page.dart';
 import 'package:provider/provider.dart';
 import 'providers/position_provider.dart';
@@ -24,6 +27,7 @@ void main() {
         providers: [
           // Provide PositionProvider and WeatherProvider
           ChangeNotifierProvider(create: (_) => PositionProvider()),
+          ChangeNotifierProvider(create: (_) => ActivityProvider())
         ],
         child: MyApp(recyclingCenters: value),
       ),
@@ -51,7 +55,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(),
         '/location': (context) => MapView(positionProvider: PositionProvider(), recyclingCenters: recyclingCenters), // Register route for MapView
-        //'/history': (context) => , // Register route for History Page
+        '/history': (context) => ActivityLogView(), // Register route for History Page
       }, // Set HomePage as the home screen
     );
   }

@@ -6,9 +6,12 @@ class ActivityHistory {
 
   ActivityHistory() : _entries = [];
 
-  List<Entry> get entries => List.unmodifiable(_entries);
+  List<Entry> get entries => _entries;
 
-  ActivityHistory._internal({required List<Entry> entries}) : _entries = List<Entry>.from(entries);
+  double get totalCo2 => _entries.fold(0.0, (sum, entry) => sum + entry.co2);
+
+  ActivityHistory._internal({required List<Entry> entries}) 
+  : _entries = List<Entry>.from(entries);
 
   // gets a clone of ActivityHistory
   ActivityHistory clone() {

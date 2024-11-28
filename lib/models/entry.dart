@@ -1,4 +1,4 @@
-import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_data/emission_data_enums.dart';
 
 /// Class to represent an emissions entry
 class Entry {
@@ -21,8 +21,12 @@ class Entry {
   final DateTime emissionsDate;
 
   /// the types of emissions for this entry
-  final EmissionFactor emissionType;
+  final EmissionCategory category;
 
+  /// the subtype of this entry
+  final String subtype;
+
+  /// co2 emission for this entry
   final double co2;
 
   /// Constructs an Entry using all fields
@@ -32,13 +36,14 @@ class Entry {
     required this.updatedAt,
     required this.createdAt,
     required this.emissionsDate,
-    required this.emissionType,
-    this.co2 = -1
+    required this.category,
+    required this.subtype,
+    this.co2 = 0
   });
 
   /// Constructs a new entry given a list of emission types.
   /// Optionally pass in notes for the day and a date. If no date is passed, sets the date to now.
-  factory Entry.fromEmissions({required EmissionFactor emissionType, notes = '', emissionsDate}) {
+  factory Entry.fromEmissions({required EmissionCategory category, notes = '', emissionsDate}) {
     final when = DateTime.now();
     return Entry (
       id: SequentialIDMaker.nextID(),
@@ -47,7 +52,8 @@ class Entry {
       createdAt: when,
       // sets the date for this entry to the given date, or DateTime.now if it's not provided
       emissionsDate: emissionsDate ?? when,
-      emissionType: emissionType
+      category: category,
+      subtype: 'Leather'
     );
   }
 
