@@ -29,11 +29,20 @@ Avni: Working with Flutter was a game-changer for me. It’s an intuitive framew
 
 Another critical takeaway was learning how to problem-solve independently. Early on, I leaned heavily on office hours, but I grew to understand the value of going online to research and troubleshoot issues first. Developing this problem-solving mindset has been empowering and will serve me well in future technical challenges.
 
+Mason:
+
+Michael:
+
 **If you could go back and give yourself 2-3 pieces of advice at the beginning of the class, what would you say and why? (Alternatively: what 2-3 pieces of advice would you give to future students who take CSE 340 and why?)**
 
 **Advice to My Past Self**  
+Avni: 
 - Don’t hesitate to ask for help or input from peers, instructors, or TAs. Receiving feedback is crucial, whether it’s for improving your code, refining your designs, or brainstorming new ideas. Collaboration is one of the best ways to grow.
   
 - Starting early allows you to experiment with new ideas and features, rather than rushing to meet deadlines. This extra time leads to more creative and polished applications.
   
 - While researching solutions online is a critical skill, don’t be afraid to reach out when you're stuck. Finding the right balance between independent problem-solving and seeking help can save time and deepen your understanding.
+
+Mason:
+
+Michael:
