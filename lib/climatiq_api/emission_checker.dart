@@ -13,7 +13,6 @@ import 'package:http/http.dart' as http;
 class EmissionChecker {
   /// The client that will call the web service
   final http.Client client;
-  // TODO: Encrypt API key
   static const String _apiKey = 'R58VCG52QD6GF27J7DFZR19BQM';
 
   /// Constructs an Emissions Checker.

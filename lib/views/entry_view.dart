@@ -268,7 +268,6 @@ class _EntryViewState extends State<EntryView>{
                 onPressed: () async {
                   EmissionEstimate? estimate = await checker.getEmissions(_estimateEmission());
                   if (estimate != null) {
-                    print('example estimate: $estimate');
                     setState(() {
                       curEst = estimate.toString();
                       co2 = estimate.co2;
@@ -277,7 +276,6 @@ class _EntryViewState extends State<EntryView>{
                     setState(() {
                       curEst = 'failed';
                     });
-                    print('failed');
                   }
                 },
                 child: const Padding(
