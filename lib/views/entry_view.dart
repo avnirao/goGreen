@@ -96,246 +96,277 @@ class _EntryViewState extends State<EntryView>{
             children: [
               Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
               SizedBox(width: 8),
-              Text('Go Green! Track your emissions here!', style: TextStyle(color: Color(0xFF386641)),),
+              Text('Emission Tracker', style: TextStyle(color: Color(0xFF386641)),),
             ],
             
           ),
         ),
         body:
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 30,),
-              // first row of the page, two drop down menus and one date selector
-              Row(
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10), 
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Dropdown for category selection
-                  SizedBox(
-                    width: 150, // Set uniform width for dropdown and button
-                    child: DropdownMenu<EmissionCategory>(
-                      initialSelection: category,
-                      dropdownMenuEntries: dropdownMenuEntries,
-                      onSelected: (EmissionCategory? value) {
-                        setState(() {
-                          category = value ?? EmissionCategory.clothing;
-                        });
-                        _updateSubtypeDropdown(value ?? EmissionCategory.clothing);
-                      },
-                      inputDecorationTheme: InputDecorationTheme(
-                        filled: true,
-                        fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                          borderSide: BorderSide.none, // Remove border
-                        ),
-                      ),
-                      menuStyle: MenuStyle(
-                        backgroundColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 224, 214, 186)), // Menu background color
-                        elevation: WidgetStateProperty.all<double>(5.0), // Elevation for shadow
-                        padding: WidgetStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Dropdown for subtype selection
-                  SizedBox(
-                    width: 200, // Set uniform width for dropdown and button
-                    child: DropdownMenu<String>(
-                      initialSelection: subtype,
-                      dropdownMenuEntries: subtypeDropdownMenuEntries,
-                      onSelected: (String? value) {
-                        setState(() {
-                          subtype = value ?? 'Leather';
-                        });
-                      },
-                      inputDecorationTheme: InputDecorationTheme(
-                        filled: true,
-                        fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                          borderSide: BorderSide.none, // Remove border
-                        ),
-                      ),
-                      menuStyle: MenuStyle(
-                        backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFFF2E8CF)), // Menu background color
-                        elevation: WidgetStateProperty.all<double>(5.0), // Elevation for shadow
-                        padding: WidgetStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Date selector button
-                  SizedBox(
-                    width: 150, // Set uniform width for dropdown and button
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
-                        foregroundColor: const Color(0xFF386641), // Text color
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0), // Rounded corners matching dropdown
-                        ),
-                      ),
-                      onPressed: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: emissionsDate,
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime.now(),
-                          builder: (BuildContext context, Widget? child) {
-                            return Theme(
-                              data: ThemeData.light().copyWith(
-                                primaryColor: const Color(0xFF6A994E), // Header background color (e.g., calendar title)
-                                colorScheme: const ColorScheme.light(
-                                  primary: Color(0xFF6A994E), // Color for selected date and confirm button
-                                  onPrimary: Color(0xFFF2E8CF), // Text color on the confirm button
-                                  surface: Color(0xFFF2E8CF), // Background color of the calendar
-                                  onSurface: Color(0xFF386641), // Color for the date text
+                  // first row of the page, two drop down menus and one date selector
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Dropdown for category selection
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Category:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 200), // Set uniform width for dropdown and button
+                              child: DropdownMenu<EmissionCategory>(
+                                initialSelection: category,
+                                dropdownMenuEntries: dropdownMenuEntries,
+                                onSelected: (EmissionCategory? value) {
+                                  setState(() {
+                                    category = value ?? EmissionCategory.clothing;
+                                  });
+                                  _updateSubtypeDropdown(value ?? EmissionCategory.clothing);
+                                },
+                                inputDecorationTheme: InputDecorationTheme(
+                                  filled: true,
+                                  fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                                    borderSide: BorderSide.none, // Remove border
+                                  ),
                                 ),
-                                dialogBackgroundColor: const Color(0xFFF2E8CF), // Background color of the date picker dialog
+                                menuStyle: MenuStyle(
+                                  backgroundColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 224, 214, 186)), // Menu background color
+                                  elevation: WidgetStateProperty.all<double>(5.0), // Elevation for shadow
+                                  padding: WidgetStateProperty.all<EdgeInsets>(
+                                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                  ),
+                                ),
                               ),
-                              child: child!,
-                            );
-                          },
-                        );
-                        if (pickedDate != null && pickedDate != emissionsDate) {
-                          setState(() {
-                            emissionsDate = pickedDate;
-                          });
-                        }
-                      },
-                      child: Text(
-                        'Choose Date: ${DateFormat.yMd().format(emissionsDate)}',
-                        style: const TextStyle(
-                          color: Colors.black, // Font color for added emphasis
+                            ),
+                          ],
                         ),
+                      ),
+                      const SizedBox(width: 10),
+                      // Dropdown for subtype selection
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Type:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 200), // Set uniform width for dropdown and button
+                              child: DropdownMenu<String>(
+                                initialSelection: subtype,
+                                dropdownMenuEntries: subtypeDropdownMenuEntries,
+                                onSelected: (String? value) {
+                                  setState(() {
+                                    subtype = value ?? 'Leather';
+                                  });
+                                },
+                                inputDecorationTheme: InputDecorationTheme(
+                                  filled: true,
+                                  fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                                    borderSide: BorderSide.none, // Remove border
+                                  ),
+                                ),
+                                menuStyle: MenuStyle(
+                                  backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFFF2E8CF)), // Menu background color
+                                  elevation: WidgetStateProperty.all<double>(5.0), // Elevation for shadow
+                                  padding: WidgetStateProperty.all<EdgeInsets>(
+                                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+              
+                  // Dropdown for category selection
+                  
+                  const SizedBox(height: 20),
+                  // selections for differenct categories
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 10),
+                      if (category == EmissionCategory.clothing)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (subtype == 'Used Clothing')
+                              _buildWeightInputSection()
+                            else
+                              _buildMoneyInputSection(),
+                          ],
+                        )
+                      else if (category == EmissionCategory.electricalWaste)
+                        _buildWeightInputSection()
+                      else if (category == EmissionCategory.energy)
+                        _buildEnergyInputSection()
+                      else if (category == EmissionCategory.food)
+                        _buildMoneyInputSection()
+                      else if (category == EmissionCategory.foodWaste)
+                        _buildWeightInputSection()
+                      else if (category == EmissionCategory.furniture)
+                        _buildMoneyInputSection()
+                      else if (category == EmissionCategory.generalWaste)
+                        _buildWeightInputSection()
+                      else if (category == EmissionCategory.personalCareAndAccessories)
+                        _buildMoneyInputSection()
+                      else if (category == EmissionCategory.travel)
+                        _buildTravelInputSection(subtype),
+                    ],
+                  ),
+
+                  const SizedBox(height: 30),
+                  
+                  // Date selector button
+                  Row(
+                    children: [
+                      const Text('Select Date:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+                      const SizedBox(width: 10,),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(minWidth: 100), // Set uniform width for dropdown and button
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
+                            foregroundColor: const Color(0xFF386641), // Text color
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0), // Rounded corners matching dropdown
+                            ),
+                          ),
+                          onPressed: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: emissionsDate,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                              builder: (BuildContext context, Widget? child) {
+                                return Theme(
+                                  data: ThemeData.light().copyWith(
+                                    primaryColor: const Color(0xFF6A994E), // Header background color (e.g., calendar title)
+                                    colorScheme: const ColorScheme.light(
+                                      primary: Color(0xFF6A994E), // Color for selected date and confirm button
+                                      onPrimary: Color(0xFFF2E8CF), // Text color on the confirm button
+                                      surface: Color(0xFFF2E8CF), // Background color of the calendar
+                                      onSurface: Color(0xFF386641), // Color for the date text
+                                    ),
+                                    dialogBackgroundColor: const Color(0xFFF2E8CF), // Background color of the date picker dialog
+                                  ),
+                                  child: child!,
+                                );
+                              },
+                            );
+                            if (pickedDate != null && pickedDate != emissionsDate) {
+                              setState(() {
+                                emissionsDate = pickedDate;
+                              });
+                            }
+                          },
+                          child: Text(
+                            DateFormat.yMd().format(emissionsDate),
+                            style: const TextStyle(
+                              color: Colors.black, // Font color for added emphasis
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+              
+                  const SizedBox(height: 30),
+              
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
+                      foregroundColor: const Color(0xFF386641), // Text color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                      ),
+                    ),
+                    onPressed: () async {
+                      EmissionEstimate? estimate = await checker.getEmissions(_estimateEmission());
+                      if (estimate != null) {
+                        setState(() {
+                          curEst = estimate.toString();
+                          co2 = estimate.co2;
+                        });
+                      } else {
+                        setState(() {
+                          curEst = 'failed';
+                        });
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0), // Padding for better appearance
+                      child: Text(
+                        'Estimate Emission',
+                        style: TextStyle(fontSize: 24),
                       ),
                     ),
                   ),
-                ],
-              ),
-
-              // Dropdown for category selection
+                
+                const SizedBox(height: 70),
               
-              const SizedBox(height: 20),
-              // selections for differenct categories
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 10),
-                  if (category == EmissionCategory.clothing)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (subtype == 'Used Clothing')
-                          _buildWeightInputSection()
-                        else
-                          _buildMoneyInputSection(),
-                      ],
-                    )
-                  else if (category == EmissionCategory.electricalWaste)
-                    _buildWeightInputSection()
-                  else if (category == EmissionCategory.energy)
-                    _buildEnergyInputSection()
-                  else if (category == EmissionCategory.food)
-                    _buildMoneyInputSection()
-                  else if (category == EmissionCategory.foodWaste)
-                    _buildWeightInputSection()
-                  else if (category == EmissionCategory.furniture)
-                    _buildMoneyInputSection()
-                  else if (category == EmissionCategory.generalWaste)
-                    _buildWeightInputSection()
-                  else if (category == EmissionCategory.personalCareAndAccessories)
-                    _buildMoneyInputSection()
-                  else if (category == EmissionCategory.travel)
-                    _buildTravelInputSection(subtype),
+                // Box to Display Estimated Emission
+                Container(
+                  padding: const EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 224, 214, 186), // Background color
+                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                    border: Border.all(
+                      color: const Color(0xFF386641),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Text(
+                    'Estimate: $curEst',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              
+                const SizedBox(height: 40),
+              
+                // Save Button
+                SizedBox(
+                  width: 400,
+                  height: 100,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
+                      foregroundColor: const Color(0xFF386641), // Text color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                      ),
+                    ),
+                    onPressed: () {
+                      _popback(context);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0), // Padding for better appearance
+                      child: Text(
+                        'Save',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                    ),
+                  ),
+                ),
                 ],
               ),
-
-              const SizedBox(height: 70),
-
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
-                  foregroundColor: const Color(0xFF386641), // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                  ),
-                ),
-                onPressed: () async {
-                  EmissionEstimate? estimate = await checker.getEmissions(_estimateEmission());
-                  if (estimate != null) {
-                    setState(() {
-                      curEst = estimate.toString();
-                      co2 = estimate.co2;
-                    });
-                  } else {
-                    setState(() {
-                      curEst = 'failed';
-                    });
-                  }
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0), // Padding for better appearance
-                  child: Text(
-                    'Estimate Emission',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ),
-              ),
-            
-            const SizedBox(height: 70),
-
-            // Box to Display Estimated Emission
-            Container(
-              padding: const EdgeInsets.all(15.0),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 224, 214, 186), // Background color
-                borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                border: Border.all(
-                  color: const Color(0xFF386641),
-                  width: 1.5,
-                ),
-              ),
-              child: Text(
-                'Estimate: $curEst',
-                style: const TextStyle(
-                  fontSize: 32,
-                  color: Colors.black,
-                ),
-              ),
             ),
-
-            const SizedBox(height: 40),
-
-            // Save Button
-            SizedBox(
-              width: 400,
-              height: 100,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
-                  foregroundColor: const Color(0xFF386641), // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                  ),
-                ),
-                onPressed: () {
-                  _popback(context);
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0), // Padding for better appearance
-                  child: Text(
-                    'Save',
-                    style: TextStyle(fontSize: 32),
-                  ),
-                ),
-              ),
-            ),
-            ],
           ),
         ),
     );
@@ -368,17 +399,17 @@ class _EntryViewState extends State<EntryView>{
           case 'Natural Gas':
             return EnergyEmissions.naturalGas(volume: energyAmount);
         }
-      case 'food':
+      case EmissionCategory.food:
         FoodEmissions(foodType: subtype, money: amount, moneyUnit: moneyUnit);
-      case 'foodWaste':
+      case EmissionCategory.foodWaste:
         FoodWasteEmissions(foodWasteType: subtype, weight: amount, weightUnit: weightUnit);
-      case 'furniture':
+      case EmissionCategory.furniture:
         FurnitureEmissions(furnitureType: subtype, money: amount, moneyUnit: moneyUnit);
-      case 'generalWaste':
+      case EmissionCategory.generalWaste:
         GeneralWasteEmissions(wasteType: subtype, weight: amount, weightUnit: weightUnit);
-      case 'personalCareAndAccessories':
+      case EmissionCategory.personalCareAndAccessories:
         PersonalCareEmissions(money: amount, moneyUnit: moneyUnit, personalCareType: subtype);
-      case 'Travel':
+      case EmissionCategory.travel:
         switch(subtype){
           case 'Gas Car':
             TravelEmissions.gasCar(distance: amount, distanceUnit: distanceUnit, passengers: passengers);
@@ -406,7 +437,8 @@ class _EntryViewState extends State<EntryView>{
 
       // Add other category cases for emission estimation here
       default:
-        return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
+        // return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
+        throw StateError('Unsupported category or subtype: $category, $subtype');
     }
     throw StateError('Unsupported category or subtype: $category, $subtype');
   }
@@ -558,115 +590,137 @@ class _EntryViewState extends State<EntryView>{
 
   // Money Input Section
   Widget _buildMoneyInputSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Money input field
-          SizedBox(
-            width: 200, 
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: 'Money',
-                filled: true,
-                fillColor: const Color.fromARGB(255, 234, 224, 198),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                  borderSide: BorderSide.none,
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Money input field
+              const Text('Amount Spent:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 200), 
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Enter Amount...',
+                    filled: true,
+                    fillColor: const Color.fromARGB(255, 234, 224, 198),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      amount = double.tryParse(value) ?? 0;
+                    });
+                  },
                 ),
               ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  amount = double.tryParse(value) ?? 0;
-                });
-              },
-            ),
+            ]
           ),
-          const SizedBox(height: 70), // Increased spacing between fields
-          // Money Unit Dropdown
-          SizedBox(
-            width: 200,
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-              ),
-              child: DropdownButtonFormField<MoneyUnit>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                    borderSide: BorderSide.none,
+        ),
+        const SizedBox(width: 10,),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // const SizedBox(height: 70), // Increased spacing between fields
+              // Money Unit Dropdown
+              const Text('Currency:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 200), 
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+                  ),
+                  child: DropdownButtonFormField<MoneyUnit>(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    hint: const Text('Money Unit'),
+                    value: moneyUnit,
+                    onChanged: (MoneyUnit? value) {
+                      setState(() {
+                        moneyUnit = value ?? moneyUnit;
+                      });
+                    },
+                    items: MoneyUnit.values
+                        .map((unit) => DropdownMenuItem<MoneyUnit>(
+                              value: unit,
+                              child: Text(
+                                unit.name.toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.black, // Set text color for dropdown items
+                                ),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
-                hint: const Text('Money Unit'),
-                value: moneyUnit,
-                onChanged: (MoneyUnit? value) {
-                  setState(() {
-                    moneyUnit = value ?? moneyUnit;
-                  });
-                },
-                items: MoneyUnit.values
-                    .map((unit) => DropdownMenuItem<MoneyUnit>(
-                          value: unit,
-                          child: Text(
-                            unit.toString().split('.').last,
-                            style: const TextStyle(
-                              color: Colors.black, // Set text color for dropdown items
-                            ),
-                          ),
-                        ))
-                    .toList(),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   // Energy Input Section
   Widget _buildEnergyInputSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
-      child: SizedBox(
-        width: 200,
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-          ),
-          child: DropdownButtonFormField<EnergyAmount>(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                borderSide: BorderSide.none,
-              ),
-            ),
-            hint: const Text('Energy used'),
-            value: energyAmount,
-            onChanged: (EnergyAmount? value) {
-              setState(() {
-                energyAmount = value!;
-              });
-            },
-            items: EnergyAmount.values
-                .map((unit) => DropdownMenuItem<EnergyAmount>(
-                      value: unit,
-                      child: Text(
-                        unit.toString().split('.').last,
-                        style: const TextStyle(
-                          color: Colors.black, // Set text color for dropdown items
-                        ),
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('How much energy did you use?', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 200),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+                  ),
+                  child: DropdownButtonFormField<EnergyAmount>(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                        borderSide: BorderSide.none,
                       ),
-                    ))
-                .toList(),
+                    ),
+                    hint: const Text('Energy used'),
+                    value: energyAmount,
+                    onChanged: (EnergyAmount? value) {
+                      setState(() {
+                        energyAmount = value!;
+                      });
+                    },
+                    items: EnergyAmount.values
+                        .map((unit) => DropdownMenuItem<EnergyAmount>(
+                              value: unit,
+                              child: Text(
+                                unit.toString(),
+                                style: const TextStyle(
+                                  color: Colors.black, // Set text color for dropdown items
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-      ),
+      ],
     );
   }
 

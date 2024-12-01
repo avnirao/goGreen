@@ -11,7 +11,7 @@ enum EmissionCategory{
     String result = super.toString();
     if (result.isEmpty) return result;
 
-    // get rid of the 'Instrument.' at the beginning of the string
+    // get rid of the enum type at the beginning of the string
     final int startIndex = result.indexOf('.') + 1;
     result = result.substring(startIndex);
 
