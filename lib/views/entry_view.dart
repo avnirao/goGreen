@@ -101,7 +101,7 @@ class _EntryViewState extends State<EntryView>{
             children: [
               Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
               SizedBox(width: 8),
-              Text('Go Green!\nTrack your emissions here!', style: TextStyle(color: Color(0xFF386641)),),
+              Text('GoGreen\nTrack your emissions here', style: TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),),
             ],
           ),
         ),
