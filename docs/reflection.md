@@ -1,5 +1,12 @@
 **Identify which of the course topics you applied (e.g. secure data persistence) and describe how you applied them.**  
-In addition to the list of topics enumerated above, you must also describe how your app design reflects what you learned about the Properties of People - Mason
+- *Stateless & Stateful widgets:* We used stateless and stateful widgets throughout the app. Stateful widgets were used for the main pages of the app since they have a lot of components that are consistently being modified. Stateless widgets are used to make up the components of each of the pages such as text, icons, lists, etc.
+
+- *Accessing sensors (GPS):* We get the user's current GPS location to display their position on a map and show them which second hand stores/recycling centers are close to them. We used the geolocator package for this.
+
+- *Querying web services:* We used the Climatiq API to calculate the user's carbon emissions based on the activities they input. We also used geolocator and flutter maps to display the user's current position on a map. 
+
+- *Data Persistence:* We used Isar to implement data persistence into our app. This allows the user's data to be saved when they close/exit the app. 
+
 
 **Discuss how doing this project challenged and/or deepened your understanding of these topics.**  
 - Michael
@@ -29,7 +36,7 @@ Avni: Working with Flutter was a game-changer for me. It’s an intuitive framew
 
 Another critical takeaway was learning how to problem-solve independently. Early on, I leaned heavily on office hours, but I grew to understand the value of going online to research and troubleshoot issues first. Developing this problem-solving mindset has been empowering and will serve me well in future technical challenges.
 
-Mason:
+Mason: I learned a lot about how the structure of implementing an app. The model-view-controller structure was very helpful for figuring out both where different pieces of the app should go, and it also made it a lot easier to figure out where things were going wrong while I was debugging. Even if this structure looks a bit different in other programming languages and frameworks, I think the concept of it will help me with figuring out how to make the piece of my future projects fit together.
 
 Michael:
 
@@ -44,5 +51,8 @@ Avni:
 - While researching solutions online is a critical skill, don’t be afraid to reach out when you're stuck. Finding the right balance between independent problem-solving and seeking help can save time and deepen your understanding.
 
 Mason:
+- Test your apps on your physical phone early, especially on Android. I ran into a lot of issues with Android and had to change gradle settings for almost every project which either required going to office hours or doing research to figure out how to solve those bugs. This is a lot more stressful when you put it off until the last day a project is due.
+
+- Try to add extra features to your apps/do the extension problems when you can, because it will make the future assignments easier. However, also be aware that you only have a week for most of these assignments. I made my journal app way too complicated and was unable to even start working on Isar before the initial deadline because of that.
 
 Michael:
