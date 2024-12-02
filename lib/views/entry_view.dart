@@ -31,8 +31,11 @@ class EntryView extends StatefulWidget{
 class _EntryViewState extends State<EntryView>{
 
   List<DropdownMenuEntry<EmissionCategory>> dropdownMenuEntries = EmissionCategory.values.map((category) {
-    return DropdownMenuEntry<EmissionCategory>(value: category, label: category.toString(), );
+    return DropdownMenuEntry<EmissionCategory>(value: category, label: category.toString(), 
+    style: const ButtonStyle(foregroundColor: WidgetStatePropertyAll(Color(0xFF386641)), 
+    textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 14))));
   }).toList();
+
 
   List<DropdownMenuEntry<String>> subtypeDropdownMenuEntries = [];
 
@@ -48,21 +51,21 @@ class _EntryViewState extends State<EntryView>{
   EmissionChecker checker = EmissionChecker();
 
   // for clothing
-  double amount = 0;
-  MoneyUnit moneyUnit = MoneyUnit.usd;
-  WeightUnit weightUnit = WeightUnit.kg;
+  double? amount;
+  MoneyUnit? moneyUnit;
+  WeightUnit? weightUnit;
   String curEst = 'N/A';
 
   // for electrical waste
 
   // for energy
-  EnergyAmount energyAmount = EnergyAmount.average;
+  EnergyAmount? energyAmount;
 
   // for travel
-  DistanceUnit distanceUnit = DistanceUnit.km;
-  int passengers = 0;
-  PassengerAmount passengerAmount = PassengerAmount.average;
-  VehicleSize size = VehicleSize.medium;
+  DistanceUnit? distanceUnit;
+  int? passengers;
+  PassengerAmount? passengerAmount;
+  VehicleSize? size;
   bool isDomestic = true;
 
   @override
@@ -96,16 +99,15 @@ class _EntryViewState extends State<EntryView>{
             children: [
               Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
               SizedBox(width: 8),
-              Text('Go Green! Track your emissions here!', style: TextStyle(color: Color(0xFF386641)),),
+              Text('Go Green!\nTrack your emissions here!', style: TextStyle(color: Color(0xFF386641)),),
             ],
-            
           ),
         ),
         body:
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 30,),
+              const SizedBox(height: 10,),
               // first row of the page, two drop down menus and one date selector
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,7 +115,7 @@ class _EntryViewState extends State<EntryView>{
                 children: [
                   // Dropdown for category selection
                   SizedBox(
-                    width: 150, // Set uniform width for dropdown and button
+                    width: 170, // Set uniform width for dropdown and button
                     child: DropdownMenu<EmissionCategory>(
                       initialSelection: category,
                       dropdownMenuEntries: dropdownMenuEntries,
@@ -123,6 +125,7 @@ class _EntryViewState extends State<EntryView>{
                         });
                         _updateSubtypeDropdown(value ?? EmissionCategory.clothing);
                       },
+                      textStyle: const TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
                       inputDecorationTheme: InputDecorationTheme(
                         filled: true,
                         fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
@@ -142,7 +145,7 @@ class _EntryViewState extends State<EntryView>{
                   ),
                   // Dropdown for subtype selection
                   SizedBox(
-                    width: 200, // Set uniform width for dropdown and button
+                    width: 170, // Set uniform width for dropdown and button
                     child: DropdownMenu<String>(
                       initialSelection: subtype,
                       dropdownMenuEntries: subtypeDropdownMenuEntries,
@@ -151,6 +154,7 @@ class _EntryViewState extends State<EntryView>{
                           subtype = value ?? 'Leather';
                         });
                       },
+                      textStyle: const TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
                       inputDecorationTheme: InputDecorationTheme(
                         filled: true,
                         fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
@@ -168,7 +172,11 @@ class _EntryViewState extends State<EntryView>{
                       ),
                     ),
                   ),
-                  // Date selector button
+                ],
+              ),
+
+              const SizedBox(height: 10),
+              // Date selector button
                   SizedBox(
                     width: 150, // Set uniform width for dropdown and button
                     child: ElevatedButton(
@@ -210,22 +218,19 @@ class _EntryViewState extends State<EntryView>{
                       child: Text(
                         'Choose Date: ${DateFormat.yMd().format(emissionsDate)}',
                         style: const TextStyle(
-                          color: Colors.black, // Font color for added emphasis
+                          color: Color(0xFF386641),
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
 
-              // Dropdown for category selection
               
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               // selections for differenct categories
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 10),
                   if (category == EmissionCategory.clothing)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -255,41 +260,71 @@ class _EntryViewState extends State<EntryView>{
                 ],
               ),
 
-              const SizedBox(height: 70),
-
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
-                  foregroundColor: const Color(0xFF386641), // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
+              
+              // notes field
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Notes:', style: TextStyle(color: Color(0xFF386641), fontSize: 15),),
+                  SizedBox(
+                    width: 300,
+                    height: 100,
+                    child: TextFormField(
+                      maxLines: 10,
+                      initialValue: notes,
+                      onChanged: (value) { setState(() => notes = value); },
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(color: Colors.grey.shade800),
+                        filled: true,
+                        fillColor: const Color.fromARGB(52, 193, 185, 102),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                onPressed: () async {
-                  EmissionEstimate? estimate = await checker.getEmissions(_estimateEmission());
-                  if (estimate != null) {
-                    print('example estimate: $estimate');
-                    setState(() {
-                      curEst = estimate.toString();
-                      co2 = estimate.co2;
-                    });
-                  } else {
-                    setState(() {
-                      curEst = 'failed';
-                    });
-                    print('failed');
-                  }
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0), // Padding for better appearance
-                  child: Text(
-                    'Estimate Emission',
-                    style: TextStyle(fontSize: 24),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+
+              // estimate button
+              SizedBox(
+                width: 160,
+                height: 80,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
+                    foregroundColor: const Color(0xFF386641), // Text color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                    ),
+                  ),
+                  onPressed: () async {
+                    EmissionEstimate? estimate = await checker.getEmissions(_estimateEmission());
+                    if (estimate != null) {
+                      setState(() {
+                        curEst = estimate.toString();
+                        co2 = estimate.co2;
+                      });
+                    } else {
+                      setState(() {
+                        curEst = 'Please try again later';
+                      });
+                    }
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0), // Padding for better appearance
+                    child: Text(
+                      'Estimate\nEmission',
+                      style: TextStyle(fontSize: 19),
+                      semanticsLabel: 'Estimate\nEmission',
+                    ),
                   ),
                 ),
               ),
             
-            const SizedBox(height: 70),
+            const SizedBox(height: 20),
 
             // Box to Display Estimated Emission
             Container(
@@ -304,19 +339,20 @@ class _EntryViewState extends State<EntryView>{
               ),
               child: Text(
                 'Estimate: $curEst',
+                semanticsLabel: 'Estimate: $curEst',
                 style: const TextStyle(
-                  fontSize: 32,
+                  fontSize: 27,
                   color: Colors.black,
                 ),
               ),
             ),
-
-            const SizedBox(height: 40),
+            
+            const SizedBox(height: 20),
 
             // Save Button
             SizedBox(
-              width: 400,
-              height: 100,
+              width: 200,
+              height: 70,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
@@ -332,7 +368,8 @@ class _EntryViewState extends State<EntryView>{
                   padding: EdgeInsets.all(10.0), // Padding for better appearance
                   child: Text(
                     'Save',
-                    style: TextStyle(fontSize: 32),
+                    semanticsLabel: 'Save',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -351,64 +388,64 @@ class _EntryViewState extends State<EntryView>{
       case EmissionCategory.clothing:
         switch (subtype) {
           case 'Leather':
-            return ClothingEmissions.leather(money: amount, moneyUnit: moneyUnit);
+            return ClothingEmissions.leather(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
           case 'Footwear':
-            return ClothingEmissions.footwear(money: amount, moneyUnit: moneyUnit);
+            return ClothingEmissions.footwear(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
           case 'New Clothing':
-            return ClothingEmissions.newClothing(money: amount, moneyUnit: moneyUnit);
+            return ClothingEmissions.newClothing(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
           case 'Infant Clothing':
-            return ClothingEmissions.infantClothing(money: amount, moneyUnit: moneyUnit);
+            return ClothingEmissions.infantClothing(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
           case 'Used Clothing':
-            return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
+            return ClothingEmissions.usedClothing(weight: amount ?? 0, weightUnit: weightUnit ?? WeightUnit.kg);
         }
       case EmissionCategory.electricalWaste:
-        return ElectricalWasteEmissions(weight: amount, weightUnit: weightUnit, electricalWasteType: subtype);
+        return ElectricalWasteEmissions(weight: amount ?? 0, weightUnit: WeightUnit.kg, electricalWasteType: subtype);
       case EmissionCategory.energy:
         switch(subtype) {
           case 'Electricity':
-            return EnergyEmissions.electricity(energy: energyAmount);
+            return EnergyEmissions.electricity(energy: energyAmount ?? EnergyAmount.average);
           case 'Natural Gas':
-            return EnergyEmissions.naturalGas(volume: energyAmount);
+            return EnergyEmissions.naturalGas(volume: energyAmount ?? EnergyAmount.average);
         }
-      case 'food':
-        FoodEmissions(foodType: subtype, money: amount, moneyUnit: moneyUnit);
-      case 'foodWaste':
-        FoodWasteEmissions(foodWasteType: subtype, weight: amount, weightUnit: weightUnit);
-      case 'furniture':
-        FurnitureEmissions(furnitureType: subtype, money: amount, moneyUnit: moneyUnit);
-      case 'generalWaste':
-        GeneralWasteEmissions(wasteType: subtype, weight: amount, weightUnit: weightUnit);
-      case 'personalCareAndAccessories':
-        PersonalCareEmissions(money: amount, moneyUnit: moneyUnit, personalCareType: subtype);
-      case 'Travel':
+      case EmissionCategory.food:
+        FoodEmissions(foodType: subtype, money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
+      case EmissionCategory.foodWaste:
+        FoodWasteEmissions(foodWasteType: subtype, weight: amount ?? 0, weightUnit: weightUnit ?? WeightUnit.kg);
+      case EmissionCategory.furniture:
+        FurnitureEmissions(furnitureType: subtype, money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
+      case EmissionCategory.generalWaste:
+        GeneralWasteEmissions(wasteType: subtype, weight: amount ?? 0, weightUnit: weightUnit ?? WeightUnit.kg);
+      case EmissionCategory.personalCareAndAccessories:
+        PersonalCareEmissions(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd, personalCareType: subtype);
+      case EmissionCategory.travel:
         switch(subtype){
           case 'Gas Car':
-            TravelEmissions.gasCar(distance: amount, distanceUnit: distanceUnit, passengers: passengers);
+            TravelEmissions.gasCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengers: passengers);
           case 'Electric Car':
-            TravelEmissions.electricCar(distance: amount, distanceUnit: distanceUnit, passengers: passengers);
+            TravelEmissions.electricCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengers: passengers);
           case 'Hybrid Car':
-            TravelEmissions.hybridCar(distance: amount, distanceUnit: distanceUnit);
+            TravelEmissions.hybridCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km);
           case 'Bus':
-            TravelEmissions.bus(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
+            TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Light Rail/Tram':
-            TravelEmissions.lightRailTram(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
+            TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Train':
-            TravelEmissions.train(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
+            TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km , passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Ferry: On Foot':
-            TravelEmissions.ferry(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount, onFoot: true);
+            TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
           case 'Ferry: With a Car':
-            TravelEmissions.ferry(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount, onFoot: false);
+            TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
           case 'International Flight':
-            TravelEmissions.flight(distance: amount, distanceUnit: distanceUnit, size: size, 
-              passengerAmt: passengerAmount, isDomestic: false);
+            TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
+              passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: false);
           case 'Domestic Flight':
-            TravelEmissions.flight(distance: amount, distanceUnit: distanceUnit, size: size, 
-              passengerAmt: passengerAmount, isDomestic: true);
+            TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
+              passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: true);
         }
 
       // Add other category cases for emission estimation here
       default:
-        return ClothingEmissions.usedClothing(weight: amount, weightUnit: weightUnit);
+        return ClothingEmissions.leather(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
     }
     throw StateError('Unsupported category or subtype: $category, $subtype');
   }
@@ -480,6 +517,7 @@ class _EntryViewState extends State<EntryView>{
           .map((e) => DropdownMenuEntry<String>(
                 value: e.key,
                 label: e.key,
+                style: const ButtonStyle(foregroundColor: WidgetStatePropertyAll(Color(0xFF386641)))
               ))
           .toList();
       subtype = subtypeMap.entries.first.key;
@@ -487,19 +525,19 @@ class _EntryViewState extends State<EntryView>{
   }
 
   // Weight Input Section
-  // Weight Input Section
   Widget _buildWeightInputSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Weight input field
           SizedBox(
-            width: 200, // Set a uniform width
+            width: 140,
             child: TextField(
               decoration: InputDecoration(
                 labelText: 'Weight',
+                labelStyle: const TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold),
                 filled: true,
                 fillColor: const Color.fromARGB(255, 234, 224, 198),
                 border: OutlineInputBorder(
@@ -515,10 +553,10 @@ class _EntryViewState extends State<EntryView>{
               },
             ),
           ),
-          const SizedBox(height: 70), // Increased spacing between fields
+          const SizedBox(width: 20), // Increased spacing between fields
           // Weight Unit Dropdown
           SizedBox(
-            width: 200,
+            width: 144,
             child: Theme(
               data: Theme.of(context).copyWith(
                 canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
@@ -532,7 +570,7 @@ class _EntryViewState extends State<EntryView>{
                     borderSide: BorderSide.none,
                   ),
                 ),
-                hint: const Text('Weight Unit'),
+                hint: const Text('Weight Unit', style: TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold)),
                 value: weightUnit,
                 onChanged: (WeightUnit? value) {
                   setState(() {
@@ -545,7 +583,7 @@ class _EntryViewState extends State<EntryView>{
                           child: Text(
                             unit.toString().split('.').last,
                             style: const TextStyle(
-                              color: Colors.black, // Set text color for dropdown items
+                              color: Color(0xFF386641), // Set text color for dropdown items
                             ),
                           ),
                         ))
@@ -562,15 +600,16 @@ class _EntryViewState extends State<EntryView>{
   Widget _buildMoneyInputSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Money input field
           SizedBox(
-            width: 200, 
+            width: 140, 
             child: TextField(
               decoration: InputDecoration(
-                labelText: 'Money',
+                labelText: 'Enter amount',
+                labelStyle: const TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold),
                 filled: true,
                 fillColor: const Color.fromARGB(255, 234, 224, 198),
                 border: OutlineInputBorder(
@@ -586,10 +625,10 @@ class _EntryViewState extends State<EntryView>{
               },
             ),
           ),
-          const SizedBox(height: 70), // Increased spacing between fields
+          const SizedBox(width: 20), // Increased spacing between fields
           // Money Unit Dropdown
           SizedBox(
-            width: 200,
+            width: 180,
             child: Theme(
               data: Theme.of(context).copyWith(
                 canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
@@ -603,7 +642,7 @@ class _EntryViewState extends State<EntryView>{
                     borderSide: BorderSide.none,
                   ),
                 ),
-                hint: const Text('Money Unit'),
+                hint: const Text('Select Currency', style: TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold),),
                 value: moneyUnit,
                 onChanged: (MoneyUnit? value) {
                   setState(() {
@@ -616,7 +655,7 @@ class _EntryViewState extends State<EntryView>{
                           child: Text(
                             unit.toString().split('.').last,
                             style: const TextStyle(
-                              color: Colors.black, // Set text color for dropdown items
+                              color: Color(0xFF386641), // Set text color for dropdown items
                             ),
                           ),
                         ))
@@ -631,44 +670,46 @@ class _EntryViewState extends State<EntryView>{
 
   // Energy Input Section
   Widget _buildEnergyInputSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
-      child: SizedBox(
-        width: 200,
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-          ),
-          child: DropdownButtonFormField<EnergyAmount>(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                borderSide: BorderSide.none,
+    return Column(
+      children: [
+            Theme(
+              data: Theme.of(context).copyWith(
+                canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
               ),
-            ),
-            hint: const Text('Energy used'),
-            value: energyAmount,
-            onChanged: (EnergyAmount? value) {
-              setState(() {
-                energyAmount = value!;
-              });
-            },
-            items: EnergyAmount.values
-                .map((unit) => DropdownMenuItem<EnergyAmount>(
-                      value: unit,
-                      child: Text(
-                        unit.toString().split('.').last,
-                        style: const TextStyle(
-                          color: Colors.black, // Set text color for dropdown items
+              child:
+                  SizedBox(
+                    width: 300,
+                    child: DropdownButtonFormField<EnergyAmount>(
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                          borderSide: BorderSide.none,
                         ),
                       ),
-                    ))
-                .toList(),
-          ),
-        ),
-      ),
+                      hint: const Text('Energy used', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF386641)), ),
+                      value: energyAmount,
+                      onChanged: (EnergyAmount? value) {
+                        setState(() {
+                          energyAmount = value!;
+                        });
+                      },
+                      items: EnergyAmount.values
+                          .map((unit) => DropdownMenuItem<EnergyAmount>(
+                                value: unit,
+                                child: Text(
+                                  unit.toString().split('.').last,
+                                  style: const TextStyle(
+                                    color: Color(0xFF386641), // Set text color for dropdown items
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+              ),
+          ],
     );
   }
 
@@ -677,68 +718,78 @@ class _EntryViewState extends State<EntryView>{
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Distance input field
-          SizedBox(
-            width: 200, // Set a uniform width
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: 'Distance',
-                filled: true,
-                fillColor: const Color.fromARGB(255, 234, 224, 198),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                  borderSide: BorderSide.none,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 140, // Set a uniform width
+                child: TextField(
+                  style: const TextStyle(color: Color(0xFF386641)),
+                  decoration: InputDecoration(
+                    labelText: 'Distance',
+                    labelStyle: const TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold),
+                    filled: true,
+                    fillColor: const Color.fromARGB(255, 234, 224, 198),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0), 
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      amount = double.tryParse(value) ?? 0;
+                    });
+                  },
                 ),
               ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  amount = double.tryParse(value) ?? 0;
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 20), // Increased spacing between fields
-          // Distance Unit Dropdown
-          SizedBox(
-            width: 200,
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-              ),
-              child: DropdownButtonFormField<DistanceUnit>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                    borderSide: BorderSide.none,
+              const SizedBox(width: 20),
+              // Distance Unit Dropdown
+              SizedBox(
+                width: 154,
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+                  ),
+                  child: DropdownButtonFormField<DistanceUnit>(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    hint: const Text('Distance Unit', style: TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold)),
+                    value: distanceUnit,
+                    onChanged: (DistanceUnit? value) {
+                      setState(() {
+                        distanceUnit = value ?? distanceUnit;
+                      });
+                    },
+                    items: DistanceUnit.values
+                        .map((unit) => DropdownMenuItem<DistanceUnit>(
+                              value: unit,
+                              child: Text(
+                                unit.toString().split('.').last,
+                                style: const TextStyle(
+                                  color: Color(0xFF386641), // Set text color for dropdown items
+                                ),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
-                hint: const Text('Distance Unit'),
-                value: distanceUnit,
-                onChanged: (DistanceUnit? value) {
-                  setState(() {
-                    distanceUnit = value ?? distanceUnit;
-                  });
-                },
-                items: DistanceUnit.values
-                    .map((unit) => DropdownMenuItem<DistanceUnit>(
-                          value: unit,
-                          child: Text(
-                            unit.toString().split('.').last,
-                            style: const TextStyle(
-                              color: Colors.black, // Set text color for dropdown items
-                            ),
-                          ),
-                        ))
-                    .toList(),
               ),
-            ),
+            ],
           ),
-          if (subtype == 'Gas Car' || subtype == 'Electric Car' || subtype == 'Bus' ||
+          const SizedBox(height: 20,),
+          // Distance input field
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (subtype == 'Gas Car' || subtype == 'Electric Car' || subtype == 'Bus' ||
               subtype == 'Light Rail/Tram' || subtype == 'Train' ||
               subtype == 'Ferry: On Foot' || subtype == 'Ferry: With a Car' 
               || subtype == 'International Flight' || subtype == 'Domestic Flight')
@@ -746,12 +797,13 @@ class _EntryViewState extends State<EntryView>{
               const SizedBox(height: 20), // Increased spacing between dropdowns
               // Passenger Amount Dropdown
               SizedBox(
-                width: 200,
+                width: 150,
                 child: Theme(
                   data: Theme.of(context).copyWith(
                     canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
                   ),
                   child: DropdownButtonFormField<PassengerAmount>(
+                    style: const TextStyle(color: Color(0xFF386641)),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
@@ -760,7 +812,7 @@ class _EntryViewState extends State<EntryView>{
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    hint: const Text('Passenger Amount'),
+                    hint: const Text('Passenger\nAmount',  style: TextStyle(color: Color(0xFF386641), fontSize: 10, fontWeight: FontWeight.bold)),
                     value: passengerAmount,
                     onChanged: (PassengerAmount? value) {
                       setState(() {
@@ -773,7 +825,7 @@ class _EntryViewState extends State<EntryView>{
                               child: Text(
                                 unit.toString().split('.').last,
                                 style: const TextStyle(
-                                  color: Colors.black, // Set text color for dropdown items
+                                  color: Color(0xFF386641), // Set text color for dropdown items
                                 ),
                               ),
                             ))
@@ -782,9 +834,10 @@ class _EntryViewState extends State<EntryView>{
                 ),
               ),
             ],
+          const SizedBox(width: 20,),
           if (subtype == 'International Flight' || subtype == 'Domestic Flight')
             SizedBox(
-                width: 200,
+                width: 170,
                 child: Theme(
                   data: Theme.of(context).copyWith(
                     canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
@@ -798,7 +851,7 @@ class _EntryViewState extends State<EntryView>{
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    hint: const Text('Passenger Amount'),
+                    hint: const Text('Vehicle Size',  style: TextStyle(color: Color(0xFF386641), fontSize: 13, fontWeight: FontWeight.bold)),
                     value: size,
                     onChanged: (VehicleSize? value) {
                       setState(() {
@@ -811,7 +864,7 @@ class _EntryViewState extends State<EntryView>{
                               child: Text(
                                 unit.toString().split('.').last,
                                 style: const TextStyle(
-                                  color: Colors.black, // Set text color for dropdown items
+                                  color: Color(0xFF386641), // Set text color for dropdown items
                                 ),
                               ),
                             ))
@@ -819,6 +872,8 @@ class _EntryViewState extends State<EntryView>{
                   ),
                 ),
               ),
+            ],
+          )
         ],
       ),
     );

@@ -98,7 +98,7 @@ class EmissionSubtypes {
   ///  - Other Furniture
   final Map<String, String> furnitureTypes = {
     'Blinds' : 'consumer_goods-type_blinds_shades_and_curtain_fixtures',
-    'Matress' : 'consumer_goods-type_mattresses_and_foundations',
+    'Mattress' : 'consumer_goods-type_mattresses_and_foundations',
     'Office Furniture' : 'consumer_goods-type_office_furniture',
     'Wood Cabinet' : 'consumer_goods-type_wood_cabinets_and_counter_tops',
     'Wood Countertop' : 'consumer_goods-type_wood_cabinets_and_counter_tops',

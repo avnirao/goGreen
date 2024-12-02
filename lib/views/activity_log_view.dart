@@ -11,43 +11,31 @@ class ActivityLogView extends StatefulWidget {
   const ActivityLogView({super.key});
 
   @override
-  _ActivityLogViewState createState() => _ActivityLogViewState();
+  ActivityLogViewState createState() => ActivityLogViewState();
 }
 
-class _ActivityLogViewState extends State<ActivityLogView> {
+class ActivityLogViewState extends State<ActivityLogView> {
   String _sortOption = 'Most Recent';
+  int _currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF2E8CF),
-        title: const Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(Icons.eco, color: Color(0xFF6A994E)),
-            SizedBox(width: 8),
-            Text(
-              'Activity Log',
-              style: TextStyle(color: Color(0xFF386641)),
-            ),
-          ],
-        ),
-      ),
       body: Container(
         // Background gradient decoration for the entire screen
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [const Color.fromARGB(255, 242, 232, 207), const Color.fromARGB(255, 106, 153, 78)],
+            colors: [Color.fromARGB(255, 242, 232, 207), Color.fromARGB(255, 242, 232, 207)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
         child: Column(
           children: <Widget>[
+            const SizedBox(height: 50,),
             // Sorting Dropdown
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: DropdownButton<String>(
                 value: _sortOption,
                 items: [
@@ -71,35 +59,93 @@ class _ActivityLogViewState extends State<ActivityLogView> {
               ),
             ),
             Expanded(
-              // Listens to changes in ActivityProvider and rebuilds the list of entries
-              child: Consumer<ActivityProvider>(
-                builder: (context, activityProvider, child) {
-                  List<Entry> entries = activityProvider.activityHistory.entries;
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -60.0,
+                    child: Consumer<ActivityProvider>(
+                      builder: (context, activityProvider, child) {
+                        List<Entry> entries = activityProvider.activityHistory.entries;
 
-                  // Sorting entries based on selected option
-                  if (_sortOption == 'Most Recent') {
-                    entries.sort((a, b) => b.emissionsDate.compareTo(a.emissionsDate));
-                  } else if (_sortOption == 'Least Recent') {
-                    entries.sort((a, b) => a.emissionsDate.compareTo(b.emissionsDate));
-                  } else if (_sortOption == 'Most CO2') {
-                    entries.sort((a, b) => b.co2.compareTo(a.co2));
-                  } else if (_sortOption == 'Least CO2') {
-                    entries.sort((a, b) => a.co2.compareTo(b.co2));
-                  }
+                        // Sorting entries based on selected option
+                        if (_sortOption == 'Most Recent') {
+                          entries.sort((a, b) => b.emissionsDate.compareTo(a.emissionsDate));
+                        } else if (_sortOption == 'Least Recent') {
+                          entries.sort((a, b) => a.emissionsDate.compareTo(b.emissionsDate));
+                        } else if (_sortOption == 'Most CO2') {
+                          entries.sort((a, b) => b.co2.compareTo(a.co2));
+                        } else if (_sortOption == 'Least CO2') {
+                          entries.sort((a, b) => a.co2.compareTo(b.co2));
+                        }
 
-                  return ListView.builder(
-                    itemCount: entries.length,
-                    itemBuilder: (context, index) {
-                      // Builds each list item with activity entry data
-                      return _createListElementForEntry(context, entries[index]);
-                    },
-                  );
-                },
+                        return ListView.builder(
+                          itemCount: entries.length,
+                          itemBuilder: (context, index) {
+                            // Builds each list item with activity entry data
+                            return _createListElementForEntry(context, entries[index]);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
+            )
+            ,
           ],
         ),
       ),
+      // The bottom navigation bar of the Scaffold.
+    bottomNavigationBar: Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2E8CF),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      // The child of the Container widget.
+      child: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          if (index == 2) {
+            Navigator.pushNamed(context, '/location');
+          } else if (index == 0) {
+            Navigator.pushNamed(context, '/');
+          }
+        },
+        backgroundColor: const Color(0xFFF2E8CF),
+        selectedItemColor: const Color(0xFFBC4749),
+        unselectedItemColor: const Color(0xFF386641),
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        items: const [
+          // The Home BottomNavigationBarItem.
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          // The History BottomNavigationBarItem.
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
+          ),
+          // The Map BottomNavigationBarItem.
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Map',
+          ),
+        ],
+      ),
+    )
     );
   }
 
@@ -116,10 +162,10 @@ class _ActivityLogViewState extends State<ActivityLogView> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           title: Text(
             '${entry.category} - ${entry.subtype}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.purple.shade900,
+              color: Color(0xFF386641),
             ),
             semanticsLabel: entry.category.toString(),
           ),
