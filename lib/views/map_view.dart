@@ -32,7 +32,7 @@ class MapView extends StatefulWidget {
 // MapViewState is the state of the MapView widget.
 class MapViewState extends State<MapView> {
   // The index of the current page in the BottomNavigationBar.
-  int _currentIndex = 0;
+  int _currentIndex = 2;
 
   late final PositionProvider positionProvider;
   late final RecyclingCentersDB recyclingCenters;
