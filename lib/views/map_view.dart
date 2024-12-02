@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:go_green/models/recycling_center.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -86,31 +88,33 @@ Widget build(BuildContext context) {
                   return const Center(child: CircularProgressIndicator());
                 } else {
                   final position = snapshot.data!;
-                  return SingleChildScrollView(
-                    // The child of the SingleChildScrollView widget.
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 400, // Fixed height for the map
-                          child: FlutterMap(
-                            options: MapOptions(
-                              initialCenter: LatLng(position.latitude, position.longitude),
-                              initialZoom: 15,
-                              maxZoom: 19,
-                              minZoom: 5,
-                            ),
-                            children: [
-                              mapBoxOverlay(),
-                              // The location marker layer.
-                              markerWithClusters(context),
-                              // The current location layer.
-                              CurrentLocationLayer(
-                                positionStream: _positionStream,
-                              ),
-                              mapBoxAttribution(),
-                            ],
-                          ),
-                        ),
+                 return SingleChildScrollView(
+  child: Column(
+    children: [
+      SizedBox(
+        height: 400, // Fixed height for the map
+        child: Semantics(
+          label: 'Map showing recycling centers and second-hand stores near you.',
+          child: FlutterMap(
+            options: MapOptions(
+              initialCenter: LatLng(position.latitude, position.longitude),
+              initialZoom: 15,
+              maxZoom: 19,
+              minZoom: 5,
+            ),
+            children: [
+              mapBoxOverlay(),
+              // The location marker layer.
+              markerWithClusters(context),
+              // The current location layer.
+              CurrentLocationLayer(
+                positionStream: _positionStream,
+              ),
+              mapBoxAttribution(),
+            ],
+          ),
+        ),
+      ),
                         const SizedBox(height: 20),
                        Center(
   child: Column(
@@ -125,12 +129,14 @@ Widget build(BuildContext context) {
         ),
       ),
       const SizedBox(height: 16), // Adds space between text and button
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          
-          backgroundColor: const Color(0xFF386641), // Button color
-          padding: const EdgeInsets.all(16),
-        ),
+      Semantics(
+              label: 'Click here for more information on how to dispose of things.',
+              button: true, // Makes the button accessible as a button
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF386641), // Button color
+                  padding: const EdgeInsets.all(16),
+                ),
         onPressed: () async {
           const url = 'https://seattle.gov/utilities/your-services/collection-and-disposal/where-does-it-go#/a-z';
           if (await canLaunchUrl(Uri.parse(url))) {
@@ -155,6 +161,7 @@ Widget build(BuildContext context) {
             ),
           ],
         ),
+      ),
       ),
     ],
   ),
@@ -310,48 +317,73 @@ Widget build(BuildContext context) {
 
   // Opens the place page for the recycling center.
   void openPlacePage(
-    BuildContext context,
-    TapDownDetails tapDetails,
-    RecyclingCenter recyclingCenter,
-  ) {
-    final offset = tapDetails.globalPosition;
-    // The menu items for the recycling center.
-    List<PopupMenuEntry<int>> menu = [];
-    // The name of the recycling center.
-    menu.add(PopupMenuItem(
-      value: 1,
-      child: Text(recyclingCenter.name, style: const TextStyle(fontSize: 15, color: Color(0xFF386641), decoration: TextDecoration.none,), textAlign: TextAlign.center,),
-    ));
-    menu.add(const PopupMenuDivider(height: 2));
-
-    // The address of the recycling center.
-    var website = recyclingCenter.url;
-    if (website.isNotEmpty) {
-      menu.add(
-        PopupMenuItem(
-          onTap: () async {
-            if (await canLaunchUrl(Uri.parse(website))) {
-              await launchUrl(Uri.parse(website));
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Could not open the website")),
-              );
-            }
-          },
-          child: const Text('Website', style: TextStyle(fontSize: 15, color: Colors.black, decoration: TextDecoration.none,), textAlign: TextAlign.center,),
+  BuildContext context,
+  TapDownDetails tapDetails,
+  RecyclingCenter recyclingCenter,
+) {
+  final offset = tapDetails.globalPosition;
+  
+  // Construct the Google Maps URL using the recycling center's latitude and longitude.
+  final googleMapsUrl =
+      'https://www.google.com/maps/search/?api=1&query=${recyclingCenter.latitude},${recyclingCenter.longitude}';
+  
+  // The menu items for the recycling center.
+  List<PopupMenuEntry<int>> menu = [];
+  
+  // The clickable name of the recycling center.
+  menu.add(PopupMenuItem(
+    value: 1,
+    child: InkWell(
+      onTap: () async {
+        if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
+          await launchUrl(Uri.parse(googleMapsUrl));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Could not open Google Maps")),
+          );
+        }
+      },
+      child: Text(
+        recyclingCenter.name,
+        style: const TextStyle(
+          fontSize: 15,
+          color: Color(0xFF386641),
+          decoration: TextDecoration.underline, // Makes the text look like a link.
         ),
-      );
-    }
-
-    showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        offset.dx,
-        offset.dy,
-        MediaQuery.of(context).size.width - offset.dx,
-        MediaQuery.of(context).size.height - offset.dy,
+        textAlign: TextAlign.center,
       ),
-      items: menu,
+    ),
+  ));
+  
+  menu.add(const PopupMenuDivider(height: 2));
+
+  // Add other menu items, like the recycling center's website if applicable.
+  var website = recyclingCenter.url;
+  if (website.isNotEmpty) {
+    menu.add(
+      PopupMenuItem(
+        onTap: () async {
+          if (await canLaunchUrl(Uri.parse(website))) {
+            await launchUrl(Uri.parse(website));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Could not open the website")),
+            );
+          }
+        },
+        child: const Text(
+          'Visit Website',
+          style: TextStyle(fontSize: 15, color: Color(0xFF386641)),
+        ),
+      ),
     );
   }
+
+  // Show the popup menu at the tap position.
+  showMenu(
+    context: context,
+    position: RelativeRect.fromLTRB(offset.dx, offset.dy, offset.dx + 1, offset.dy + 1),
+    items: menu,
+  );
+}
 }
