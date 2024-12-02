@@ -41,7 +41,7 @@ class EnergyEmissions extends EmissionFactor {
   /// the units for energy consumption
   final String energyUnit = 'kWh';
   /// the units for volume
-  final String volumeUnit = 'standard_cubic_feet';
+  final String volumeUnit = 'standard_cubic_foot';
   /// the type of energy consumed
   final String energyType;
 
@@ -83,7 +83,7 @@ class EnergyEmissions extends EmissionFactor {
       energyType = 'Natural Gas',
       super(
         category: EmissionCategory.energy,
-        id: EmissionSubtypes().energyTypes['Electricity'] ?? 'type not found'
+        id: EmissionSubtypes().energyTypes['Natural Gas'] ?? 'type not found'
       );
 
   @override 

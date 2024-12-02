@@ -375,11 +375,13 @@ class _EntryViewState extends State<EntryView>{
 
   // dynamic estimation 
   EmissionFactor _estimateEmission() {
+    print('getting emission estimate: $category, $subtype');
     switch (category) {
       // clothing case
       case EmissionCategory.clothing:
         switch (subtype) {
           case 'Leather':
+          print('returning: $category, $subtype');
             return ClothingEmissions.leather(money: amount, moneyUnit: moneyUnit);
           case 'Footwear':
             return ClothingEmissions.footwear(money: amount, moneyUnit: moneyUnit);
@@ -882,7 +884,7 @@ class _EntryViewState extends State<EntryView>{
                       constraints: const BoxConstraints(maxWidth: 200), // Set a uniform width
                       child: TextField(
                         decoration: InputDecoration(
-                          labelText: 'Enter Distance...',
+                          labelText: 'Passengers...',
                           filled: true,
                           fillColor: const Color.fromARGB(255, 234, 224, 198),
                           border: OutlineInputBorder(
@@ -893,7 +895,7 @@ class _EntryViewState extends State<EntryView>{
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           setState(() {
-                            amount = double.tryParse(value) ?? 0;
+                            passengers = int.tryParse(value) ?? 0;
                           });
                         },
                       ),

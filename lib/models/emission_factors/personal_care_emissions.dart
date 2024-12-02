@@ -2,7 +2,7 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
 
-enum PersonalCareType{jewellery, perfume, toiletries, soap, toiletPaper, feminineHygiene, disposableDiaper}
+enum PersonalCareType{jewelery, perfume, toiletries, soap, toiletPaper, feminineHygiene, disposableDiaper}
 
 /// Represents emissions from personal care and accessory items
 class PersonalCareEmissions extends MoneyEmissionFactor {
