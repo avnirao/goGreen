@@ -400,38 +400,38 @@ class _EntryViewState extends State<EntryView>{
             return EnergyEmissions.naturalGas(volume: energyAmount);
         }
       case EmissionCategory.food:
-        FoodEmissions(foodType: subtype, money: amount, moneyUnit: moneyUnit);
+        return FoodEmissions(foodType: subtype, money: amount, moneyUnit: moneyUnit);
       case EmissionCategory.foodWaste:
-        FoodWasteEmissions(foodWasteType: subtype, weight: amount, weightUnit: weightUnit);
+        return FoodWasteEmissions(foodWasteType: subtype, weight: amount, weightUnit: weightUnit);
       case EmissionCategory.furniture:
-        FurnitureEmissions(furnitureType: subtype, money: amount, moneyUnit: moneyUnit);
+        return FurnitureEmissions(furnitureType: subtype, money: amount, moneyUnit: moneyUnit);
       case EmissionCategory.generalWaste:
-        GeneralWasteEmissions(wasteType: subtype, weight: amount, weightUnit: weightUnit);
+        return GeneralWasteEmissions(wasteType: subtype, weight: amount, weightUnit: weightUnit);
       case EmissionCategory.personalCareAndAccessories:
-        PersonalCareEmissions(money: amount, moneyUnit: moneyUnit, personalCareType: subtype);
+        return PersonalCareEmissions(money: amount, moneyUnit: moneyUnit, personalCareType: subtype);
       case EmissionCategory.travel:
         switch(subtype){
           case 'Gas Car':
-            TravelEmissions.gasCar(distance: amount, distanceUnit: distanceUnit, passengers: passengers);
+            return TravelEmissions.gasCar(distance: amount, distanceUnit: distanceUnit, passengers: passengers);
           case 'Electric Car':
-            TravelEmissions.electricCar(distance: amount, distanceUnit: distanceUnit, passengers: passengers);
+            return TravelEmissions.electricCar(distance: amount, distanceUnit: distanceUnit, passengers: passengers);
           case 'Hybrid Car':
-            TravelEmissions.hybridCar(distance: amount, distanceUnit: distanceUnit);
+            return TravelEmissions.hybridCar(distance: amount, distanceUnit: distanceUnit);
           case 'Bus':
-            TravelEmissions.bus(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
+            return TravelEmissions.bus(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
           case 'Light Rail/Tram':
-            TravelEmissions.lightRailTram(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
+            return TravelEmissions.lightRailTram(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
           case 'Train':
-            TravelEmissions.train(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
+            return TravelEmissions.train(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount);
           case 'Ferry: On Foot':
-            TravelEmissions.ferry(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount, onFoot: true);
+            return TravelEmissions.ferry(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount, onFoot: true);
           case 'Ferry: With a Car':
-            TravelEmissions.ferry(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount, onFoot: false);
+            return TravelEmissions.ferry(distance: amount, distanceUnit: distanceUnit, passengerAmt: passengerAmount, onFoot: false);
           case 'International Flight':
-            TravelEmissions.flight(distance: amount, distanceUnit: distanceUnit, size: size, 
+            return TravelEmissions.flight(distance: amount, distanceUnit: distanceUnit, size: size, 
               passengerAmt: passengerAmount, isDomestic: false);
           case 'Domestic Flight':
-            TravelEmissions.flight(distance: amount, distanceUnit: distanceUnit, size: size, 
+            return TravelEmissions.flight(distance: amount, distanceUnit: distanceUnit, size: size, 
               passengerAmt: passengerAmount, isDomestic: true);
         }
 
@@ -843,7 +843,7 @@ class _EntryViewState extends State<EntryView>{
                               borderSide: BorderSide.none,
                             ),
                           ),
-                          hint: const Text('# of Passengers:'),
+                          hint: const Text('Vehicle Size'),
                           value: size,
                           onChanged: (VehicleSize? value) {
                             setState(() {
