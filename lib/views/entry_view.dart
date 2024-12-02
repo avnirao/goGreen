@@ -68,6 +68,8 @@ class _EntryViewState extends State<EntryView>{
   VehicleSize? size;
   bool isDomestic = true;
 
+  EmissionCategory test = EmissionCategory.clothing;
+
   @override
   void initState() {
     super.initState();
@@ -121,7 +123,27 @@ class _EntryViewState extends State<EntryView>{
                       dropdownMenuEntries: dropdownMenuEntries,
                       onSelected: (EmissionCategory? value) {
                         setState(() {
-                          category = value ?? EmissionCategory.clothing;
+                          String tempValue = value.toString();
+                          switch(tempValue){
+                            case 'Clothing': 
+                              category = EmissionCategory.clothing;
+                            case 'Energy':
+                              category = EmissionCategory.energy;
+                            case 'Furniture':
+                              category = EmissionCategory.furniture;
+                            case 'Personal Care And Accessories':
+                              category = EmissionCategory.personalCareAndAccessories;
+                            case 'Travel':
+                              category = EmissionCategory.travel;
+                            case 'Food Waste':
+                              category = EmissionCategory.foodWaste;
+                            case 'Genaral Waste':
+                              category = EmissionCategory.generalWaste;
+                            case 'Electrical Waste':
+                              category = EmissionCategory.electricalWaste;
+                            case 'Food':
+                              category = EmissionCategory.food;
+                          }
                         });
                         _updateSubtypeDropdown(value ?? EmissionCategory.clothing);
                       },
@@ -341,7 +363,7 @@ class _EntryViewState extends State<EntryView>{
                 'Estimate: $curEst',
                 semanticsLabel: 'Estimate: $curEst',
                 style: const TextStyle(
-                  fontSize: 27,
+                  fontSize: 22,
                   color: Colors.black,
                 ),
               ),
@@ -388,6 +410,7 @@ class _EntryViewState extends State<EntryView>{
       case EmissionCategory.clothing:
         switch (subtype) {
           case 'Leather':
+            print('leather');
             return ClothingEmissions.leather(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
           case 'Footwear':
             return ClothingEmissions.footwear(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
@@ -408,38 +431,38 @@ class _EntryViewState extends State<EntryView>{
             return EnergyEmissions.naturalGas(volume: energyAmount ?? EnergyAmount.average);
         }
       case EmissionCategory.food:
-        FoodEmissions(foodType: subtype, money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
+        return FoodEmissions(foodType: subtype, money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
       case EmissionCategory.foodWaste:
-        FoodWasteEmissions(foodWasteType: subtype, weight: amount ?? 0, weightUnit: weightUnit ?? WeightUnit.kg);
+        return FoodWasteEmissions(foodWasteType: subtype, weight: amount ?? 0, weightUnit: weightUnit ?? WeightUnit.kg);
       case EmissionCategory.furniture:
-        FurnitureEmissions(furnitureType: subtype, money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
+        return FurnitureEmissions(furnitureType: subtype, money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
       case EmissionCategory.generalWaste:
-        GeneralWasteEmissions(wasteType: subtype, weight: amount ?? 0, weightUnit: weightUnit ?? WeightUnit.kg);
+        return GeneralWasteEmissions(wasteType: subtype, weight: amount ?? 0, weightUnit: weightUnit ?? WeightUnit.kg);
       case EmissionCategory.personalCareAndAccessories:
-        PersonalCareEmissions(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd, personalCareType: subtype);
+        return PersonalCareEmissions(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd, personalCareType: subtype);
       case EmissionCategory.travel:
         switch(subtype){
           case 'Gas Car':
-            TravelEmissions.gasCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengers: passengers);
+            return TravelEmissions.gasCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengers: passengers);
           case 'Electric Car':
-            TravelEmissions.electricCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengers: passengers);
+            return TravelEmissions.electricCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengers: passengers);
           case 'Hybrid Car':
-            TravelEmissions.hybridCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km);
+            return TravelEmissions.hybridCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km);
           case 'Bus':
-            TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Light Rail/Tram':
-            TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Train':
-            TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km , passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km , passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Ferry: On Foot':
-            TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
+            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
           case 'Ferry: With a Car':
-            TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
+            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
           case 'International Flight':
-            TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
+            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
               passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: false);
           case 'Domestic Flight':
-            TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
+            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
               passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: true);
         }
 
@@ -447,7 +470,8 @@ class _EntryViewState extends State<EntryView>{
       default:
         return ClothingEmissions.leather(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
     }
-    throw StateError('Unsupported category or subtype: $category, $subtype');
+    //throw StateError('Unsupported category or subtype: $category, $subtype');
+    return ClothingEmissions.leather(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
   }
 
   // Saves the current state of the entry and returns to the previous screen.
@@ -747,7 +771,7 @@ class _EntryViewState extends State<EntryView>{
               const SizedBox(width: 20),
               // Distance Unit Dropdown
               SizedBox(
-                width: 154,
+                width: 159,
                 child: Theme(
                   data: Theme.of(context).copyWith(
                     canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
