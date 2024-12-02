@@ -316,7 +316,7 @@ class _EntryViewState extends State<EntryView>{
                     ),
                   ),
                 
-                const SizedBox(height: 70),
+                const SizedBox(height: 30),
               
                 // Box to Display Estimated Emission
                 Container(
@@ -338,7 +338,7 @@ class _EntryViewState extends State<EntryView>{
                   ),
                 ),
               
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
               
                 // Save Button
                 SizedBox(
@@ -519,72 +519,84 @@ class _EntryViewState extends State<EntryView>{
   // Weight Input Section
   // Weight Input Section
   Widget _buildWeightInputSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Weight input field
-          SizedBox(
-            width: 200, // Set a uniform width
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: 'Weight',
-                filled: true,
-                fillColor: const Color.fromARGB(255, 234, 224, 198),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                  borderSide: BorderSide.none,
+    return Row(
+      children: [
+        // Weight input field
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Weight:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 200), // Set a uniform width
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Enter Weight...',
+                    filled: true,
+                    fillColor: const Color.fromARGB(255, 234, 224, 198),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      amount = double.tryParse(value) ?? 0;
+                    });
+                  },
                 ),
               ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  amount = double.tryParse(value) ?? 0;
-                });
-              },
-            ),
+            ],
           ),
-          const SizedBox(height: 70), // Increased spacing between fields
-          // Weight Unit Dropdown
-          SizedBox(
-            width: 200,
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-              ),
-              child: DropdownButtonFormField<WeightUnit>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                    borderSide: BorderSide.none,
+        ),
+        const SizedBox(width: 10), // Increased spacing between fields
+        // Weight Unit Dropdown
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Units:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 200),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+                  ),
+                  child: DropdownButtonFormField<WeightUnit>(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    hint: const Text('Weight Unit'),
+                    value: weightUnit,
+                    onChanged: (WeightUnit? value) {
+                      setState(() {
+                        weightUnit = value ?? weightUnit;
+                      });
+                    },
+                    items: WeightUnit.values
+                        .map((unit) => DropdownMenuItem<WeightUnit>(
+                              value: unit,
+                              child: Text(
+                                unit.toString().split('.').last,
+                                style: const TextStyle(
+                                  color: Colors.black, // Set text color for dropdown items
+                                ),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
-                hint: const Text('Weight Unit'),
-                value: weightUnit,
-                onChanged: (WeightUnit? value) {
-                  setState(() {
-                    weightUnit = value ?? weightUnit;
-                  });
-                },
-                items: WeightUnit.values
-                    .map((unit) => DropdownMenuItem<WeightUnit>(
-                          value: unit,
-                          child: Text(
-                            unit.toString().split('.').last,
-                            style: const TextStyle(
-                              color: Colors.black, // Set text color for dropdown items
-                            ),
-                          ),
-                        ))
-                    .toList(),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -726,153 +738,221 @@ class _EntryViewState extends State<EntryView>{
 
   // Travel Input Section
   Widget _buildTravelInputSection(String subtype) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Distance input field
-          SizedBox(
-            width: 200, // Set a uniform width
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: 'Distance',
-                filled: true,
-                fillColor: const Color.fromARGB(255, 234, 224, 198),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  amount = double.tryParse(value) ?? 0;
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 20), // Increased spacing between fields
-          // Distance Unit Dropdown
-          SizedBox(
-            width: 200,
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-              ),
-              child: DropdownButtonFormField<DistanceUnit>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                    borderSide: BorderSide.none,
+    return Column(
+      children: [
+        Row(
+          children: [
+            // Distance input field
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Distance Traveled:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 200), // Set a uniform width
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Enter Distance...',
+                        filled: true,
+                        fillColor: const Color.fromARGB(255, 234, 224, 198),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        setState(() {
+                          amount = double.tryParse(value) ?? 0;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                hint: const Text('Distance Unit'),
-                value: distanceUnit,
-                onChanged: (DistanceUnit? value) {
-                  setState(() {
-                    distanceUnit = value ?? distanceUnit;
-                  });
-                },
-                items: DistanceUnit.values
-                    .map((unit) => DropdownMenuItem<DistanceUnit>(
-                          value: unit,
-                          child: Text(
-                            unit.toString().split('.').last,
-                            style: const TextStyle(
-                              color: Colors.black, // Set text color for dropdown items
+                ],
+              ),
+            ),
+            const SizedBox(width: 10), // Increased spacing between fields
+            // Distance Unit Dropdown
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('\nUnits:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 200),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+                      ),
+                      child: DropdownButtonFormField<DistanceUnit>(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        hint: const Text('Distance Unit'),
+                        value: distanceUnit,
+                        onChanged: (DistanceUnit? value) {
+                          setState(() {
+                            distanceUnit = value ?? distanceUnit;
+                          });
+                        },
+                        items: DistanceUnit.values
+                            .map((unit) => DropdownMenuItem<DistanceUnit>(
+                                  value: unit,
+                                  child: Text(
+                                    unit.toString().split('.').last,
+                                    style: const TextStyle(
+                                      color: Colors.black, // Set text color for dropdown items
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            // If a flight is selected, allow user to choose vehicle size
+            switch(subtype) {
+              'International Flight' || 'Domestic Flight' => Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Vehicle Size:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 200),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+                        ),
+                        child: DropdownButtonFormField<VehicleSize>(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                              borderSide: BorderSide.none,
                             ),
                           ),
-                        ))
-                    .toList(),
-              ),
-            ),
-          ),
-          if (subtype == 'Gas Car' || subtype == 'Electric Car' || subtype == 'Bus' ||
-              subtype == 'Light Rail/Tram' || subtype == 'Train' ||
-              subtype == 'Ferry: On Foot' || subtype == 'Ferry: With a Car' 
-              || subtype == 'International Flight' || subtype == 'Domestic Flight')
-            ...[
-              const SizedBox(height: 20), // Increased spacing between dropdowns
-              // Passenger Amount Dropdown
-              SizedBox(
-                width: 200,
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-                  ),
-                  child: DropdownButtonFormField<PassengerAmount>(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                        borderSide: BorderSide.none,
+                          hint: const Text('# of Passengers:'),
+                          value: size,
+                          onChanged: (VehicleSize? value) {
+                            setState(() {
+                              size = value!;
+                            });
+                          },
+                          items: VehicleSize.values
+                              .map((unit) => DropdownMenuItem<VehicleSize>(
+                                    value: unit,
+                                    child: Text(
+                                      unit.toString().split('.').last,
+                                      style: const TextStyle(
+                                        color: Colors.black, // Set text color for dropdown items
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
                       ),
                     ),
-                    hint: const Text('Passenger Amount'),
-                    value: passengerAmount,
-                    onChanged: (PassengerAmount? value) {
-                      setState(() {
-                        passengerAmount = value!;
-                      });
-                    },
-                    items: PassengerAmount.values
-                        .map((unit) => DropdownMenuItem<PassengerAmount>(
-                              value: unit,
-                              child: Text(
-                                unit.toString().split('.').last,
-                                style: const TextStyle(
-                                  color: Colors.black, // Set text color for dropdown items
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
+                  ],
                 ),
               ),
-            ],
-          if (subtype == 'International Flight' || subtype == 'Domestic Flight')
-            SizedBox(
-                width: 200,
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-                  ),
-                  child: DropdownButtonFormField<VehicleSize>(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                        borderSide: BorderSide.none,
+              _ => Container()
+            },
+            const SizedBox(width: 10),
+            // If a car is selected, allow user to chose number of passengers (except hybrid car, which doesn't require a passenger number)
+            switch(subtype) {
+              'Hybrid Car' => Container(),
+              'Gas Car' || 'Electric Car' => Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('# of Passengers:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 200), // Set a uniform width
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Enter Distance...',
+                          filled: true,
+                          fillColor: const Color.fromARGB(255, 234, 224, 198),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          setState(() {
+                            amount = double.tryParse(value) ?? 0;
+                          });
+                        },
                       ),
                     ),
-                    hint: const Text('Passenger Amount'),
-                    value: size,
-                    onChanged: (VehicleSize? value) {
-                      setState(() {
-                        size = value!;
-                      });
-                    },
-                    items: VehicleSize.values
-                        .map((unit) => DropdownMenuItem<VehicleSize>(
-                              value: unit,
-                              child: Text(
-                                unit.toString().split('.').last,
-                                style: const TextStyle(
-                                  color: Colors.black, // Set text color for dropdown items
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
+                  ],
                 ),
               ),
-        ],
-      ),
+            // Otherwise, allow them to estimate how full the vehicle was.
+              _ => Flexible(
+                fit: FlexFit.loose,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('# of passengers:', style: TextStyle(color: Color(0xFF386641), fontSize: 20),),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 200),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+                        ),
+                        child: DropdownButtonFormField<PassengerAmount>(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          hint: const Text('# of Passengers'),
+                          value: passengerAmount,
+                          onChanged: (PassengerAmount? value) {
+                            setState(() {
+                              passengerAmount = value!;
+                            });
+                          },
+                          items: PassengerAmount.values
+                              .map((unit) => DropdownMenuItem<PassengerAmount>(
+                                    value: unit,
+                                    child: Text(
+                                      unit.toString().split('.').last,
+                                      style: const TextStyle(
+                                        color: Colors.black, // Set text color for dropdown items
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            }
+            // Passenger Amount Dropdown
+            
+          ],
+        )
+      ],
     );
   }
 }

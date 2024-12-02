@@ -49,7 +49,20 @@ enum MoneyUnit{usd, cad, eur, gbd, nok, gtq, mxn}
 ///  - `t`: metric ton
 ///  - `lb`: pound
 ///  - `ton`: US short ton
-enum WeightUnit{g, kg, t, lb, ton}
+enum WeightUnit{
+  g, kg, lb, t, ton;
+  @override
+  String toString() {
+    switch (name) {
+      case 't': 
+        return 't (metric ton)';
+      case 'ton': 
+        return 'ton (short ton)';
+      default: 
+        return name;
+    }
+  }
+}
 
 /// Units to use for distance.
 ///  - `m`: meter
