@@ -65,7 +65,7 @@ class ActivityLogViewState extends State<ActivityLogView> {
         top: -40.0, // Shifts the content up by 40 pixels
         left: 0,
         right: 0,
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height, // Constrain height
           child: Consumer<ActivityProvider>(
             builder: (context, activityProvider, child) {

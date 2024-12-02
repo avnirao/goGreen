@@ -410,7 +410,6 @@ class _EntryViewState extends State<EntryView>{
       case EmissionCategory.clothing:
         switch (subtype) {
           case 'Leather':
-            print('leather');
             return ClothingEmissions.leather(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
           case 'Footwear':
             return ClothingEmissions.footwear(money: amount ?? 0, moneyUnit: moneyUnit ?? MoneyUnit.usd);
