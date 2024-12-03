@@ -444,21 +444,27 @@ class _EntryViewState extends State<EntryView>{
           case 'Hybrid Car':
             return TravelEmissions.hybridCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km);
           case 'Bus':
-            return TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Light Rail/Tram':
-            return TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Train':
-            return TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km , passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Ferry: On Foot':
-            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
+            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
           case 'Ferry: With a Car':
-            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
+            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
           case 'International Flight':
-            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
+            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            size: size ?? VehicleSize.medium, 
               passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: false);
           case 'Domestic Flight':
-            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
-              passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: true);
+            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            size: size ?? VehicleSize.medium, passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: true);
         }
 
       // Add other category cases for emission estimation here
@@ -698,6 +704,7 @@ class _EntryViewState extends State<EntryView>{
               child:
                   SizedBox(
                     width: 300,
+                    // energy dropdown
                     child: DropdownButtonFormField<EnergyAmount>(
                       decoration: InputDecoration(
                         filled: true,
@@ -743,6 +750,7 @@ class _EntryViewState extends State<EntryView>{
             children: [
               SizedBox(
                 width: 140, // Set a uniform width
+                //distance enter box
                 child: TextField(
                   style: const TextStyle(color: Color(0xFF386641)),
                   decoration: InputDecoration(
@@ -861,6 +869,7 @@ class _EntryViewState extends State<EntryView>{
                   data: Theme.of(context).copyWith(
                     canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
                   ),
+                  //dropdown for vehicle size
                   child: DropdownButtonFormField<VehicleSize>(
                     decoration: InputDecoration(
                       filled: true,
