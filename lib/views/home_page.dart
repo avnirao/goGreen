@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_green/models/activity_history.dart';
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/entry.dart';
 import 'package:go_green/providers/activity_provider.dart';
 import 'package:go_green/views/entry_view.dart';
-import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -48,7 +46,7 @@ class HomePageState extends State<HomePage> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Total emissioned: $co2 g Co2',
+                    'Total emissioned: $co2 kg Co2',
                     style: const TextStyle(
                       fontSize: 20,
                       color: Color(0xFF6A994E),
