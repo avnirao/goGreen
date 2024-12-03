@@ -74,13 +74,9 @@ class EmissionChecker {
           throw ArgumentError('Unknown error.\n$parsed');
       }
     } catch (e) {
-      // TODO: Find better way to relay error information
-      // for now, just prints the error message
-      // ignore: avoid_print
-      print('${response.statusCode}: $e');
+      return null;
     }
 
-    return null;
   }
 
   /// Get emissions data for a given emission factor.
