@@ -9,7 +9,11 @@
 
 
 **Discuss how doing this project challenged and/or deepened your understanding of these topics.**  
-- Michael
+We got hands-on experience with topics/tool we weren't totallt familirized with, such as generating g.dart files for Isar and 
+designing and integrating data structures and flows for our app. Since we are having a lot of categories and subcategories for
+estimating emissions, handeling dataflows was complex and required extra debug skills. Deploying the API for emission estimtion was also challenging since we provide very diversified and detailed options for users to track their emissions. Finally the UI design challenged our
+depth in knowledge of flutter widgets, such as using dropdownmenus and editing their background colors. Overall, we overcomed all these
+with patience and recourses from internet. It was fun!
 
 **Describe what changed from your original concept to your final implementation? Why did you make those changes from your original design vision?**  
 The primary change in our design was shifting from a user goal-based system to tracking the cumulative amount of CO₂ saved.
@@ -38,7 +42,8 @@ Another critical takeaway was learning how to problem-solve independently. Early
 
 Mason: I learned a lot about how the structure of implementing an app. The model-view-controller structure was very helpful for figuring out both where different pieces of the app should go, and it also made it a lot easier to figure out where things were going wrong while I was debugging. Even if this structure looks a bit different in other programming languages and frameworks, I think the concept of it will help me with figuring out how to make the piece of my future projects fit together.
 
-Michael:
+Michael: For me the most valueable thing I learned is basically how to develope a whole complete app with flutter. It's suprisingly powerful
+compared to swift, offering immense flexibility for building cross-platform applications. However, it’s also complex and challenging to use because of its intricacy in managing widgets and states and dealing with dependencies. After got in touch with flutter for a quarter I'm now confident in designing my own app's data flow and debugging specifically.
 
 **If you could go back and give yourself 2-3 pieces of advice at the beginning of the class, what would you say and why? (Alternatively: what 2-3 pieces of advice would you give to future students who take CSE 340 and why?)**
 
@@ -56,3 +61,9 @@ Mason:
 - Try to add extra features to your apps/do the extension problems when you can, because it will make the future assignments easier. However, also be aware that you only have a week for most of these assignments. I made my journal app way too complicated and was unable to even start working on Isar before the initial deadline because of that.
 
 Michael:
+- Also be patient with bugs even they are everywhere. You have them because you are using a very robust tool. You will be grateful if
+you make it in the end!
+
+- Never hesitate to ask questions. It will ***always help!
+
+- Be like water while using different widgets, you will find out that you can always get the widget in the way you wanted.
