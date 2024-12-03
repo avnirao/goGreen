@@ -30,13 +30,14 @@ class EntryView extends StatefulWidget{
 
 class _EntryViewState extends State<EntryView>{
 
+  // menu entries for category 
   List<DropdownMenuEntry<EmissionCategory>> dropdownMenuEntries = EmissionCategory.values.map((category) {
     return DropdownMenuEntry<EmissionCategory>(value: category, label: category.toString(), 
     style: const ButtonStyle(foregroundColor: WidgetStatePropertyAll(Color(0xFF386641)), 
     textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 14))));
   }).toList();
 
-
+  // menu entries for subtypes
   List<DropdownMenuEntry<String>> subtypeDropdownMenuEntries = [];
 
 
@@ -51,12 +52,10 @@ class _EntryViewState extends State<EntryView>{
   EmissionChecker checker = EmissionChecker();
 
   // for clothing
-  double? amount;
+  double? amount; // also for money, weight, distance
   MoneyUnit? moneyUnit;
   WeightUnit? weightUnit;
   String curEst = 'N/A';
-
-  // for electrical waste
 
   // for energy
   EnergyAmount? energyAmount;
@@ -66,9 +65,6 @@ class _EntryViewState extends State<EntryView>{
   int? passengers;
   PassengerAmount? passengerAmount;
   VehicleSize? size;
-  bool isDomestic = true;
-
-  EmissionCategory test = EmissionCategory.clothing;
 
   @override
   void initState() {
@@ -119,7 +115,7 @@ class _EntryViewState extends State<EntryView>{
                   SizedBox(
                     width: 170, // Set uniform width for dropdown and button
                     child: DropdownMenu<EmissionCategory>(
-                      initialSelection: category,
+                      initialSelection: category, // default to be clothing
                       dropdownMenuEntries: dropdownMenuEntries,
                       onSelected: (EmissionCategory? value) {
                         setState(() {
@@ -145,9 +141,9 @@ class _EntryViewState extends State<EntryView>{
                               category = EmissionCategory.food;
                           }
                         });
-                        _updateSubtypeDropdown(value ?? EmissionCategory.clothing);
+                        _updateSubtypeDropdown(value ?? EmissionCategory.clothing); // default subtype leather
                       },
-                      textStyle: const TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
+                      textStyle: const TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold), // text in the selected box
                       inputDecorationTheme: InputDecorationTheme(
                         filled: true,
                         fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
@@ -169,7 +165,7 @@ class _EntryViewState extends State<EntryView>{
                   SizedBox(
                     width: 170, // Set uniform width for dropdown and button
                     child: DropdownMenu<String>(
-                      initialSelection: subtype,
+                      initialSelection: subtype, //default to be leather here
                       dropdownMenuEntries: subtypeDropdownMenuEntries,
                       onSelected: (String? value) {
                         setState(() {
@@ -289,7 +285,7 @@ class _EntryViewState extends State<EntryView>{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Notes:', style: TextStyle(color: Color(0xFF386641), fontSize: 15),),
+                  const Text('Notes:', style: TextStyle(color: Color(0xFF386641), fontSize: 15), semanticsLabel: 'Enter notes below',),
                   SizedBox(
                     width: 300,
                     height: 90,
@@ -297,7 +293,7 @@ class _EntryViewState extends State<EntryView>{
                       maxLines: 10,
                       initialValue: notes,
                       onChanged: (value) { setState(() => notes = value); },
-                      decoration: InputDecoration(
+                      decoration: InputDecoration( // controls input text style
                         labelStyle: TextStyle(color: Colors.grey.shade800),
                         filled: true,
                         fillColor: const Color.fromARGB(52, 193, 185, 102),
@@ -342,7 +338,7 @@ class _EntryViewState extends State<EntryView>{
                     child: Text(
                       'Estimate\nEmission',
                       style: TextStyle(fontSize: 20,  fontWeight: FontWeight.bold),
-                      semanticsLabel: 'Estimate Emission',
+                      semanticsLabel: 'Estimate Emission Button',
                     ),
                   ),
                 ),
@@ -450,21 +446,27 @@ class _EntryViewState extends State<EntryView>{
           case 'Hybrid Car':
             return TravelEmissions.hybridCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km);
           case 'Bus':
-            return TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Light Rail/Tram':
-            return TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Train':
-            return TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km , passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Ferry: On Foot':
-            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
+            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
           case 'Ferry: With a Car':
-            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
+            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
           case 'International Flight':
-            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
+            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            size: size ?? VehicleSize.medium, 
               passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: false);
           case 'Domestic Flight':
-            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
-              passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: true);
+            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            size: size ?? VehicleSize.medium, passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: true);
         }
 
       // Add other category cases for emission estimation here
@@ -704,6 +706,7 @@ class _EntryViewState extends State<EntryView>{
               child:
                   SizedBox(
                     width: 300,
+                    // energy dropdown
                     child: DropdownButtonFormField<EnergyAmount>(
                       decoration: InputDecoration(
                         filled: true,
@@ -749,6 +752,7 @@ class _EntryViewState extends State<EntryView>{
             children: [
               SizedBox(
                 width: 140, // Set a uniform width
+                //distance enter box
                 child: TextField(
                   style: const TextStyle(color: Color(0xFF386641)),
                   decoration: InputDecoration(
@@ -867,6 +871,7 @@ class _EntryViewState extends State<EntryView>{
                   data: Theme.of(context).copyWith(
                     canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
                   ),
+                  //dropdown for vehicle size
                   child: DropdownButtonFormField<VehicleSize>(
                     decoration: InputDecoration(
                       filled: true,
