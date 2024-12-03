@@ -1,10 +1,14 @@
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
+import 'package:isar/isar.dart';
+part 'entry.g.dart';
+
 
 /// Class to represent an emissions entry
+@Collection()
 class Entry {
   /// This Entry's identifying number.
   /// invariant: must be unique
-  final int id;
+  Id? id;
 
   ///The user's notes for this entry
   final String notes;
@@ -21,6 +25,7 @@ class Entry {
   final DateTime emissionsDate;
 
   /// the types of emissions for this entry
+  @enumerated
   final EmissionCategory category;
 
   /// the subtype of this entry
@@ -46,7 +51,7 @@ class Entry {
   factory Entry.fromEmissions({required EmissionCategory category, notes = '', emissionsDate}) {
     final when = DateTime.now();
     return Entry (
-      id: SequentialIDMaker.nextID(),
+      id: Isar.autoIncrement,
       notes: notes,
       updatedAt: when,
       createdAt: when,
@@ -57,16 +62,4 @@ class Entry {
     );
   }
 
-}
-
-/// Creates unique, incrementing IDs for the journal entries starting at 1
-class SequentialIDMaker {
-  // Represents the previous ID number
-  static int _lastID = 0;
-
-  /// Returns the next ID number
-  static int nextID() {
-    _lastID += 1;
-    return _lastID;
-  }
 }
