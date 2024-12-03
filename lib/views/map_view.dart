@@ -153,7 +153,7 @@ Widget build(BuildContext context) {
                 Icon(Icons.search, color: Colors.white), // Search icon
                 SizedBox(width: 8), // Space between icon and text
                 Text(
-                  'Click here for more information on how to dispose of things.',
+                  'Click here',
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,
