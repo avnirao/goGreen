@@ -47,12 +47,15 @@ dependencies:
   url_launcher: ^6.3.1
   http: ^1.2.2
   intl: ^0.19.0
+  isar: ^3.0.1
+  isar_flutter_libs: ^3.1.0+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.4.5
   json_serializable: ^6.6.0 
+  isar_generator: ^3.0.0
 
 
   # The "flutter_lints" package below contains a set of recommended lints to

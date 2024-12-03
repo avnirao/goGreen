@@ -1,30 +1,29 @@
 import 'package:go_green/models/entry.dart';
+import 'package:isar/isar.dart';
 
 // represents an ActivityHistory
 class ActivityHistory {
+  final Isar _isar;
   final List<Entry> _entries;
 
-  ActivityHistory() : _entries = [];
+  ActivityHistory(Isar isar) : _entries = [], _isar = isar;
 
-  List<Entry> get entries => _entries;
+  List<Entry> get entries => _isar.entrys.where().findAllSync();
 
   double get totalCo2 => _entries.fold(0.0, (sum, entry) => sum + entry.co2);
 
-  ActivityHistory._internal({required List<Entry> entries}) 
-  : _entries = List<Entry>.from(entries);
+  ActivityHistory._internal({required List<Entry> entries, required Isar isar}) 
+  : _entries = isar.entrys.where().findAllSync().toList(), _isar = isar;
 
   // gets a clone of ActivityHistory
   ActivityHistory clone() {
-    return ActivityHistory._internal(entries: List<Entry>.from(_entries));
+    return ActivityHistory._internal(entries: List<Entry>.from(_entries), isar: _isar);
   }
 
-  // upsert an entry into _entries, replace if id already exists
-  void upsertEntry(Entry entry) {
-    final index = _entries.indexWhere((entry1) => entry1.id == entry.id);
-    if (index != -1) {
-        _entries[index] = entry;
-    } else {
-      _entries.add(entry);
-    }
+  // upsert an entry into _entries
+  Future<void> upsertEntry(Entry entry) async {
+    await _isar.writeTxn(() async {
+      await _isar.entrys.put(entry);
+    });
   }
 }

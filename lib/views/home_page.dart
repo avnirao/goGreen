@@ -4,6 +4,7 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/entry.dart';
 import 'package:go_green/providers/activity_provider.dart';
 import 'package:go_green/views/entry_view.dart';
+import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +18,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   // _currentIndex is the index of the selected tab
   int _currentIndex = 0; // Tracks the selected tab
-  final ActivityHistory activityHistory = ActivityHistory();
+  //final ActivityHistory activityHistory = ActivityHistory(Isar isar);
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +83,6 @@ class HomePageState extends State<HomePage> {
                       onPressed: () {
                         // Navigate to the Track Page
                         final Entry newEntry = Entry.fromEmissions(category: EmissionCategory.clothing);
-                        activityHistory.upsertEntry(newEntry);
                         _navigateToEntry(context, newEntry);
                       },
                       style: ElevatedButton.styleFrom(
