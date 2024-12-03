@@ -101,7 +101,7 @@ class _EntryViewState extends State<EntryView>{
             children: [
               Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
               SizedBox(width: 8),
-              Text('GoGreen\nTrack your emissions here', style: TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),),
+              Text('Track Your Emissions', style: TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),),
             ],
           ),
         ),
@@ -237,8 +237,9 @@ class _EntryViewState extends State<EntryView>{
                           });
                         }
                       },
-                      child: Text(
+                      child: Center(child: Text(
                         'Choose Date: ${DateFormat.yMd().format(emissionsDate)}',
+                        semanticsLabel: 'Choose Date: ${DateFormat.yMd().format(emissionsDate)}',
                         style: const TextStyle(
                           color: Color(0xFF386641),
                           fontWeight: FontWeight.bold
@@ -246,6 +247,7 @@ class _EntryViewState extends State<EntryView>{
                       ),
                     ),
                   ),
+                  ), 
 
               
               const SizedBox(height: 10),
@@ -290,7 +292,7 @@ class _EntryViewState extends State<EntryView>{
                   const Text('Notes:', style: TextStyle(color: Color(0xFF386641), fontSize: 15),),
                   SizedBox(
                     width: 300,
-                    height: 100,
+                    height: 90,
                     child: TextFormField(
                       maxLines: 10,
                       initialValue: notes,
@@ -312,8 +314,8 @@ class _EntryViewState extends State<EntryView>{
 
               // estimate button
               SizedBox(
-                width: 160,
-                height: 80,
+                width: 200,
+                height: 60,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
@@ -336,11 +338,11 @@ class _EntryViewState extends State<EntryView>{
                     }
                   },
                   child: const Padding(
-                    padding: EdgeInsets.all(10.0), // Padding for better appearance
+                    padding: EdgeInsets.all(0), // Padding for better appearance
                     child: Text(
                       'Estimate\nEmission',
-                      style: TextStyle(fontSize: 19),
-                      semanticsLabel: 'Estimate\nEmission',
+                      style: TextStyle(fontSize: 20,  fontWeight: FontWeight.bold),
+                      semanticsLabel: 'Estimate Emission',
                     ),
                   ),
                 ),
@@ -373,7 +375,7 @@ class _EntryViewState extends State<EntryView>{
 
             // Save Button
             SizedBox(
-              width: 200,
+              width: 150,
               height: 70,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -387,7 +389,7 @@ class _EntryViewState extends State<EntryView>{
                   _popback(context);
                 },
                 child: const Padding(
-                  padding: EdgeInsets.all(10.0), // Padding for better appearance
+                  padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 6.0), // Less horizontal padding
                   child: Text(
                     'Save',
                     semanticsLabel: 'Save',
