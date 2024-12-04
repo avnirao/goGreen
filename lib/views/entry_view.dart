@@ -147,7 +147,7 @@ class _EntryViewState extends State<EntryView>{
                                     category = EmissionCategory.travel;
                                   case 'Food Waste':
                                     category = EmissionCategory.foodWaste;
-                                  case 'Genaral Waste':
+                                  case 'General Waste':
                                     category = EmissionCategory.generalWaste;
                                   case 'Electrical Waste':
                                     category = EmissionCategory.electricalWaste;
@@ -292,7 +292,7 @@ class _EntryViewState extends State<EntryView>{
                       _buildEnergyInputSection()
                     else if (category == EmissionCategory.food)
                       _buildMoneyInputSection()
-                    else if (category == EmissionCategory.foodWaste)
+                    else if (category == EmissionCategory.foodWaste) 
                       _buildWeightInputSection()
                     else if (category == EmissionCategory.furniture)
                       _buildMoneyInputSection()
@@ -573,6 +573,7 @@ class _EntryViewState extends State<EntryView>{
 
   // Weight Input Section
   Widget _buildWeightInputSection() {
+    print('building weight input');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
