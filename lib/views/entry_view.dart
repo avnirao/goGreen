@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:go_green/climatiq_api/emission_checker.dart';
 import 'package:go_green/climatiq_api/emission_estimate.dart';
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
@@ -104,7 +105,21 @@ class _EntryViewState extends State<EntryView>{
             children: [
               Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
               SizedBox(width: 8),
-              Text('GoGreen\nTrack your emissions here', style: TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Flexible(
+                    child: Text(
+                      'GoGreen\nTrack your emissions here', 
+                      style: TextStyle(
+                        color: Color(0xFF386641), 
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.fade
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
