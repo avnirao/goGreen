@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_green/views/entry_widgets/customizable_input.dart';
 
 /// Widget to create a custom dropdown menu
-class EmissionDropdownMenu<T> extends StatelessWidget {
+class EmissionDropdownMenu<T> extends CustomizableInput {
   /// The function called when the input is changed.
   final Function(T?) onSelected;
-  /// The font size for text in the dropdown menu
-  final double fontSize;
   /// The initial value to display on the dropdown menu
   final T initialSelection;
-  /// The width of the dropdown menu
-  final double width;
   /// The list of options for the dropdown menu
   final List<DropdownMenuEntry<T>> options;
-  /// The font weight for the items in the dropdown menu
-  final FontWeight fontWeight;
 
   /// Creates an custom dropdown menu.
   /// 
@@ -25,40 +20,53 @@ class EmissionDropdownMenu<T> extends StatelessWidget {
   ///  - fontWeight: The font weight for the items in the dropdown menu
   ///  - value: The value to display on the dropdown menu
   ///  - options: The list of options for the dropdown menu
+  ///  - label: the text label displayed above the widget
   const EmissionDropdownMenu({
     super.key, 
-    this.width = 170,
+    super.width = 170,
     required this.onSelected, 
-    this.fontSize = 16,
-    this.fontWeight = FontWeight.w500,
+    super.fontSize = 16,
+    super.fontWeight = FontWeight.w500,
     required this.initialSelection,
     required this.options,
-  });
+    required super.label,
+  }): super(description: null);
 
   @override build(BuildContext context) {
-    return SizedBox(
-      width: 170, // Set uniform width for dropdown and button
-      child: DropdownMenu<T>(
-        initialSelection: initialSelection,
-        dropdownMenuEntries: options,
-        onSelected: onSelected,
-        textStyle: TextStyle(color: const Color(0xFF386641), fontWeight: fontWeight, fontSize: fontSize),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15.0), // Rounded corners
-            borderSide: BorderSide.none, // Remove border
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          child: Text(
+            label, 
+            style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize),
+          )
+        ),
+        SizedBox(
+          width: width, // Set uniform width for dropdown and button
+          child: DropdownMenu<T>(
+            initialSelection: initialSelection,
+            dropdownMenuEntries: options,
+            onSelected: onSelected,
+            textStyle: TextStyle(color: const Color(0xFF386641), fontWeight: fontWeight, fontSize: fontSize),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                borderSide: BorderSide.none, // Remove border
+              ),
+            ),
+            menuStyle: MenuStyle(
+              backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFFF2E8CF)), // Menu background color
+              elevation: WidgetStateProperty.all<double>(5.0), // Elevation for shadow
+              padding: WidgetStateProperty.all<EdgeInsets>(
+                const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              ),
+            ),
           ),
         ),
-        menuStyle: MenuStyle(
-          backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFFF2E8CF)), // Menu background color
-          elevation: WidgetStateProperty.all<double>(5.0), // Elevation for shadow
-          padding: WidgetStateProperty.all<EdgeInsets>(
-            const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          ),
-        ),
-      ),
+      ],
     );
   }
 }

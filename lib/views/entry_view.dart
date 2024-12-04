@@ -120,103 +120,84 @@ class _EntryViewState extends State<EntryView>{
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     // Dropdown for category selection
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Semantics(
-                          child: const Text(
-                            'Emission Category:', 
-                            style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                          )
-                        ),
-                        EmissionDropdownMenu(
-                          initialSelection: category, 
-                          options: dropdownMenuEntries,
-                          onSelected: (EmissionCategory? value) {
-                            setState(() {
-                              category = value ?? category;
-                            });
-                            _updateSubtypeDropdown(category);
-                          },
-                        ),
-                      ],
+                    EmissionDropdownMenu(
+                      label: 'Emission Category:',
+                      initialSelection: category, 
+                      options: dropdownMenuEntries,
+                      onSelected: (EmissionCategory? value) {
+                        setState(() {
+                          category = value ?? category;
+                        });
+                        _updateSubtypeDropdown(category);
+                      },
                     ),
                     // Dropdown for subtype selection
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Semantics(
-                          child: const Text(
-                            'Emission Type:', 
-                            style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                          )
-                        ),
-                        EmissionDropdownMenu(
-                          onSelected: (String? value) {
-                            setState(() {
-                              subtype = value ?? subtype;
-                            });
-                          },
-                          initialSelection: subtype, 
-                          options: subtypeDropdownMenuEntries,
-                        ),
-                      ],
+                    EmissionDropdownMenu(
+                      label: 'EmissionType',
+                      onSelected: (String? value) {
+                        setState(() {
+                          subtype = value ?? subtype;
+                        });
+                      },
+                      initialSelection: subtype, 
+                      options: subtypeDropdownMenuEntries,
                     ),
                   ],
                 ),
             
                 const SizedBox(height: 10),
+
                 // Date selector button
-                    SizedBox(
-                      width: 150, // Set uniform width for dropdown and button
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
-                          foregroundColor: const Color(0xFF386641), // Text color
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0), // Rounded corners matching dropdown
-                          ),
-                        ),
-                        onPressed: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: emissionsDate,
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime.now(),
-                            builder: (BuildContext context, Widget? child) {
-                              return Theme(
-                                data: ThemeData.light().copyWith(
-                                  primaryColor: const Color(0xFF6A994E), // Header background color (e.g., calendar title)
-                                  colorScheme: const ColorScheme.light(
-                                    primary: Color(0xFF6A994E), // Color for selected date and confirm button
-                                    onPrimary: Color(0xFFF2E8CF), // Text color on the confirm button
-                                    surface: Color(0xFFF2E8CF), // Background color of the calendar
-                                    onSurface: Color(0xFF386641), // Color for the date text
-                                  ),
-                                  dialogBackgroundColor: const Color(0xFFF2E8CF), // Background color of the date picker dialog
-                                ),
-                                child: child!,
-                              );
-                            },
-                          );
-                          if (pickedDate != null && pickedDate != emissionsDate) {
-                            setState(() {
-                              emissionsDate = pickedDate;
-                            });
-                          }
-                        },
-                        child: Text(
-                          'Choose Date: ${DateFormat.yMd().format(emissionsDate)}',
-                          style: const TextStyle(
-                            color: Color(0xFF386641),
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
+                SizedBox(
+                  width: 150, // Set uniform width for dropdown and button
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
+                      foregroundColor: const Color(0xFF386641), // Text color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0), // Rounded corners matching dropdown
                       ),
                     ),
-            
+                    onPressed: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: emissionsDate,
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: ThemeData.light().copyWith(
+                              primaryColor: const Color(0xFF6A994E), // Header background color (e.g., calendar title)
+                              colorScheme: const ColorScheme.light(
+                                primary: Color(0xFF6A994E), // Color for selected date and confirm button
+                                onPrimary: Color(0xFFF2E8CF), // Text color on the confirm button
+                                surface: Color(0xFFF2E8CF), // Background color of the calendar
+                                onSurface: Color(0xFF386641), // Color for the date text
+                              ),
+                              dialogBackgroundColor: const Color(0xFFF2E8CF), // Background color of the date picker dialog
+                            ),
+                            child: child!,
+                          );
+                        },
+                      );
+                      if (pickedDate != null && pickedDate != emissionsDate) {
+                        setState(() {
+                          emissionsDate = pickedDate;
+                        });
+                      }
+                    },
+                    child: Text(
+                      'Choose Date: ${DateFormat.yMd().format(emissionsDate)}',
+                      style: const TextStyle(
+                        color: Color(0xFF386641),
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
+                ),
                 
                 const SizedBox(height: 10),
+
                 // selections for differenct categories
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -231,25 +212,18 @@ class _EntryViewState extends State<EntryView>{
                             _buildMoneyInputSection(),
                         ],
                       )
-                    else if (category == EmissionCategory.electricalWaste)
+                    else if (category == EmissionCategory.electricalWaste || category == EmissionCategory.foodWaste 
+                    || category == EmissionCategory.personalCareAndAccessories || category == EmissionCategory.generalWaste)
                       _buildWeightInputSection()
                     else if (category == EmissionCategory.energy)
                       _buildEnergyInputSection()
-                    else if (category == EmissionCategory.food)
-                      _buildMoneyInputSection()
-                    else if (category == EmissionCategory.foodWaste) 
-                      _buildWeightInputSection()
-                    else if (category == EmissionCategory.furniture)
-                      _buildMoneyInputSection()
-                    else if (category == EmissionCategory.generalWaste)
-                      _buildWeightInputSection()
-                    else if (category == EmissionCategory.personalCareAndAccessories)
+                    else if (category == EmissionCategory.food || category == EmissionCategory.furniture
+                    || category == EmissionCategory.personalCareAndAccessories)
                       _buildMoneyInputSection()
                     else if (category == EmissionCategory.travel)
                       _buildTravelInputSection(subtype),
                   ],
                 ),
-            
                 
                 // notes field
                 Column(
@@ -527,46 +501,26 @@ class _EntryViewState extends State<EntryView>{
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Weight input field
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    child: const Text(
-                      'Weight:', 
-                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                    )
-                  ),
-                  AmountInput(
-                    onChanged: (value) {
-                      setState(() {
-                        amount = double.tryParse(value) ?? 0;
-                      });
-                    }, 
-                    label: 'Weight'
-                  ),
-                ],
+              AmountInput(
+                label: 'Weight:',
+                onChanged: (value) {
+                  setState(() {
+                    amount = double.tryParse(value) ?? 0;
+                  });
+                }, 
+                description: 'Weight'
               ),
               const SizedBox(width: 20), // Increased spacing between fields
               // Weight Unit Dropdown
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    child: const Text(
-                      'Units:', 
-                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                    )
-                  ),
-                  CustomDropdown<WeightUnit>(
-                    onChanged: (WeightUnit? value) {
-                      setState(() {
-                        weightUnit = value ?? weightUnit;
-                      });
-                    },
-                    value: weightUnit,
-                    options: WeightUnit.values,
-                  ),
-                ],
+              CustomDropdown<WeightUnit>(
+                label: 'Units',
+                onChanged: (WeightUnit? value) {
+                  setState(() {
+                    weightUnit = value ?? weightUnit;
+                  });
+                },
+                value: weightUnit,
+                options: WeightUnit.values,
               ),
             ],
           ),
@@ -583,46 +537,26 @@ class _EntryViewState extends State<EntryView>{
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Money input field
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Semantics(
-                child: const Text(
-                  'Amount spent:', 
-                  style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                )
-              ),
-              AmountInput(
-                onChanged: (value) {
-                  setState(() {
-                    amount = double.tryParse(value) ?? 0;
-                  });
-                }, 
-                label: 'Enter amount'
-              ),
-            ],
+          AmountInput(
+            label: 'Amount spent:',
+            onChanged: (value) {
+              setState(() {
+                amount = double.tryParse(value) ?? 0;
+              });
+            }, 
+            description: 'Enter amount'
           ),
           const SizedBox(width: 20), // Increased spacing between fields
           // Money Unit Dropdown
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Semantics(
-                child: const Text(
-                  'Currency:', 
-                  style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                )
-              ),
-              CustomDropdown<MoneyUnit>(
-                onChanged: (MoneyUnit? value) {
-                  setState(() {
-                    moneyUnit = value ?? moneyUnit;
-                  });
-                }, 
-                value: moneyUnit, 
-                options: MoneyUnit.values,
-              ),
-            ],
+          CustomDropdown<MoneyUnit>(
+            label: 'Currency:',
+            onChanged: (MoneyUnit? value) {
+              setState(() {
+                moneyUnit = value ?? moneyUnit;
+              });
+            }, 
+            value: moneyUnit, 
+            options: MoneyUnit.values,
           ),
         ],
       ),
@@ -637,26 +571,16 @@ class _EntryViewState extends State<EntryView>{
           data: Theme.of(context).copyWith(
             canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Semantics(
-                child: const Text(
-                  'How much energy did you use?', 
-                  style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                )
-              ),
-              CustomDropdown<EnergyAmount>(
-                onChanged: (EnergyAmount? value) {
-                  setState(() {
-                    energyAmount = value!;
-                  });
-                }, 
-                value: energyAmount, 
-                options: EnergyAmount.values,
-                width: 300
-              ),
-            ],
+          child: CustomDropdown<EnergyAmount>(
+            label: 'How much energy did you use?',
+            onChanged: (EnergyAmount? value) {
+              setState(() {
+                energyAmount = value!;
+              });
+            }, 
+            value: energyAmount, 
+            options: EnergyAmount.values,
+            width: 300
           ),
         ),
       ],
@@ -670,46 +594,26 @@ class _EntryViewState extends State<EntryView>{
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Semantics(
-                  child: const Text(
-                    'Distance:', 
-                    style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                  )
-                ),
-                AmountInput(
-                  onChanged: (value) {
-                    setState(() {
-                      amount = double.tryParse(value) ?? 0;
-                    });
-                  }, 
-                  label: 'Distance'
-                ),
-              ],
+            AmountInput(
+              label: 'Distance:',
+              onChanged: (value) {
+                setState(() {
+                  amount = double.tryParse(value) ?? 0;
+                });
+              }, 
+              description: 'Distance'
             ),
             const SizedBox(width: 20),
             // Distance Unit Dropdown
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Semantics(
-                  child: const Text(
-                    'Units:', 
-                    style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                  )
-                ),
-                CustomDropdown<DistanceUnit>(
-                  onChanged: (DistanceUnit? value) {
-                    setState(() {
-                      distanceUnit = value ?? distanceUnit;
-                    });
-                  },
-                  value: distanceUnit, 
-                  options: DistanceUnit.values
-                ),
-              ],
+            CustomDropdown<DistanceUnit>(
+              label: 'Units',
+              onChanged: (DistanceUnit? value) {
+                setState(() {
+                  distanceUnit = value ?? distanceUnit;
+                });
+              },
+              value: distanceUnit, 
+              options: DistanceUnit.values
             ),
           ],
         ),
@@ -717,79 +621,50 @@ class _EntryViewState extends State<EntryView>{
         // Distance input field
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const SizedBox(height: 20), // Increased spacing between dropdowns
             // Passenger Amount Dropdown
             if (subtype == 'Gas Car' || subtype == 'Electric Car') ...[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    child: const Text(
-                      '# of Passengers:', 
-                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                    )
-                  ),
-                  AmountInput(
-                    label: 'Passengers',
-                    onChanged: (value) {
-                      setState(() {
-                        amount = double.tryParse(value) ?? 0;
-                      });
-                    },
-                  ),
-                ],
+              AmountInput(
+                label: '# of Passengers:',
+                description: 'Passengers',
+                onChanged: (value) {
+                  setState(() {
+                    amount = double.tryParse(value) ?? 0;
+                  });
+                },
               ),
             ] else if (subtype == 'Hybrid Car') ...[
               // Hybrid car displays nothing here
               // It requries no additional passenger information
             ] else ...[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    child: const Text(
-                      'How full was\nthe ride?', 
-                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                    )
-                  ),
-                  CustomDropdown<PassengerAmount>(
-                    width: 150,
-                    onChanged: (PassengerAmount? value) {
-                      setState(() {
-                        passengerAmount = value!;
-                      });
-                    }, 
-                    // hintFontSize: 10,
-                    value: passengerAmount, 
-                    options: PassengerAmount.values,
-                  ),
-                ],
+              CustomDropdown<PassengerAmount>(
+                label: 'How full was\nthe ride?',
+                width: 150,
+                onChanged: (PassengerAmount? value) {
+                  setState(() {
+                    passengerAmount = value!;
+                  });
+                }, 
+                // hintFontSize: 10,
+                value: passengerAmount, 
+                options: PassengerAmount.values,
               ),
             ],
     
             const SizedBox(width: 20,),
     
             if (subtype == 'International Flight' || subtype == 'Domestic Flight') ...[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    child: const Text(
-                      '\nPlane size:', 
-                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                    )
-                  ),
-                  CustomDropdown<VehicleSize>(
-                    onChanged: (VehicleSize? value) {
-                      setState(() {
-                        size = value!;
-                      });
-                    }, 
-                    value: size, 
-                    options: VehicleSize.values
-                  ),
-                ],
+              CustomDropdown<VehicleSize>(
+                label: 'Plane size:',
+                onChanged: (VehicleSize? value) {
+                  setState(() {
+                    size = value!;
+                  });
+                }, 
+                value: size, 
+                options: VehicleSize.values
               ),
             ]
           ],
