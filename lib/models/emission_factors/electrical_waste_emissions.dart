@@ -2,8 +2,6 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/weight_emission_factor.dart';
 
-/// Represents types of electronic waste.
-// enum ElectricalWasteType{batteries, monitors, otherSmallDevices}
 
 /// Represents emissions from food waste
 class ElectricalWasteEmissions extends WeightEmissionFactor {

@@ -20,6 +20,7 @@ abstract class EmissionFactor {
     this.dataVersion = "19"
   });
 
+  /// Returns the info from this Emission Factor as a String.
   @override 
   String toString() {
     return 'category: $category,\n  id: $id';

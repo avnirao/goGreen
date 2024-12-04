@@ -2,9 +2,6 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/weight_emission_factor.dart';
 
-/// Represents types of food waste.
-// enum FoodWasteType{meat, grain, dairy, fruitsAndVegetables, mixedOrganics, otherFoodWaste}
-
 /// Represents emissions from food waste
 class FoodWasteEmissions extends WeightEmissionFactor {
   /// The type of food waste

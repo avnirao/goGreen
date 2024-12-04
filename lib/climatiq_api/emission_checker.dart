@@ -45,8 +45,8 @@ class EmissionChecker {
   /// Parameters: 
   ///  - responseBody: the data to be parsed
   /// 
-  /// Returns the emissions data as a double.
-  /// Returns null if the web service returns an invalid response.
+  /// Returns the emissions data as a double if the web service provides a valid response.
+  /// Returns null if the web service provides an invalid response.
   EmissionEstimate? _parseEmissions(http.Response response) {
     final parsed = (jsonDecode(response.body) as Map<String, dynamic>);
 
@@ -74,6 +74,7 @@ class EmissionChecker {
           throw ArgumentError('Unknown error.\n$parsed');
       }
     } catch (e) {
+      // Don't return an emission estimate if there's an error
       return null;
     }
 
@@ -91,7 +92,7 @@ class EmissionChecker {
   }
 
 
-  // METHODS FOR SENDING DATA TO THE API BELOW //
+  // METHODS FOR SENDING DATA TO THE API //
 
   /// Creates the request data to send to the API.
   /// 
@@ -125,7 +126,7 @@ class EmissionChecker {
           'money_unit': moneyFactor.moneyUnit.name
         },
 
-      // Case: a Weight Emission Factor (food waste or general waste)
+      // Case: a Weight Emission Factor (food waste, general waste, electrical waste)
       WeightEmissionFactor weightFactor => 
         {
           'weight': weightFactor.weight,

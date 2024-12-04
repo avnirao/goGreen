@@ -2,15 +2,6 @@ import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
 
-/// Represents types of food, beverage, or tobacco.
-/// FoodType should be the same as the name of the constructor it's used with.
-// enum FoodType {beef, pork, fish, otherFood, beverage, dairy, sugar, tobacco}
-
-class FoodTypeTest {
-  final String beefDisplayName = 'Beef';
-  final String beefId = 'consumer_goods-type_meat_products_beef';
-}
-
 /// Represents emissions from food, beverage, and tobacco.
 class FoodEmissions extends MoneyEmissionFactor {
   /// The type of food

@@ -41,7 +41,15 @@ enum EmissionCategory{
 ///  - `nok`: Norwegian Krone
 ///  - `gtq`: Guatemalan Quetzal
 ///  - `mxn`: Mexican Peso
-enum MoneyUnit{usd, cad, eur, gbd, nok, gtq, mxn}
+enum MoneyUnit{
+  usd, cad, eur, gbd, nok, gtq, mxn;
+
+  /// Returns the value of this enum as a String.
+  @override 
+  String toString () {
+    return name.toUpperCase();
+  }
+}
 
 /// Units to use for weight.
 ///  - `g`: gram
@@ -49,7 +57,22 @@ enum MoneyUnit{usd, cad, eur, gbd, nok, gtq, mxn}
 ///  - `t`: metric ton
 ///  - `lb`: pound
 ///  - `ton`: US short ton
-enum WeightUnit{g, kg, t, lb, ton}
+enum WeightUnit{
+  g, kg, lb, t, ton;
+  
+  /// Returns the value of this enum as a String.
+  @override 
+  String toString () {
+    return switch (name) {
+      'g' => 'grams',
+      'kg' => 'kilograms',
+      'lb' => 'pounds', 
+      't' => 'metric tons',
+      'ton' => 'short tons',
+      _ => name
+    };
+  }
+}
 
 /// Units to use for distance.
 ///  - `m`: meter
@@ -57,4 +80,19 @@ enum WeightUnit{g, kg, t, lb, ton}
 ///  - `ft`: foot
 ///  - `mi`: mile
 ///  - `nmi`: nautical mile
-enum DistanceUnit{m, km, ft, mi, nmi}
+enum DistanceUnit{
+  m, km, ft, mi, nmi;
+
+  /// Returns the value of this enum as a String.
+  @override 
+  String toString () {
+    return switch (name) {
+      'm' => 'meters',
+      'km' => 'kilometers',
+      'ft' => 'feet', 
+      'mi' => 'miles',
+      'nmi' => 'nautical miles',
+      _ => name
+    };
+  }
+}
