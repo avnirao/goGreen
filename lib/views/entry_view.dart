@@ -106,7 +106,7 @@ class _EntryViewState extends State<EntryView>{
                   child: Flexible(
                     child: Semantics(
                       child: const Text(
-                        'GoGreen\nTrack your emissions here', 
+                        'Track Here', 
                         style: TextStyle(
                           color: Color(0xFF386641), 
                           fontWeight: FontWeight.bold,
@@ -254,7 +254,7 @@ class _EntryViewState extends State<EntryView>{
                         ),
                       ),
                       SizedBox(
-                        width: 300,
+                        width: 250,
                         height: 100,
                         child: TextFormField(
                           maxLines: 10,
@@ -305,8 +305,8 @@ class _EntryViewState extends State<EntryView>{
                         padding: EdgeInsets.all(10.0), // Padding for better appearance
                         child: Text(
                           'Estimate\nEmission',
-                          style: TextStyle(fontSize: 19),
-                          semanticsLabel: 'Estimate\nEmission',
+                          style: TextStyle(fontSize: 18),
+                          semanticsLabel: 'Estimate Emission',
                         ),
                       ),
                     ),
@@ -339,7 +339,7 @@ class _EntryViewState extends State<EntryView>{
               
                 // Save Button
                 SizedBox(
-                  width: 200,
+                  width: 130,
                   height: 70,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -357,7 +357,7 @@ class _EntryViewState extends State<EntryView>{
                       child: Text(
                         'Save',
                         semanticsLabel: 'Save',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
