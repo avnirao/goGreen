@@ -5,10 +5,6 @@ import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
 
-enum EnergyAmount{wellBelowAverage, belowAverage, average, aboveAverage, wellAboveAverage}
-
-// enum EnergyType{electricity, naturalGas}
-
 /// Represents emissions from energy usage
 class EnergyEmissions extends EmissionFactor {
   /// the amount of energy consumption
@@ -67,5 +63,35 @@ class EnergyEmissions extends EmissionFactor {
     result += '  energy consumption: $energy,\n';
     result += '  energy unit: $energyUnit';
     return result;
+  }
+}
+
+/// Enum to represent how much energy was used.
+enum EnergyAmount{
+  wellBelowAverage, belowAverage, average, aboveAverage, wellAboveAverage;
+  
+  /// Returns the value of this enum as a String.
+  @override
+  String toString() {
+    String result = super.toString();
+    if (result.isEmpty) return result;
+
+    // get rid of the enum type at the beginning of the string
+    final int startIndex = result.indexOf('.') + 1;
+    result = result.substring(startIndex);
+
+    // Check for uppercase letters - that means that the name contains multiple words
+    for (int i = 0; i < result.length; i++) {
+      final String copy = result;
+      if (copy[i] == copy[i].toUpperCase()) {
+        // uppercase letter found, add space before it
+        result = '${result.substring(0, i)} ${result.substring(i, result.length)}';
+        // increment since a character was added to the string
+        i++; 
+      }
+    }
+
+    // Make the 1st letter uppercase
+    return result[0].toUpperCase() + result.substring(1).toLowerCase();
   }
 }

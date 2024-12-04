@@ -2,10 +2,6 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 
-/// Represents types of clothing.
-/// ClothingType should be the same as the name of the constructor it's used with.
-// enum ClothingType {leather, footwear, newClothing, usedClothing, infantClothing}
-
 /// Represents the emissions from clothing
 class ClothingEmissions extends EmissionFactor {
   /// The amount of clothing acquired (money or weight, depending on type)

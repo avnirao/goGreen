@@ -98,7 +98,7 @@ class EmissionSubtypes {
   ///  - Other Furniture
   final Map<String, String> furnitureTypes = {
     'Blinds' : 'consumer_goods-type_blinds_shades_and_curtain_fixtures',
-    'Mattress' : 'consumer_goods-type_mattresses_and_foundations',
+    'Matress' : 'consumer_goods-type_mattresses_and_foundations',
     'Office Furniture' : 'consumer_goods-type_office_furniture',
     'Wood Cabinet' : 'consumer_goods-type_wood_cabinets_and_counter_tops',
     'Wood Countertop' : 'consumer_goods-type_wood_cabinets_and_counter_tops',
@@ -145,7 +145,7 @@ class EmissionSubtypes {
   };
 
   /// Available Personal Care Type options:
-  ///  - Jewellery
+  ///  - Jewelery
   ///  - Perfume
   ///  - Toiletries
   ///  - Soap
@@ -153,7 +153,7 @@ class EmissionSubtypes {
   ///  - Feminine Hygiene
   ///  - Disposable Diapers
   final Map<String, String> personalCareTypes = {
-    'Jewellery' : 'consumer_goods-type_jewellery_and_silverware',
+    'Jewelery' : 'consumer_goods-type_jewellery_and_silverware',
     'Perfume' : 'consumer_goods-type_perfumes_and_toiletries',
     'Toiletries' : 'consumer_goods-type_perfumes_and_toiletries',
     'Soap' : 'consumer_goods-type_soaps_and_cleaning_compounds',
