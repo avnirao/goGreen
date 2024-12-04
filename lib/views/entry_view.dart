@@ -15,6 +15,9 @@ import 'package:go_green/models/emission_factors/general_waste.dart';
 import 'package:go_green/models/emission_factors/personal_care_emissions.dart';
 import 'package:go_green/models/emission_factors/travel_emissions.dart';
 import 'package:go_green/models/entry.dart';
+import 'package:go_green/views/entry_widgets/amount_input.dart';
+import 'package:go_green/views/entry_widgets/custom_dropdown.dart';
+import 'package:go_green/views/entry_widgets/emission_dropdown_menu.dart';
 import 'package:intl/intl.dart';
 
 
@@ -126,54 +129,15 @@ class _EntryViewState extends State<EntryView>{
                             style: TextStyle(color: Color(0xFF386641), fontSize: 16),
                           )
                         ),
-                        SizedBox(
-                          width: 170, // Set uniform width for dropdown and button
-                          child: DropdownMenu<EmissionCategory>(
-                            initialSelection: category,
-                            dropdownMenuEntries: dropdownMenuEntries,
-                            onSelected: (EmissionCategory? value) {
-                              setState(() {
-                                String tempValue = value.toString();
-                                switch(tempValue){
-                                  case 'Clothing': 
-                                    category = EmissionCategory.clothing;
-                                  case 'Energy':
-                                    category = EmissionCategory.energy;
-                                  case 'Furniture':
-                                    category = EmissionCategory.furniture;
-                                  case 'Personal Care And Accessories':
-                                    category = EmissionCategory.personalCareAndAccessories;
-                                  case 'Travel':
-                                    category = EmissionCategory.travel;
-                                  case 'Food Waste':
-                                    category = EmissionCategory.foodWaste;
-                                  case 'General Waste':
-                                    category = EmissionCategory.generalWaste;
-                                  case 'Electrical Waste':
-                                    category = EmissionCategory.electricalWaste;
-                                  case 'Food':
-                                    category = EmissionCategory.food;
-                                }
-                              });
-                              _updateSubtypeDropdown(value ?? EmissionCategory.clothing);
-                            },
-                            textStyle: const TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
-                            inputDecorationTheme: InputDecorationTheme(
-                              filled: true,
-                              fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                                borderSide: BorderSide.none, // Remove border
-                              ),
-                            ),
-                            menuStyle: MenuStyle(
-                              backgroundColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 224, 214, 186)), // Menu background color
-                              elevation: WidgetStateProperty.all<double>(5.0), // Elevation for shadow
-                              padding: WidgetStateProperty.all<EdgeInsets>(
-                                const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                              ),
-                            ),
-                          ),
+                        EmissionDropdownMenu(
+                          initialSelection: category, 
+                          options: dropdownMenuEntries,
+                          onSelected: (EmissionCategory? value) {
+                            setState(() {
+                              category = value ?? category;
+                            });
+                            _updateSubtypeDropdown(category);
+                          },
                         ),
                       ],
                     ),
@@ -187,33 +151,14 @@ class _EntryViewState extends State<EntryView>{
                             style: TextStyle(color: Color(0xFF386641), fontSize: 16),
                           )
                         ),
-                        SizedBox(
-                          width: 170, // Set uniform width for dropdown and button
-                          child: DropdownMenu<String>(
-                            initialSelection: subtype,
-                            dropdownMenuEntries: subtypeDropdownMenuEntries,
-                            onSelected: (String? value) {
-                              setState(() {
-                                subtype = value ?? 'Leather';
-                              });
-                            },
-                            textStyle: const TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
-                            inputDecorationTheme: InputDecorationTheme(
-                              filled: true,
-                              fillColor: const Color.fromARGB(255, 234, 224, 198), // Background color
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                                borderSide: BorderSide.none, // Remove border
-                              ),
-                            ),
-                            menuStyle: MenuStyle(
-                              backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFFF2E8CF)), // Menu background color
-                              elevation: WidgetStateProperty.all<double>(5.0), // Elevation for shadow
-                              padding: WidgetStateProperty.all<EdgeInsets>(
-                                const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                              ),
-                            ),
-                          ),
+                        EmissionDropdownMenu(
+                          onSelected: (String? value) {
+                            setState(() {
+                              subtype = value ?? subtype;
+                            });
+                          },
+                          initialSelection: subtype, 
+                          options: subtypeDropdownMenuEntries,
                         ),
                       ],
                     ),
@@ -310,7 +255,7 @@ class _EntryViewState extends State<EntryView>{
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Notes:', style: TextStyle(color: Color(0xFF386641), fontSize: 15),),
+                    const Text('Notes:', style: TextStyle(color: Color(0xFF386641), fontSize: 16),),
                     SizedBox(
                       width: 300,
                       height: 100,
@@ -326,6 +271,7 @@ class _EntryViewState extends State<EntryView>{
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        onTapOutside: (event) => FocusScope.of(context).unfocus()
                       ),
                     ),
                   ],
@@ -573,7 +519,6 @@ class _EntryViewState extends State<EntryView>{
 
   // Weight Input Section
   Widget _buildWeightInputSection() {
-    print('building weight input');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
@@ -591,26 +536,13 @@ class _EntryViewState extends State<EntryView>{
                       style: TextStyle(color: Color(0xFF386641), fontSize: 16),
                     )
                   ),
-                  SizedBox(
-                    width: 140,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Weight',
-                        labelStyle: const TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold),
-                        filled: true,
-                        fillColor: const Color.fromARGB(255, 234, 224, 198),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        setState(() {
-                          amount = double.tryParse(value) ?? 0;
-                        });
-                      },
-                    ),
+                  AmountInput(
+                    onChanged: (value) {
+                      setState(() {
+                        amount = double.tryParse(value) ?? 0;
+                      });
+                    }, 
+                    label: 'Weight'
                   ),
                 ],
               ),
@@ -625,41 +557,14 @@ class _EntryViewState extends State<EntryView>{
                       style: TextStyle(color: Color(0xFF386641), fontSize: 16),
                     )
                   ),
-                  SizedBox(
-                    width: 144,
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-                      ),
-                      child: DropdownButtonFormField<WeightUnit>(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        hint: const Text('Weight Unit', style: TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold)),
-                        value: weightUnit,
-                        onChanged: (WeightUnit? value) {
-                          setState(() {
-                            weightUnit = value ?? weightUnit;
-                          });
-                        },
-                        items: WeightUnit.values
-                            .map((unit) => DropdownMenuItem<WeightUnit>(
-                                  value: unit,
-                                  child: Text(
-                                    unit.toString().split('.').last,
-                                    style: const TextStyle(
-                                      color: Color(0xFF386641), // Set text color for dropdown items
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                      ),
-                    ),
+                  CustomDropdown<WeightUnit>(
+                    onChanged: (WeightUnit? value) {
+                      setState(() {
+                        weightUnit = value ?? weightUnit;
+                      });
+                    },
+                    value: weightUnit,
+                    options: WeightUnit.values,
                   ),
                 ],
               ),
@@ -687,26 +592,13 @@ class _EntryViewState extends State<EntryView>{
                   style: TextStyle(color: Color(0xFF386641), fontSize: 16),
                 )
               ),
-              SizedBox(
-                width: 140, 
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Enter amount',
-                    labelStyle: const TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold),
-                    filled: true,
-                    fillColor: const Color.fromARGB(255, 234, 224, 198),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() {
-                      amount = double.tryParse(value) ?? 0;
-                    });
-                  },
-                ),
+              AmountInput(
+                onChanged: (value) {
+                  setState(() {
+                    amount = double.tryParse(value) ?? 0;
+                  });
+                }, 
+                label: 'Enter amount'
               ),
             ],
           ),
@@ -721,41 +613,14 @@ class _EntryViewState extends State<EntryView>{
                   style: TextStyle(color: Color(0xFF386641), fontSize: 16),
                 )
               ),
-              SizedBox(
-                width: 180,
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-                  ),
-                  child: DropdownButtonFormField<MoneyUnit>(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    hint: const Text('Select Currency', style: TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold),),
-                    value: moneyUnit,
-                    onChanged: (MoneyUnit? value) {
-                      setState(() {
-                        moneyUnit = value ?? moneyUnit;
-                      });
-                    },
-                    items: MoneyUnit.values
-                        .map((unit) => DropdownMenuItem<MoneyUnit>(
-                              value: unit,
-                              child: Text(
-                                unit.toString().split('.').last,
-                                style: const TextStyle(
-                                  color: Color(0xFF386641), // Set text color for dropdown items
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                ),
+              CustomDropdown<MoneyUnit>(
+                onChanged: (MoneyUnit? value) {
+                  setState(() {
+                    moneyUnit = value ?? moneyUnit;
+                  });
+                }, 
+                value: moneyUnit, 
+                options: MoneyUnit.values,
               ),
             ],
           ),
@@ -768,304 +633,168 @@ class _EntryViewState extends State<EntryView>{
   Widget _buildEnergyInputSection() {
     return Column(
       children: [
-            Theme(
-              data: Theme.of(context).copyWith(
-                canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+        Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Semantics(
+                child: const Text(
+                  'How much energy did you use?', 
+                  style: TextStyle(color: Color(0xFF386641), fontSize: 16),
+                )
               ),
-              child:
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Semantics(
-                        child: const Text(
-                          'How much energy did you use?', 
-                          style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                        )
-                      ),
-                      SizedBox(
-                        width: 300,
-                        child: DropdownButtonFormField<EnergyAmount>(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          hint: const Text('Energy used', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF386641)), ),
-                          value: energyAmount,
-                          onChanged: (EnergyAmount? value) {
-                            setState(() {
-                              energyAmount = value!;
-                            });
-                          },
-                          items: EnergyAmount.values
-                              .map((unit) => DropdownMenuItem<EnergyAmount>(
-                                    value: unit,
-                                    child: Text(
-                                      unit.toString().split('.').last,
-                                      style: const TextStyle(
-                                        color: Color(0xFF386641), // Set text color for dropdown items
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                    ],
-                  ),
+              CustomDropdown<EnergyAmount>(
+                onChanged: (EnergyAmount? value) {
+                  setState(() {
+                    energyAmount = value!;
+                  });
+                }, 
+                value: energyAmount, 
+                options: EnergyAmount.values,
+                width: 300
               ),
-          ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   // Travel Input Section
   Widget _buildTravelInputSection(String subtype) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    child: const Text(
-                      'Distance:', 
-                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                    )
-                  ),
-                  SizedBox(
-                    width: 140, // Set a uniform width
-                    child: TextField(
-                      style: const TextStyle(color: Color(0xFF386641)),
-                      decoration: InputDecoration(
-                        labelText: 'Distance',
-                        labelStyle: const TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold),
-                        filled: true,
-                        fillColor: const Color.fromARGB(255, 234, 224, 198),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0), 
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        setState(() {
-                          amount = double.tryParse(value) ?? 0;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 20),
-              // Distance Unit Dropdown
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Semantics(
-                    child: const Text(
-                      'Units:', 
-                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                    )
-                  ),
-                  SizedBox(
-                    width: 159,
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-                      ),
-                      child: DropdownButtonFormField<DistanceUnit>(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        hint: const Text('Distance Unit', style: TextStyle(color: Color(0xFF386641),fontWeight: FontWeight.bold)),
-                        value: distanceUnit,
-                        onChanged: (DistanceUnit? value) {
-                          setState(() {
-                            distanceUnit = value ?? distanceUnit;
-                          });
-                        },
-                        items: DistanceUnit.values
-                            .map((unit) => DropdownMenuItem<DistanceUnit>(
-                                  value: unit,
-                                  child: Text(
-                                    unit.toString().split('.').last,
-                                    style: const TextStyle(
-                                      color: Color(0xFF386641), // Set text color for dropdown items
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 20,),
-          // Distance input field
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (subtype == 'Gas Car' || subtype == 'Electric Car' || subtype == 'Bus' ||
-              subtype == 'Light Rail/Tram' || subtype == 'Train' ||
-              subtype == 'Ferry: On Foot' || subtype == 'Ferry: With a Car' 
-              || subtype == 'International Flight' || subtype == 'Domestic Flight')
-            ...[
-              const SizedBox(height: 20), // Increased spacing between dropdowns
-              // Passenger Amount Dropdown
-              if (subtype == 'Gas Car' || subtype == 'Electric Car') ...[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Semantics(
-                      child: const Text(
-                        '# of Passengers:', 
-                        style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                      )
-                    ),
-                    SizedBox(
-                      width: 140, // Set a uniform width
-                      child: TextField(
-                        style: const TextStyle(color: Color(0xFF386641)),
-                        decoration: InputDecoration(
-                          labelText: 'Number of Passengers',
-                          labelStyle: const TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
-                          filled: true,
-                          fillColor: const Color.fromARGB(255, 234, 224, 198),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0), 
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          setState(() {
-                            amount = double.tryParse(value) ?? 0;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ] else if (subtype == 'Hybrid Car') ...[
-                // Hybrid car displays nothing here
-                // It requries no additional passenger information
-              ] else ...[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Semantics(
-                      child: const Text(
-                        'How full was\nthe ride?', 
-                        style: TextStyle(color: Color(0xFF386641), fontSize: 16),
-                      )
-                    ),
-                    SizedBox(
-                      width: 150,
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-                        ),
-                        child: DropdownButtonFormField<PassengerAmount>(
-                          style: const TextStyle(color: Color(0xFF386641)),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          hint: const Text('Passenger\nAmount',  style: TextStyle(color: Color(0xFF386641), fontSize: 10, fontWeight: FontWeight.bold)),
-                          value: passengerAmount,
-                          onChanged: (PassengerAmount? value) {
-                            setState(() {
-                              passengerAmount = value!;
-                            });
-                          },
-                          items: PassengerAmount.values
-                              .map((unit) => DropdownMenuItem<PassengerAmount>(
-                                    value: unit,
-                                    child: Text(
-                                      unit.toString().split('.').last,
-                                      style: const TextStyle(
-                                        color: Color(0xFF386641), // Set text color for dropdown items
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ]
-            ],
-          const SizedBox(width: 20,),
-          if (subtype == 'International Flight' || subtype == 'Domestic Flight')
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Semantics(
                   child: const Text(
-                    '\nPlane size:', 
+                    'Distance:', 
                     style: TextStyle(color: Color(0xFF386641), fontSize: 16),
                   )
                 ),
-                SizedBox(
-                    width: 170,
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        canvasColor: const Color.fromARGB(255, 224, 214, 186), // Background color when dropdown is open
-                      ),
-                      child: DropdownButtonFormField<VehicleSize>(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: const Color.fromARGB(255, 234, 224, 198), // Dropdown button fill color
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        hint: const Text('Vehicle Size',  style: TextStyle(color: Color(0xFF386641), fontSize: 13, fontWeight: FontWeight.bold)),
-                        value: size,
-                        onChanged: (VehicleSize? value) {
-                          setState(() {
-                            size = value!;
-                          });
-                        },
-                        items: VehicleSize.values
-                            .map((unit) => DropdownMenuItem<VehicleSize>(
-                                  value: unit,
-                                  child: Text(
-                                    unit.toString().split('.').last,
-                                    style: const TextStyle(
-                                      color: Color(0xFF386641), // Set text color for dropdown items
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ),
+                AmountInput(
+                  onChanged: (value) {
+                    setState(() {
+                      amount = double.tryParse(value) ?? 0;
+                    });
+                  }, 
+                  label: 'Distance'
+                ),
               ],
             ),
+            const SizedBox(width: 20),
+            // Distance Unit Dropdown
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Semantics(
+                  child: const Text(
+                    'Units:', 
+                    style: TextStyle(color: Color(0xFF386641), fontSize: 16),
+                  )
+                ),
+                CustomDropdown<DistanceUnit>(
+                  onChanged: (DistanceUnit? value) {
+                    setState(() {
+                      distanceUnit = value ?? distanceUnit;
+                    });
+                  },
+                  value: distanceUnit, 
+                  options: DistanceUnit.values
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 20,),
+        // Distance input field
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20), // Increased spacing between dropdowns
+            // Passenger Amount Dropdown
+            if (subtype == 'Gas Car' || subtype == 'Electric Car') ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Semantics(
+                    child: const Text(
+                      '# of Passengers:', 
+                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
+                    )
+                  ),
+                  AmountInput(
+                    label: 'Passengers',
+                    onChanged: (value) {
+                      setState(() {
+                        amount = double.tryParse(value) ?? 0;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ] else if (subtype == 'Hybrid Car') ...[
+              // Hybrid car displays nothing here
+              // It requries no additional passenger information
+            ] else ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Semantics(
+                    child: const Text(
+                      'How full was\nthe ride?', 
+                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
+                    )
+                  ),
+                  CustomDropdown<PassengerAmount>(
+                    width: 150,
+                    onChanged: (PassengerAmount? value) {
+                      setState(() {
+                        passengerAmount = value!;
+                      });
+                    }, 
+                    // hintFontSize: 10,
+                    value: passengerAmount, 
+                    options: PassengerAmount.values,
+                  ),
+                ],
+              ),
             ],
-          )
-        ],
-      ),
+    
+            const SizedBox(width: 20,),
+    
+            if (subtype == 'International Flight' || subtype == 'Domestic Flight') ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Semantics(
+                    child: const Text(
+                      '\nPlane size:', 
+                      style: TextStyle(color: Color(0xFF386641), fontSize: 16),
+                    )
+                  ),
+                  CustomDropdown<VehicleSize>(
+                    onChanged: (VehicleSize? value) {
+                      setState(() {
+                        size = value!;
+                      });
+                    }, 
+                    value: size, 
+                    options: VehicleSize.values
+                  ),
+                ],
+              ),
+            ]
+          ],
+        )
+      ],
     );
   }
 }
