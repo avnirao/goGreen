@@ -2,27 +2,6 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 
-/// Reresents how full a vehicle is based on how many passengers there are.
-/// 
-/// Options: empty, almostEmpty, average, almostFull, full, overloaded
-enum PassengerAmount{empty, almostEmpty, average, almostFull, full, overloaded}
-
-/// Represents how large a vehicle is.
-/// 
-/// Options: personal, small, medium, large
-enum VehicleSize{
-  personal, // personal is intended to be used for air travel (e.g., a personal plane with 2 seats)
-  small, medium, large
-}
-
-/// Represents types of travel.
-/// TravelType should be the same as the name of the constructor it's used with.
-// enum TravelType{
-//   bus, lightRailTram, train, ferryOnFoot, ferryWithCar, // public transit
-//   gasCar, fullElectricCar, hybridCar, // cars
-//   domesticFlight, internationalFlight, // flights
-// } 
-
 /// Represents the emissions from travel
 class TravelEmissions extends EmissionFactor{
   /// The distance traveled
@@ -206,4 +185,42 @@ class TravelEmissions extends EmissionFactor{
     result += '  type: ${travelType.toString()}';
     return result;
   }
+}
+
+/// Reresents how full a vehicle is based on how many passengers there are.
+enum PassengerAmount{
+  empty, almostEmpty, average, almostFull, full, overloaded;
+
+  @override
+  String toString() {
+    String result = super.toString();
+    if (result.isEmpty) return result;
+
+    // get rid of the enum type at the beginning of the string
+    final int startIndex = result.indexOf('.') + 1;
+    result = result.substring(startIndex);
+
+    // Check for uppercase letters - that means that the name contains multiple words
+    for (int i = 0; i < result.length; i++) {
+      final String copy = result;
+      if (copy[i] == copy[i].toUpperCase()) {
+        // uppercase letter found, add space before it
+        result = '${result.substring(0, i)} ${result.substring(i, result.length)}';
+        // increment since a character was added to the string
+        i++; 
+      }
+    }
+
+    // Make the 1st letter uppercase
+    return result[0].toUpperCase() + result.substring(1).toLowerCase();
+  }
+}
+
+/// Represents how large a vehicle is.
+enum VehicleSize{
+  personal, // personal is intended to be used for air travel (e.g., a personal plane with 2 seats)
+  small, medium, large;
+
+  @override
+  String toString() => name[0].toUpperCase() + name.substring(1).toLowerCase();
 }
