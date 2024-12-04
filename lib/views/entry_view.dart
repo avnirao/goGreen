@@ -1,6 +1,5 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:go_green/climatiq_api/emission_checker.dart';
 import 'package:go_green/climatiq_api/emission_estimate.dart';
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
@@ -249,7 +248,13 @@ class _EntryViewState extends State<EntryView>{
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Notes:', style: TextStyle(color: Color(0xFF386641), fontSize: 16),),
+                    Semantics(
+                      child: const Text(
+                        'Notes:', 
+                        style: TextStyle(color: Color(0xFF386641), fontSize: 16),
+                        semanticsLabel: 'Enter any additional notes below.',
+                      ),
+                    ),
                     SizedBox(
                       width: 300,
                       height: 100,
