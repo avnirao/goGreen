@@ -33,13 +33,14 @@ class EntryView extends StatefulWidget{
 
 class _EntryViewState extends State<EntryView>{
 
+  // menu entries for category 
   List<DropdownMenuEntry<EmissionCategory>> dropdownMenuEntries = EmissionCategory.values.map((category) {
     return DropdownMenuEntry<EmissionCategory>(value: category, label: category.toString(), 
     style: const ButtonStyle(foregroundColor: WidgetStatePropertyAll(Color(0xFF386641)), 
     textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 14))));
   }).toList();
 
-
+  // menu entries for subtypes
   List<DropdownMenuEntry<String>> subtypeDropdownMenuEntries = [];
 
 
@@ -54,12 +55,10 @@ class _EntryViewState extends State<EntryView>{
   EmissionChecker checker = EmissionChecker();
 
   // for clothing
-  double? amount;
+  double? amount; // also for money, weight, distance
   MoneyUnit? moneyUnit;
   WeightUnit? weightUnit;
   String curEst = 'N/A';
-
-  // for electrical waste
 
   // for energy
   EnergyAmount? energyAmount;
@@ -69,9 +68,6 @@ class _EntryViewState extends State<EntryView>{
   int? passengers;
   PassengerAmount? passengerAmount;
   VehicleSize? size;
-  bool isDomestic = true;
-
-  EmissionCategory test = EmissionCategory.clothing;
 
   @override
   void initState() {
@@ -355,7 +351,7 @@ class _EntryViewState extends State<EntryView>{
                     _popback(context);
                   },
                   child: const Padding(
-                    padding: EdgeInsets.all(10.0), // Padding for better appearance
+                    padding: EdgeInsets.all(0), // Padding for better appearance
                     child: Text(
                       'Save',
                       semanticsLabel: 'Save',
@@ -368,6 +364,7 @@ class _EntryViewState extends State<EntryView>{
             ),
           ),
         ),
+      ),
     );
   }
 
@@ -417,21 +414,27 @@ class _EntryViewState extends State<EntryView>{
           case 'Hybrid Car':
             return TravelEmissions.hybridCar(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km);
           case 'Bus':
-            return TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.bus(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Light Rail/Tram':
-            return TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.lightRailTram(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Train':
-            return TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km , passengerAmt: passengerAmount ?? PassengerAmount.average);
+            return TravelEmissions.train(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average);
           case 'Ferry: On Foot':
-            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
+            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: true);
           case 'Ferry: With a Car':
-            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
+            return TravelEmissions.ferry(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            passengerAmt: passengerAmount ?? PassengerAmount.average, onFoot: false);
           case 'International Flight':
-            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
+            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            size: size ?? VehicleSize.medium, 
               passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: false);
           case 'Domestic Flight':
-            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, size: size ?? VehicleSize.medium, 
-              passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: true);
+            return TravelEmissions.flight(distance: amount ?? 0, distanceUnit: distanceUnit ?? DistanceUnit.km, 
+            size: size ?? VehicleSize.medium, passengerAmt: passengerAmount ?? PassengerAmount.average, isDomestic: true);
         }
 
       // Add other category cases for emission estimation here
@@ -518,6 +521,7 @@ class _EntryViewState extends State<EntryView>{
 
   // Weight Input Section
   Widget _buildWeightInputSection() {
+    print('building weight input');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
