@@ -21,6 +21,7 @@ class EmissionDropdownMenu<T> extends CustomizableInput {
   ///  - value: The value to display on the dropdown menu
   ///  - options: The list of options for the dropdown menu
   ///  - label: the text label displayed above the widget
+  ///  - semanticsLabel: the semantics label for the label text
   const EmissionDropdownMenu({
     super.key, 
     super.width = 170,
@@ -30,6 +31,7 @@ class EmissionDropdownMenu<T> extends CustomizableInput {
     required this.initialSelection,
     required this.options,
     required super.label,
+    super.semanticsLabel
   }): super(description: null);
 
   @override build(BuildContext context) {
@@ -40,6 +42,7 @@ class EmissionDropdownMenu<T> extends CustomizableInput {
           child: Text(
             label, 
             style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize),
+            semanticsLabel: semanticsLabel ?? label,
           )
         ),
         SizedBox(

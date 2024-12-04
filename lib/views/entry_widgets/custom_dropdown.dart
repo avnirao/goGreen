@@ -22,6 +22,7 @@ class CustomDropdown<T> extends CustomizableInput {
   ///  - value: The value to display on the dropdown list
   ///  - options: The list of options for the dropdown list
   ///  - label: the text label displayed above the widget
+  ///  - semanticsLabel: the semantics label for the label text
   const CustomDropdown({
     super.key, 
     super.width = 180,
@@ -32,6 +33,7 @@ class CustomDropdown<T> extends CustomizableInput {
     required this.value,
     required this.options,
     required super.label,
+    super.semanticsLabel,
   });
 
   @override build(BuildContext context) {
@@ -42,6 +44,7 @@ class CustomDropdown<T> extends CustomizableInput {
           child: Text(
             label, 
             style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize),
+            semanticsLabel: semanticsLabel ?? label,
           )
         ),
         SizedBox(
@@ -60,9 +63,12 @@ class CustomDropdown<T> extends CustomizableInput {
                   borderSide: BorderSide.none,
                 ),
               ),
-              hint: Text(
-                description ?? 'Select...', 
-                style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize, fontWeight: fontWeight)
+              hint: Semantics(
+                child: Text(
+                  description ?? 'Select...', 
+                  style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize, fontWeight: fontWeight),
+                  semanticsLabel: 'Select from list.',
+                ),
               ),
               value: value,
               onChanged: onChanged,

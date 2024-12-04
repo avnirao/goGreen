@@ -100,21 +100,24 @@ class _EntryViewState extends State<EntryView>{
         backgroundColor: const Color(0xFFF2E8CF),
         appBar: AppBar(
           backgroundColor: const Color(0xFFF2E8CF),
-          title: const Row(
+          title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
-              SizedBox(width: 8),
+              const Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
+              const SizedBox(width: 8),
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Flexible(
-                    child: Text(
-                      'GoGreen\nTrack your emissions here', 
-                      style: TextStyle(
-                        color: Color(0xFF386641), 
-                        fontWeight: FontWeight.bold,
-                        overflow: TextOverflow.fade
+                    child: Semantics(
+                      child: const Text(
+                        'GoGreen\nTrack your emissions here', 
+                        style: TextStyle(
+                          color: Color(0xFF386641), 
+                          fontWeight: FontWeight.bold,
+                          overflow: TextOverflow.fade
+                        ),
+                        semanticsLabel: 'Go Green: Track your emissions here.',
                       ),
                     ),
                   ),
@@ -137,6 +140,7 @@ class _EntryViewState extends State<EntryView>{
                     // Dropdown for category selection
                     EmissionDropdownMenu(
                       label: 'Emission Category:',
+                      semanticsLabel: 'Select Emission Category below.',
                       initialSelection: category, 
                       options: dropdownMenuEntries,
                       onSelected: (EmissionCategory? value) {
@@ -148,7 +152,8 @@ class _EntryViewState extends State<EntryView>{
                     ),
                     // Dropdown for subtype selection
                     EmissionDropdownMenu(
-                      label: 'EmissionType',
+                      label: 'Emission Type:',
+                      semanticsLabel: 'Select Emission Type below.',
                       onSelected: (String? value) {
                         setState(() {
                           subtype = value ?? subtype;
@@ -518,6 +523,7 @@ class _EntryViewState extends State<EntryView>{
               // Weight input field
               AmountInput(
                 label: 'Weight:',
+                semanticsLabel: 'Enter weight of $subtype below.',
                 onChanged: (value) {
                   setState(() {
                     amount = double.tryParse(value) ?? 0;
@@ -529,6 +535,7 @@ class _EntryViewState extends State<EntryView>{
               // Weight Unit Dropdown
               CustomDropdown<WeightUnit>(
                 label: 'Units',
+                semanticsLabel: 'Select units of measurement for weight below.',
                 onChanged: (WeightUnit? value) {
                   setState(() {
                     weightUnit = value ?? weightUnit;
@@ -554,6 +561,7 @@ class _EntryViewState extends State<EntryView>{
           // Money input field
           AmountInput(
             label: 'Amount spent:',
+            semanticsLabel: 'Enter amount spent on $subtype below.',
             onChanged: (value) {
               setState(() {
                 amount = double.tryParse(value) ?? 0;
@@ -565,6 +573,7 @@ class _EntryViewState extends State<EntryView>{
           // Money Unit Dropdown
           CustomDropdown<MoneyUnit>(
             label: 'Currency:',
+            semanticsLabel: 'Select type of currency below',
             onChanged: (MoneyUnit? value) {
               setState(() {
                 moneyUnit = value ?? moneyUnit;
@@ -588,6 +597,7 @@ class _EntryViewState extends State<EntryView>{
           ),
           child: CustomDropdown<EnergyAmount>(
             label: 'How much energy did you use?',
+            semanticsLabel: 'Select how much energy you used below.',
             onChanged: (EnergyAmount? value) {
               setState(() {
                 energyAmount = value!;
@@ -611,6 +621,7 @@ class _EntryViewState extends State<EntryView>{
           children: [
             AmountInput(
               label: 'Distance:',
+              semanticsLabel: 'Enter distance travelled by $subtype below.',
               onChanged: (value) {
                 setState(() {
                   amount = double.tryParse(value) ?? 0;
@@ -643,6 +654,7 @@ class _EntryViewState extends State<EntryView>{
             if (subtype == 'Gas Car' || subtype == 'Electric Car') ...[
               AmountInput(
                 label: '# of Passengers:',
+                semanticsLabel: 'Enter number of passengers below.',
                 description: 'Passengers',
                 onChanged: (value) {
                   setState(() {
@@ -656,6 +668,7 @@ class _EntryViewState extends State<EntryView>{
             ] else ...[
               CustomDropdown<PassengerAmount>(
                 label: 'How full was\nthe ride?',
+                semanticsLabel: 'Select approximately how full the vehicle was below.',
                 width: 150,
                 onChanged: (PassengerAmount? value) {
                   setState(() {
@@ -673,6 +686,7 @@ class _EntryViewState extends State<EntryView>{
             if (subtype == 'International Flight' || subtype == 'Domestic Flight') ...[
               CustomDropdown<VehicleSize>(
                 label: 'Plane size:',
+                semanticsLabel: 'Select the size of your plane below',
                 onChanged: (VehicleSize? value) {
                   setState(() {
                     size = value!;

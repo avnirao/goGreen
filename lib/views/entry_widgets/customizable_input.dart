@@ -13,7 +13,7 @@ abstract class CustomizableInput extends StatelessWidget{
   /// The text label for the widget
   final String label;
   /// the semantic label for the text on the widget
-  final String? semanticLabel;
+  final String? semanticsLabel;
 
   /// Creates a Customizable Input
   /// 
@@ -31,6 +31,6 @@ abstract class CustomizableInput extends StatelessWidget{
     required this.fontSize,
     required this.fontWeight,
     required this.label,
-    this.semanticLabel
+    this.semanticsLabel
   });
 }

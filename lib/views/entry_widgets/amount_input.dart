@@ -15,6 +15,7 @@ class AmountInput extends CustomizableInput {
   ///  - fontSize: The font size for text in the input field
   ///  - fontWeight: The font weight for the text in the input field
   ///  - label: the text label displayed above the widget
+  ///  - semanticsLabel: the semantics label for the label text
   const AmountInput({
     super.key, 
     super.width = 140,
@@ -23,6 +24,7 @@ class AmountInput extends CustomizableInput {
     super.fontSize = 16,
     super.fontWeight = FontWeight.w500,
     required super.label,
+    super.semanticsLabel,
   });
 
   @override build(BuildContext context) {
@@ -33,6 +35,7 @@ class AmountInput extends CustomizableInput {
           child: Text(
             label, 
             style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize),
+            semanticsLabel: semanticsLabel ?? label,
           )
         ),
         SizedBox(
