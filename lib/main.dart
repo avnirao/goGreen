@@ -25,7 +25,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open([EntrySchema], directory: dir.path);
-  await isar.close(deleteFromDisk: true);
 
   // Load the recycling center database and run the app
   loadRecyclingDB(dataPath).then((value) {
