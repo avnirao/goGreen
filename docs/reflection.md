@@ -48,6 +48,10 @@ https://flutterstuff.com/how-to-fix-widget-at-top-bottom-in-flutter/#:~:text=If%
 https://docs.fleaflet.dev
 https://docs.fleaflet.dev/layers/tile-layer/tile-providers
 https://docs.mapbox.com
+https://github.com/flutter/flutter/issues/133742
+https://api.flutter.dev/flutter/material/DropdownMenu-class.html
+https://isar.dev/schema.html
+https://forums.developer.apple.com/forums/thread/758642
 
 Climatiq API: 
 - API docs: https://www.climatiq.io/docs/api-reference
