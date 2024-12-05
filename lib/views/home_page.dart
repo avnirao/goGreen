@@ -59,7 +59,7 @@ class HomePageState extends State<HomePage> {
               children: [
                 Consumer<ActivityProvider>(
                   builder: (context, activityProvider, child) {
-                    double co2 = activityProvider.activityHistory.totalCo2;
+                    double co2 = activityProvider.activityHistory.todayCo2;
                     Color emissionColor; 
                     double roundedCo2 = (co2 * 100).round() / 100;
                     double width = MediaQuery.of(context).size.width - 40;
@@ -71,31 +71,39 @@ class HomePageState extends State<HomePage> {
                     } else {
                   emissionColor = const Color(0xFF386641); // Dark green
                   }
-                    return Padding(
+
+                  
+                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: ConstrainedBox(
+                      child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: width),
-                        child: Text(
-                          maxLines: 2,
-                          // textDirection: TextDirection.rtl,
-                          // textAlign: TextAlign.justify,
-                          'Total Emissioned: $roundedCo2 kg Co2',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: emissionColor,
-                            fontWeight: FontWeight.bold
+                        child: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.black, // Default color for non-CO₂ text
+                              fontWeight: FontWeight.bold,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: 'Total Emissioned: ',
+                              ),
+                              TextSpan(
+                                text: '$roundedCo2 kg CO₂',
+                                style: TextStyle(color: emissionColor),
+                              ),
+                            ],
                           ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                       ),
-                    );
+    );
                   }
                 ),
               ],
             ),
-          
-        
-            // const SizedBox(height: 30, width: double.infinity,),
+
             const Spacer(),
 
             // Globe animation
@@ -116,24 +124,24 @@ class HomePageState extends State<HomePage> {
             const SizedBox(height: 50,),
 
             // Track button
-            ElevatedButton(
-              onPressed: () {
-                final Entry newEntry = Entry.fromEmissions(category: EmissionCategory.clothing);
-                _navigateToEntry(context, newEntry);
-              },
-              // Style the button
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFBC4749),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  final Entry newEntry = Entry.fromEmissions(category: EmissionCategory.clothing);
+                  _navigateToEntry(context, newEntry);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFBC4749),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
-              ),
-              child: const Text(
-                // Button text
-                'Track',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                child: const Text(
+                  'Track',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
 
@@ -211,32 +219,62 @@ class HomePageState extends State<HomePage> {
     activityProvider.upsertEntry(newEntry);
 
   }
-  // Show Info Dialog
+  // Show Info Dialog that tells users about what their emission means (changes the color and explains why)
   void _showInfoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Emission Levels Information'),
-          content: const Text(
-            'Here is what the colors mean:\n\n'
-            '**Red:** Emissions are above 43.8 kg, the average daily CO2 footprint for an American.\n'
-            '**Light Green:** Emissions are between 20 and 43.8 kg.\n'
-            '**Dark Green:** Emissions are less than 20 kg. Great job!\n\n'
-            'Tips to reduce emissions:\n'
-            '- Use public transportation or carpool.\n'
-            '- Opt for energy-efficient appliances.\n'
-            '- Reduce meat consumption.\n'
-            '- Use reusable bags, bottles, and containers.',
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: const Color(0xFFF2E8CF), // Same background as the app
+        title: const Text(
+          'Emission Levels Information',
+          style: TextStyle(color: Colors.black), // Black title text
+        ),
+        content: RichText(
+          text: const TextSpan(
+            style: TextStyle(color: Colors.black, fontSize: 16), 
+            children: [
+              TextSpan(text: 'Here is what the colors mean:\n\n'),
+              TextSpan(
+                text: 'Red: ',
+                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: 'Emissions are above 43.8 kg, the average daily CO2 footprint for an American.\n',
+              ),
+              TextSpan(
+                text: 'Light Green: ',
+                style: TextStyle(color: Color(0xFF6A994E), fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: 'Emissions are between 20 and 43.8 kg.\n',
+              ),
+              TextSpan(
+                text: 'Dark Green: ',
+                style: TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: 'Emissions are less than 20 kg. Great job!\n\n',
+              ),
+              TextSpan(text: 'Tips to reduce emissions:\n'),
+              TextSpan(text: '- Use public transportation or carpool.\n'),
+              TextSpan(text: '- Opt for energy-efficient appliances.\n'),
+              TextSpan(text: '- Reduce meat consumption.\n'),
+              TextSpan(text: '- Use reusable bags, bottles, and containers.\n'),
+            ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Close',
+              style: TextStyle(color: Color(0xFF386641)), // Green for "Close"
             ),
-          ],
-        );
-      },
-    );
-  }
+          ),
+        ],
+      );
+    },
+  );
+}
 }
