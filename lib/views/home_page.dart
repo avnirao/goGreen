@@ -42,12 +42,15 @@ class HomePageState extends State<HomePage> {
                       color: Color(0xFF386641), // Dark green
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.info_outline, color: Color(0xFF386641)),
-                    onPressed: () {
-                      _showInfoDialog(context);
-                    },
-                  ),
+                  Semantics(
+                    label: 'More info on what your emission plus its color means',
+                    child: IconButton(
+                      icon: const Icon(Icons.info_outline, color: Color(0xFF386641)),
+                      onPressed: () {
+                        _showInfoDialog(context);
+                      },
+                    ),
+                  )
                 ],
               ),
             ),
@@ -63,39 +66,44 @@ class HomePageState extends State<HomePage> {
                     Color emissionColor; 
                     double roundedCo2 = (co2 * 100).round() / 100;
                     double width = MediaQuery.of(context).size.width - 40;
+                    String semanticLabel = '';
                     
                      if (co2 > 43.8) {
                   emissionColor = const Color(0xFFBC4749);
+                  semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Red zone";
                     } else if (co2 >= 20 && co2 <= 43.8) {
                   emissionColor = const Color(0xFF6A994E); // Light green
+                  semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Light Green zone";
                     } else {
                   emissionColor = const Color(0xFF386641); // Dark green
+                  semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Dark Green zone";
                   }
-
-                  
                      return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: width),
-                        child: RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
-                              fontSize: 20,
-                              color: Colors.black, // Default color for non-CO₂ text
-                              fontWeight: FontWeight.bold,
+                        child: Semantics(
+                          label: semanticLabel, // Dynamically set label
+                          child: RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black, // Default color for non-CO₂ text
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: [
+                                const TextSpan(
+                                  text: 'Total Emissioned: ',
+                                ),
+                                TextSpan(
+                                  text: '$roundedCo2 kg CO₂',
+                                  style: TextStyle(color: emissionColor),
+                                ),
+                              ],
                             ),
-                            children: [
-                              const TextSpan(
-                                text: 'Total Emissioned: ',
-                              ),
-                              TextSpan(
-                                text: '$roundedCo2 kg CO₂',
-                                style: TextStyle(color: emissionColor),
-                              ),
-                            ],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
                         ),
                       ),
     );
