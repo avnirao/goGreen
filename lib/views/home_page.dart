@@ -93,7 +93,7 @@ class HomePageState extends State<HomePage> {
                               ),
                               children: [
                                 const TextSpan(
-                                  text: 'Total Emissioned: ',
+                                  text: "Today's Emissions: ",
                                 ),
                                 TextSpan(
                                   text: '$roundedCo2 kg CO₂',
