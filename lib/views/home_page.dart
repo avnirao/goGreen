@@ -76,10 +76,13 @@ class HomePageState extends State<HomePage> {
               // width: 300,
               // height: 500,
               constraints: const BoxConstraints(maxHeight: 1000),
-              child: Lottie.asset(
-                // Load the leaf animation
-                'assets/globe.json',
-                fit: BoxFit.fitHeight,
+              child: Semantics(
+                label: 'Globe Animation of the Earth',
+                child: Lottie.asset(
+                  // Load the globe animation
+                  'assets/globe.json',
+                  fit: BoxFit.fitHeight,
+                ),
               ),
             ),
 
