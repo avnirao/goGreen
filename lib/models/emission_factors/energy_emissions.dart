@@ -5,14 +5,14 @@ import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
 
-/// Represents emissions from energy usage
+/// Represents emissions from energy consumption
 class EnergyEmissions extends EmissionFactor {
   /// the amount of energy consumption
   final double energy;
   /// the units for energy consumption
   final String energyUnit = 'kWh';
   /// the units for volume
-  final String volumeUnit = 'standard_cubic_feet';
+  final String volumeUnit = 'standard_cubic_foot';
   /// the type of energy consumed
   final String energyType;
 
@@ -54,7 +54,7 @@ class EnergyEmissions extends EmissionFactor {
       energyType = 'Natural Gas',
       super(
         category: EmissionCategory.energy,
-        id: EmissionSubtypes().energyTypes['Electricity'] ?? 'type not found'
+        id: EmissionSubtypes().energyTypes['Natural Gas'] ?? 'type not found'
       );
 
   @override 

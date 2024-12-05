@@ -1,6 +1,41 @@
 # GoGreen
 GoGreen is an app that allows users to track their carbon emissions based on activities and purchases they make during a day. It also displays recycling centers and second hand store locations in the Seattle Area which can be used to dispose of goods in a more sustainable fashion. 
 
+NOTE FOR GRADERS: We used the DropdownMenu widget to display emission categories and types in our Entry View. We tried adding semantics to this widget, but it was buggy. We spoke with Ben about this and learned that it's an issue with flutter. We tried updating our flutter versions but it still didn't work, so we're documenting it in here. 
+
+We construct the DropdownMenus in a custom widget in `lib/views/entry_widgets/emisison_dropdown_menu.dart`, and we construct that custom widget towards the beginning of `entry_view.dart`'s build method.
+
+## Supported Devices
+This app is mainly built for iOS devices. It can run on Windows and Mac devices, but the views are not optimized and we haven't done thorough tests for those operating systems. Linux and web have not been tested.
+
+Due to issues with the flutter_maps package, the Map page of GoGreen will occasionally get stuck in an infinite loading loop on Android devices. Otherwise, the app is fully functional for Android.
+
+## How to Build and Run GoGreen
+1. Open the project in VS Code. Make sure to run `flutter pub get` in the terminal.
+2. Select which device to deploy the app to. Type `flutter run --release` in the terminal. Alternatively, select the 'flutter release' configuration in your run settings and run the app from the 'Run' tab in VS Code. The app will build and run on your device.
+
+## Project Structure
+We used the Model-View-Provider structure for this project, which is contained in the lib folder of this project. 
+
+**Climatiq API:** The climatiq_api folder contains the files that are used directly for calls to the Climatiq API. 
+- `emission_checker.dart` sends and retrieves data from the API
+- `emission_estimate.dart` is a class to represent the retrieved data. 
+- The folder also contains a markdown file with an example of how to call the API from other files in this codebase.
+
+**Models:** This folder contains all of the data structures we use to track the user's app data.
+- Emission Factors are used to keep track of the user's emission types. 
+- Activity History and Entry are used to represent the Emission Factors that the user tracks and keep a history of it. 
+- Recycling Center and its Database (`recycling_center_db.dart`) are used to display locations of recycling centers on the Map page of the app. 
+
+**Providers:** This folder contains the providers we use to update changes the user makes across the UI. Activity Provider is used for updating Entries and the list of all entries in Activity History. Position Provider is used to update the user's position on the Map page of the app as they move.
+
+**Views:** This folder contains all of the views and custom widgets we created for GoGreen. 
+- Activity Log View displays the user's full history of tracked emisisons. 
+- Entry View allows the user to create a new entry for the Activity Log or update an existing entry. This is where the user can see their carbon emissions for specific activities
+    - There are also a few custom widgets for this view in the entry_widgets folder
+- Home Page displays the user's all-time carbon emissions from their tracked activities and allows the user to create a new Entry
+- Map View displays nearby locations to get rid of used items in the Seattle Area such as recycling centers and second-hand stores.
+
 # Data Design & Data Flow
 There are two main parts of this app that store different data for the user: the map and the activity log. We also use a custom data structure called an Emission Factor to send the user's data to the Climatiq API to calculate their carbon emissions. All of this is explained in more detail below.
 
@@ -62,15 +97,15 @@ The Emission Factor data structure (found in the `./lib/models/emission_factors/
     - `WeightUnit`: an enum to represent the units of measurement for the weight (lb, g, ton, etc.)
 
 Most non-abstract emission factors (found in the `./lib/models/emission_factors/base_emission_factors/` folder) are subclasses of `MoneyEmissionFactor`s or `WeightEmissionFactor`s because they don't need to track any other data. However, some emission factors use `EmissionFactor` as their direct super class because they require a different combination of data. The full list is below:
-- `EmissionFactor`s:
-    - `ClothingEmissions` - calculates some clothing emissions based on money and calculates other clothing emissions based on weight.
+- The following extend EmissionFactor:
+    - `ClothingEmissions` - calculates some clothing emissions based on money and calculates other clothing emissions based on weight. This is due to how the API handles different types of clothing.
     - `EnergyEmissions` - calculates emissions based on volume
     - `TravelEmissions` - calculates emissions based on distance and number of passengers
-- `MoneyEmissionFactor`s (all factors are calculated based on money alone)
+- The following extend MoneyEmissionFactor (all factors are calculated based on money alone):
     - `FoodEmissions`
     - `FurnitureEmissions`
     - `PersonalCareEmissions`
-- `WeightEmissionFactor`s (all factors are calculated based on weight alone)
+- The following extend WeightEmissionFactor (all factors are calculated based on weight alone):
     - `FoodWasteEmissions`
     - `GeneralWasteEmissions`
     - `ElectricalWasteEmissions`
