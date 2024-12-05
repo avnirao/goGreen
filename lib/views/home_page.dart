@@ -23,16 +23,18 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // Scaffold is the main layout structure of the app
     return Scaffold(
-      backgroundColor: const Color(0xFFF2E8CF), // Background color
+      backgroundColor: const Color(0xFFF2E8CF),
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                  child: Text(
+            // Title and Info Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
                     'GoGreen',
                     style: TextStyle(
                       fontSize: 28,
@@ -40,9 +42,16 @@ class HomePageState extends State<HomePage> {
                       color: Color(0xFF386641), // Dark green
                     ),
                   ),
-                ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.info_outline, color: Color(0xFF386641)),
+                    onPressed: () {
+                      _showInfoDialog(context);
+                    },
+                  ),
+                ],
+              ),
             ),
+
         
             // Total Emissions - under GoGreen title
             Row(
@@ -51,9 +60,17 @@ class HomePageState extends State<HomePage> {
                 Consumer<ActivityProvider>(
                   builder: (context, activityProvider, child) {
                     double co2 = activityProvider.activityHistory.totalCo2;
+                    Color emissionColor; 
                     double roundedCo2 = (co2 * 100).round() / 100;
                     double width = MediaQuery.of(context).size.width - 40;
-                    print('width: $width');
+                    
+                     if (co2 > 43.8) {
+                  emissionColor = const Color(0xFFBC4749);
+                    } else if (co2 >= 20 && co2 <= 43.8) {
+                  emissionColor = const Color(0xFF6A994E); // Light green
+                    } else {
+                  emissionColor = const Color(0xFF386641); // Dark green
+                  }
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: ConstrainedBox(
@@ -64,9 +81,9 @@ class HomePageState extends State<HomePage> {
                           // textAlign: TextAlign.justify,
                           'Total Emissioned: $roundedCo2 kg Co2',
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 20,
-                            color: Color(0xFF6A994E),
+                            color: emissionColor,
                             fontWeight: FontWeight.bold
                           ),
                         ),
@@ -193,5 +210,33 @@ class HomePageState extends State<HomePage> {
     final activityProvider = Provider.of<ActivityProvider>(context, listen: false);
     activityProvider.upsertEntry(newEntry);
 
+  }
+  // Show Info Dialog
+  void _showInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Emission Levels Information'),
+          content: const Text(
+            'Here is what the colors mean:\n\n'
+            '**Red:** Emissions are above 43.8 kg, the average daily CO2 footprint for an American.\n'
+            '**Light Green:** Emissions are between 20 and 43.8 kg.\n'
+            '**Dark Green:** Emissions are less than 20 kg. Great job!\n\n'
+            'Tips to reduce emissions:\n'
+            '- Use public transportation or carpool.\n'
+            '- Opt for energy-efficient appliances.\n'
+            '- Reduce meat consumption.\n'
+            '- Use reusable bags, bottles, and containers.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
