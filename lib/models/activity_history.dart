@@ -11,6 +11,16 @@ class ActivityHistory {
   List<Entry> get entries => _isar.entrys.where().findAllSync(); //gets entries
 
   double get totalCo2 => _entries.fold(0.0, (sum, entry) => sum + entry.co2); // gets total co2
+  // gets today co2 emissioned
+  double get todayCo2 {
+    DateTime now = DateTime.now();
+    return _entries
+        .where((entry) =>
+            entry.emissionsDate.year == now.year &&
+            entry.emissionsDate.month == now.month &&
+            entry.emissionsDate.day == now.day)
+        .fold(0.0, (sum, entry) => sum + entry.co2);
+  }
 
   ActivityHistory._internal({required List<Entry> entries, required Isar isar}) 
   : _entries = isar.entrys.where().findAllSync().toList(), _isar = isar;

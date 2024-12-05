@@ -52,6 +52,7 @@ https://github.com/flutter/flutter/issues/133742
 https://api.flutter.dev/flutter/material/DropdownMenu-class.html
 https://isar.dev/schema.html
 https://forums.developer.apple.com/forums/thread/758642
+https://greenly.earth/en-us/blog/company-guide/what-is-the-average-american-carbon-footprint-and-how-to-reduce-it
 
 Climatiq API: 
 - API docs: https://www.climatiq.io/docs/api-reference
