@@ -2,7 +2,7 @@
 
 ## Methodology
 
-We conducted a **System Usability Scale (SUS)** test with 9 participants to evaluate the usability of our application. Participants included a mix of tech-savvy and non-technical individuals, representative of our target audience.
+We conducted a **System Usability Scale (SUS)** test with 10 participants to evaluate the usability of our application. Participants included a mix of tech-savvy and non-technical individuals, representative of our target audience.
 
 ### Process
 1. **Interaction**: Participants explored the app and completed specific tasks.

@@ -28,12 +28,27 @@ The final design focuses exclusively on tracking and displaying the amount of CO
 This adjustment simplifies the user experience by focusing on the most impactful metric: CO₂ savings. It also aligns better with our primary aim—raising awareness of environmental impact—without requiring users to set and manage goals, which could feel cumbersome or unnecessary.
 
 **Describe two areas of future work for your app, including how you could increase the accessibility and usability of this app**  
-Currently, the "Click Here" button on the map screen is not immediately intuitive for users to find, as it requires scrolling. To enhance accessibility:
+Currently, the "Click Here" button on some screens is not immediately intuitive for users to find, as it requires scrolling. To enhance accessibility:
 - We plan to redesign the layout to ensure all critical actions are visible without scrolling, such as repositioning or resizing the button to make it prominent.
 
 A major enhancement for usability involves integrating a feature where users can input items they need to dispose of, and the app will provide tailored disposal or recycling instructions. This would include:
 - A search bar where users can type the name of an item (e.g., "batteries" or "electronics").
 - Leveraging an AI-powered database to provide precise recycling instructions based on the item and the user's location. This feature would empower users with actionable information, making recycling more accessible and personalized to their needs.
+
+**Citations**
+For our Animation: 
+https://app.lottiefiles.com/animation/147d75d9-d107-4c17-8385-94eb5f1c2cd3?channel=web&source=public-animation&panel=embed
+
+TAs:
+Dhruv Bansal
+
+More: 
+https://docs.flutter.dev/ui/widgets
+https://flutterstuff.com/how-to-fix-widget-at-top-bottom-in-flutter/#:~:text=If%20you%20set%20%60bottom%60%20to,the%20bottom%20of%20the%20screen.&text=If%20you%20want%20to%20fix,in%20the%20%60Positioned%60%20widget.
+https://docs.fleaflet.dev
+https://docs.fleaflet.dev/layers/tile-layer/tile-providers
+https://docs.mapbox.com
+
 
 **What do you feel was the most valuable thing you learned in CSE 340 that will help you beyond this class, and why?**  
 Avni: Working with Flutter was a game-changer for me. It’s an intuitive framework that made learning app development far more enjoyable compared to other frameworks like React. Its versatility for cross-platform development and amazing set of widgets made creating applications straightforward and efficient. Beyond the technical skills, I also learned about the importance of UI design, usability, and accessibility.

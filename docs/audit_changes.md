@@ -1,7 +1,7 @@
 # Audit Changes
 
 ## Changes we made
-For the suggestion, "semantic label for home icon can be more detailed," we updated the semantic label to describe the icon as the "Go Green Leaf Icon" to clarify what the icon looks like.
+For the suggestion, "semantic label for home animation can be more detailed," we updated the semantic label to describe it as the "Globe Animation of the Earth" to clarify what the animation looks like.
 
 The main suggestion we received from our SUS testing was that while it was easy to figure out what each of the widgets on the Entry View Page did, when you first opened the page the number of interactable widgets (buttons, dropdown menus, text inputs) on the screen was confusing/overwhelming. To fix this, we added text labels above each of those widgets to better display its purpose.
 

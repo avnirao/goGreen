@@ -3,7 +3,9 @@ import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/entry.dart';
 import 'package:go_green/providers/activity_provider.dart';
 import 'package:go_green/views/entry_view.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
@@ -46,7 +48,7 @@ class HomePageState extends State<HomePage> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    'Total emissioned: $co2 kg Co2',
+                    'Total Emissioned: $co2 kg Co2',
                     style: const TextStyle(
                       fontSize: 20,
                       color: Color(0xFF6A994E),
@@ -62,44 +64,55 @@ class HomePageState extends State<HomePage> {
 
             // Center Section
             Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Go Green Icon (centralized)
-                    const Icon(
-                      Icons.eco, 
-                      size: 100, 
-                      color: Color(0xFF6A994E),
-                      semanticLabel: 'Go Green Leaf Icon', // Semantic label added
-                    ),
+  child: Stack(
+    children: [
+      // Center the Lottie animation
+      Positioned(
+        top: MediaQuery.of(context).size.height / 12, 
+        left: -28,
+        right: 100,
+        child: Semantics(
+        label: 'Globe Animation of the Earth',
+        child: Lottie.asset(
+          // Load the leaf animation
+          'assets/globe.json',
+          width: 250,
+          height: 250,
+          fit: BoxFit.cover,
+        ),
+      ),
+      ),
 
-                    const SizedBox(height: 30),
-
-                    // Track Button
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigate to the Track Page
-                        final Entry newEntry = Entry.fromEmissions(category: EmissionCategory.clothing);
-                        _navigateToEntry(context, newEntry);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFBC4749), // Red accent
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Track',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      // Place the Track button below
+      Positioned(
+        top: MediaQuery.of(context).size.height / 2.3, 
+        left: MediaQuery.of(context).size.width / 3, // Center horizontally
+        right: MediaQuery.of(context).size.width / 3, // Center horizontally
+        child: ElevatedButton(
+          onPressed: () {
+            final Entry newEntry = Entry.fromEmissions(category: EmissionCategory.clothing);
+            _navigateToEntry(context, newEntry);
+          },
+          // Style the button
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFBC4749),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
             ),
+          ),
+          child: const Text(
+            // Button text
+            'Track',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
           ],
         ),
       ),
