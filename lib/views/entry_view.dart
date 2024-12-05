@@ -540,7 +540,6 @@ class _EntryViewState extends State<EntryView>{
 
   // Weight Input Section
   Widget _buildWeightInputSection() {
-    print(amount);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
