@@ -191,7 +191,9 @@ class HomePageState extends State<HomePage> {
 
     // If an updated entry is returned, upsert it into the journal provider
     final activityProvider = Provider.of<ActivityProvider>(context, listen: false);
-    activityProvider.upsertEntry(newEntry);
+    if (newEntry != null) {
+      activityProvider.upsertEntry(newEntry);
+    }
 
   }
 }

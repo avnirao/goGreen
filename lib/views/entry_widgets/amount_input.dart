@@ -5,6 +5,7 @@ import 'package:go_green/views/entry_widgets/customizable_input.dart';
 class AmountInput extends CustomizableInput {
   /// The function called when the input is changed
   final Function(String) onChanged;
+  final double initialAmount;
 
   /// Creates an input field that accepts numbers.
   /// 
@@ -25,6 +26,7 @@ class AmountInput extends CustomizableInput {
     super.fontWeight = FontWeight.w500,
     required super.label,
     super.semanticsLabel,
+    required this.initialAmount,
   });
 
   @override build(BuildContext context) {
@@ -40,7 +42,8 @@ class AmountInput extends CustomizableInput {
         ),
         SizedBox(
           width: width, // Set a uniform width
-          child: TextField(
+          child: TextFormField(
+            initialValue: '$initialAmount',
             style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize),
             decoration: InputDecoration(
               labelText: description,
