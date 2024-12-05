@@ -18,7 +18,6 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   // _currentIndex is the index of the selected tab
   int _currentIndex = 0; // Tracks the selected tab
-  //final ActivityHistory activityHistory = ActivityHistory(Isar isar);
 
   @override
   Widget build(BuildContext context) {
@@ -27,92 +26,89 @@ class HomePageState extends State<HomePage> {
       backgroundColor: const Color(0xFFF2E8CF), // Background color
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              child: Text(
-                'GoGreen',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF386641), // Dark green
+            const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  child: Text(
+                    'GoGreen',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF386641), // Dark green
+                    ),
+                  ),
                 ),
+              ],
+            ),
+        
+            // Total Emissions - under GoGreen title
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Consumer<ActivityProvider>(
+                  builder: (context, activityProvider, child) {
+                    double co2 = activityProvider.activityHistory.totalCo2;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Total Emissioned: $co2 kg Co2',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Color(0xFF6A994E),
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    );
+                  }
+                ),
+              ],
+            ),
+          
+        
+            // const SizedBox(height: 30, width: double.infinity,),
+            const Spacer(),
+
+            // Globe animation
+            ConstrainedBox(
+              // width: 300,
+              // height: 500,
+              constraints: const BoxConstraints(maxHeight: 1000),
+              child: Lottie.asset(
+                // Load the leaf animation
+                'assets/globe.json',
+                fit: BoxFit.fitHeight,
               ),
             ),
 
-            // Weekly Goal - under GoGreen title
-            Consumer<ActivityProvider>(
-              builder: (context, activityProvider, child) {
-                double co2 = activityProvider.activityHistory.totalCo2;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Total Emissioned: $co2 kg Co2',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Color(0xFF6A994E),
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                );
-              }
+            const SizedBox(height: 50,),
+
+            // Track button
+            ElevatedButton(
+              onPressed: () {
+                final Entry newEntry = Entry.fromEmissions(category: EmissionCategory.clothing);
+                _navigateToEntry(context, newEntry);
+              },
+              // Style the button
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFBC4749),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: const Text(
+                // Button text
+                'Track',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
             ),
-          
 
-            const SizedBox(height: 30),
-
-            // Center Section
-            Expanded(
-  child: Stack(
-    children: [
-      // Center the Lottie animation
-      Positioned(
-        top: MediaQuery.of(context).size.height / 12, 
-        left: -28,
-        right: 100,
-        child: Semantics(
-        label: 'Globe Animation of the Earth',
-        child: Lottie.asset(
-          // Load the leaf animation
-          'assets/globe.json',
-          width: 250,
-          height: 250,
-          fit: BoxFit.cover,
-        ),
-      ),
-      ),
-
-      // Place the Track button below
-      Positioned(
-        top: MediaQuery.of(context).size.height / 2.3, 
-        left: MediaQuery.of(context).size.width / 3, // Center horizontally
-        right: MediaQuery.of(context).size.width / 3, // Center horizontally
-        child: ElevatedButton(
-          onPressed: () {
-            final Entry newEntry = Entry.fromEmissions(category: EmissionCategory.clothing);
-            _navigateToEntry(context, newEntry);
-          },
-          // Style the button
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFBC4749),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
-          child: const Text(
-            // Button text
-            'Track',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
-
+            const SizedBox(height: 150,)
+        
           ],
         ),
       ),
