@@ -51,14 +51,24 @@ class HomePageState extends State<HomePage> {
                 Consumer<ActivityProvider>(
                   builder: (context, activityProvider, child) {
                     double co2 = activityProvider.activityHistory.totalCo2;
+                    double roundedCo2 = (co2 * 100).round() / 100;
+                    double width = MediaQuery.of(context).size.width - 40;
+                    print('width: $width');
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'Total Emissioned: $co2 kg Co2',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          color: Color(0xFF6A994E),
-                          fontWeight: FontWeight.bold
+                        child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: width),
+                        child: Text(
+                          maxLines: 2,
+                          // textDirection: TextDirection.rtl,
+                          // textAlign: TextAlign.justify,
+                          'Total Emissioned: $roundedCo2 kg Co2',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Color(0xFF6A994E),
+                            fontWeight: FontWeight.bold
+                          ),
                         ),
                       ),
                     );
