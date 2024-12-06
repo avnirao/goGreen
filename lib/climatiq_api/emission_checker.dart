@@ -14,7 +14,7 @@ class EmissionChecker {
   /// The client that will call the web service
   final http.Client client;
   /// The API Key for Climatiq
-  static const String _apiKey = 'R58VCG52QD6GF27J7DFZR19BQM';
+  static const String _apiKey = '{ACCESS_TOKEN_HERE}';
 
   /// Constructs an Emissions Checker.
   /// 
