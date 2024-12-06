@@ -238,7 +238,7 @@ Widget build(BuildContext context) {
     // The TileLayer that displays the map.
     return TileLayer(
       urlTemplate:
-          'https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/512/{z}/{x}/{y}@2x?access_token=ACCESSTOKENHERE',
+          'https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/512/{z}/{x}/{y}@2x?access_token={ACCESS_TOKEN_HERE}',
       userAgentPackageName: 'com.recycling.goGreen',
       tileProvider: CancellableNetworkTileProvider(),
     );
