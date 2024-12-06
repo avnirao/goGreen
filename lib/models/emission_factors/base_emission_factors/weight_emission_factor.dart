@@ -6,7 +6,7 @@ abstract class WeightEmissionFactor extends EmissionFactor{
   /// The weight of the emission factor
   final double weight;
   /// The units for weight
-  final WeightUnit weightUnit;
+  final WeightUnit? weightUnit;
 
   /// Creates an emission factor based on weight.
   /// 

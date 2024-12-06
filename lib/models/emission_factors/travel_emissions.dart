@@ -7,7 +7,7 @@ class TravelEmissions extends EmissionFactor{
   /// The distance traveled
   final double distance;
   /// The units for the distance traveled
-  final DistanceUnit distanceUnit;
+  final DistanceUnit? distanceUnit;
   /// The number of passengers
   final int? passengers;
   /// The type of travel
@@ -68,8 +68,9 @@ class TravelEmissions extends EmissionFactor{
   TravelEmissions.bus({
     required this.distance, 
     required this.distanceUnit,
-    required PassengerAmount passengerAmt, 
+    required PassengerAmount? passengerAmt, 
     }): passengers = switch (passengerAmt) {
+          null => 0,
           PassengerAmount.empty => 2,
           PassengerAmount.almostEmpty => 10,
           PassengerAmount.average => 32,
@@ -95,21 +96,24 @@ class TravelEmissions extends EmissionFactor{
   TravelEmissions.flight({
     required this.distance, 
     required this.distanceUnit,
-    required VehicleSize size,
-    required PassengerAmount passengerAmt,
+    required VehicleSize? size,
+    required PassengerAmount? passengerAmt,
     required bool isDomestic,
   }): passengers = switch(size) {
+        null => 0,
         // Assumes personal planes have ~4-8 people
         VehicleSize.personal => switch(passengerAmt) {
-          PassengerAmount.empty => 2,
-          PassengerAmount.almostEmpty => 4,
-          PassengerAmount.average => 6,
-          PassengerAmount.almostFull => 7,
+          null => 0,
+          PassengerAmount.empty => 1,
+          PassengerAmount.almostEmpty => 2,
+          PassengerAmount.average => 4,
+          PassengerAmount.almostFull => 6,
           PassengerAmount.full => 8,
           PassengerAmount.overloaded => 10,
         },
         // According to regulations, small planes carry 19 people max
         VehicleSize.small => switch(passengerAmt) {
+          null => 0,
           PassengerAmount.empty => 4,
           PassengerAmount.almostEmpty => 8,
           PassengerAmount.average => 12,
@@ -119,6 +123,7 @@ class TravelEmissions extends EmissionFactor{
         },
         // Assumes meduim commercial planes can carry about 175 people
         VehicleSize.medium => switch(passengerAmt) {
+          null => 0,
           PassengerAmount.empty => 25,
           PassengerAmount.almostEmpty => 50,
           PassengerAmount.average => 100,
@@ -128,6 +133,7 @@ class TravelEmissions extends EmissionFactor{
         },
         // Assumes large commercial planes can carry about 500 people
         VehicleSize.large => switch(passengerAmt) {
+          null => 0,
           PassengerAmount.empty => 50,
           PassengerAmount.almostEmpty => 100,
           PassengerAmount.average => 250,
@@ -150,10 +156,11 @@ class TravelEmissions extends EmissionFactor{
   TravelEmissions.lightRailTram({
     required this.distance, 
     required this.distanceUnit,
-    required PassengerAmount passengerAmt, 
+    required PassengerAmount? passengerAmt, 
     }): passengers = switch (passengerAmt) {
           // The Seattle Light Rail can hold 194 passengers.
           // Full set to lower than 194 since the user won't know how many people were on the other train cars
+          null => 0,
           PassengerAmount.empty => 30,
           PassengerAmount.almostEmpty => 50,
           PassengerAmount.average => 75,
@@ -175,9 +182,10 @@ class TravelEmissions extends EmissionFactor{
   TravelEmissions.train({
     required this.distance, 
     required this.distanceUnit,
-    required PassengerAmount passengerAmt, 
+    required PassengerAmount? passengerAmt, 
     }): passengers = switch (passengerAmt) {
           // Assumes the average passenger train can carry about 1000 people
+          null => 0,
           PassengerAmount.empty => 50,
           PassengerAmount.almostEmpty => 150,
           PassengerAmount.average => 400,
@@ -202,11 +210,12 @@ class TravelEmissions extends EmissionFactor{
   TravelEmissions.ferry({
     required this.distance, 
     required this.distanceUnit,
-    required PassengerAmount passengerAmt, 
+    required PassengerAmount? passengerAmt, 
     required bool onFoot,
     }): passengers = switch (passengerAmt) {
           // Assumes the average ferry can carry about 309 people
           // Source: https://data.bts.gov/stories/s/Ferry-Vessels/57sz-yj2t/#:~:text=Vessel%20capacity%2C%20age%2C%20and%20speed,and%20the%20maximum%20is%205%2C200.
+          null => 0,
           PassengerAmount.empty => 25,
           PassengerAmount.almostEmpty => 75,
           PassengerAmount.average => 150,

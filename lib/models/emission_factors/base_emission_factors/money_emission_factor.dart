@@ -6,7 +6,7 @@ abstract class MoneyEmissionFactor extends EmissionFactor{
   /// The amount of money spent
   final double money;
   /// The units for money
-  final MoneyUnit moneyUnit;
+  final MoneyUnit? moneyUnit;
 
   /// Creates an emission factor based on money spent.
   /// 
