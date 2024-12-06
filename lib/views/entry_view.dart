@@ -179,7 +179,7 @@ class _EntryViewState extends State<EntryView>{
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
+              Semantics(child: const Icon(Icons.eco, color: Color(0xFF6A994E), semanticLabel: 'Leaf icon',)), // Leaf icon for GoGreen theme
               const SizedBox(width: 8),
               Flexible(
                 child: Semantics(
@@ -392,7 +392,11 @@ class _EntryViewState extends State<EntryView>{
                         ),
                         Semantics(
                           child: IconButton(
-                            icon: const Icon(Icons.info_outline, color: Color(0xFF386641)),
+                            icon: const Icon(
+                              Icons.info_outline, 
+                              color: Color(0xFF386641),
+                              semanticLabel: 'More info',
+                            ),
                             onPressed: () {
                               _showInfoDialog(context, _getEmissionFactor());
                             },
@@ -684,6 +688,7 @@ class _EntryViewState extends State<EntryView>{
     };
   }
 
+  /// Estimates emissions based on the currently inputted information, as long as enough information is provided.
   void _estimateEmission() async {
     EmissionFactor factor = _getEmissionFactor();
     if (_canQueryAPI()) {
@@ -894,7 +899,7 @@ class _EntryViewState extends State<EntryView>{
     );
   }
 
-  // Show Info Dialog that tells users more info about what their emission estimate.
+  /// Shows Info Dialog that tells users more info about their emission estimate.
   void _showInfoDialog(BuildContext context, EmissionFactor factor) {
     showDialog(
       context: context,
@@ -913,8 +918,7 @@ class _EntryViewState extends State<EntryView>{
               EmissionCategory.furniture => const FurnitureInfo(),
               EmissionCategory.personalCareAndAccessories => const PersonalCareInfo(),
               EmissionCategory.travel => TravelInfo(comparison: comparisonEstimate, subtype: subtype,),
-              EmissionCategory.foodWaste || EmissionCategory.generalWaste || EmissionCategory.electricalWaste => 
-                const WasteInfo(),
+              EmissionCategory.foodWaste || EmissionCategory.generalWaste || EmissionCategory.electricalWaste => const WasteInfo(),
             },
           ),
           actions: [
