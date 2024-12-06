@@ -5,6 +5,8 @@ import 'package:go_green/climatiq_api/emission_estimate.dart';
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
 import 'package:go_green/models/emission_data/emission_subtypes.dart';
 import 'package:go_green/models/emission_factors/base_emission_factors/emission_factors.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/money_emission_factor.dart';
+import 'package:go_green/models/emission_factors/base_emission_factors/weight_emission_factor.dart';
 import 'package:go_green/models/emission_factors/clothing_emissions.dart';
 import 'package:go_green/models/emission_factors/electrical_waste_emissions.dart';
 import 'package:go_green/models/emission_factors/energy_emissions.dart';
@@ -56,42 +58,106 @@ class _EntryViewState extends State<EntryView>{
 
   // for clothing
   double? amount; // also for money, weight, distance
-  MoneyUnit moneyUnit = MoneyUnit.usd;
-  WeightUnit weightUnit = WeightUnit.kg;
+  MoneyUnit? moneyUnit;
+  WeightUnit? weightUnit;
   String curEst = 'N/A';
 
   // for energy
-  EnergyAmount energyAmount = EnergyAmount.average;
+  EnergyAmount? energyAmount;
 
   // for travel
-  DistanceUnit distanceUnit = DistanceUnit.km;
+  DistanceUnit? distanceUnit;
   int? passengers;
-  PassengerAmount passengerAmount = PassengerAmount.average;
-  VehicleSize size = VehicleSize.medium;
+  PassengerAmount? passengerAmount;
+  VehicleSize? size;
+
+  void _resetTrackingState() {
+    setState(() {
+      amount = null;
+      moneyUnit = null;
+      weightUnit = null;
+      curEst = 'N/A';
+      energyAmount = null;
+      distanceUnit = null;
+      passengers = null;
+      passengerAmount = null;
+      size = null;
+      co2 = 0;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     // Initialize state variables with values from the provided journal entry
+    category = widget.curEntry.category;
+    subtype = widget.curEntry.subtype;
+    amount = widget.curEntry.amount;
     notes = widget.curEntry.notes;
     updatedAt = widget.curEntry.updatedAt;
     createdAt = widget.curEntry.createdAt;
     emissionsDate = widget.curEntry.emissionsDate;
-    category = widget.curEntry.category;
     co2 = widget.curEntry.co2;
-    subtype = widget.curEntry.subtype;
+    curEst = EmissionEstimate(co2: co2, unit: 'kg').toString();
 
-    amount = widget.curEntry.amount;
-    moneyUnit = widget.curEntry.moneyUnit;
-    weightUnit = widget.curEntry.weightUnit;
-    energyAmount = widget.curEntry.energyAmount;
-    distanceUnit = widget.curEntry.distanceUnit;
-    passengers = widget.curEntry.passengers;
-    passengerAmount = widget.curEntry.passengerAmount;
-    size = widget.curEntry.size;
+    final EmissionFactor curFactor = _getEmissionFactor();
+
+    switch (curFactor) {
+      // money emission factors track currency type
+      case MoneyEmissionFactor _:
+        moneyUnit = widget.curEntry.moneyUnit;
+        break;
+
+      // weight emission factors track amount and weight unit
+      case WeightEmissionFactor _:
+        weightUnit = widget.curEntry.weightUnit;
+        break;
+
+      // travel emissions differ depending on type
+      case TravelEmissions _:
+        // all travel emissions track distance units
+        distanceUnit = widget.curEntry.distanceUnit;
+        switch (subtype) {
+          // hybrid cars don't track anything else
+          case 'Hybrid Car': break;
+          // other cars track a specific passenger number
+          case 'Gas Car' || 'Electric Car':
+            passengers = widget.curEntry.passengers;
+            break;
+          // flights track vehicle size and passenger amount
+          case 'Domestic Flight' || 'International Flight':
+            size = widget.curEntry.size;
+            passengerAmount = widget.curEntry.passengerAmount;
+            break;
+          // all other travel types track passenger amount
+          default: 
+            passengerAmount = widget.curEntry.passengerAmount;
+            break;
+        }
+
+      // clothing emissions track either weight or money units
+      case ClothingEmissions _:
+        switch (subtype) {
+          case 'Used Clothing':
+            weightUnit = widget.curEntry.weightUnit;
+            break;
+          default: 
+            moneyUnit = widget.curEntry.moneyUnit;
+            break;
+        }
+
+      // energy emissions track an energy amount and don't track an amount
+      case EnergyEmissions _:
+        energyAmount = widget.curEntry.energyAmount;
+        amount = null;
+      
+      default: throw UnsupportedError('Unsupported Emission Factor ${curFactor.runtimeType}');
+    }
 
     // intialize the dropdown menus
     _updateSubtypeDropdown(category);
+
+    _estimateEmission();
   }
 
 
@@ -109,21 +175,16 @@ class _EntryViewState extends State<EntryView>{
             children: [
               const Icon(Icons.eco, color: Color(0xFF6A994E)), // Leaf icon for GoGreen theme
               const SizedBox(width: 8),
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Flexible(
-                    child: Semantics(
-                      child: const Text(
-                        'Track Here', 
-                        style: TextStyle(
-                          color: Color(0xFF386641), 
-                          fontWeight: FontWeight.bold,
-                          overflow: TextOverflow.fade
-                        ),
-                        semanticsLabel: 'Go Green: Track your emissions here.',
-                      ),
+              Flexible(
+                child: Semantics(
+                  child: const Text(
+                    'Track Here', 
+                    style: TextStyle(
+                      color: Color(0xFF386641), 
+                      fontWeight: FontWeight.bold,
+                      overflow: TextOverflow.fade
                     ),
+                    semanticsLabel: 'Go Green: Track your emissions here.',
                   ),
                 ),
               ),
@@ -154,6 +215,7 @@ class _EntryViewState extends State<EntryView>{
                             category = value ?? category;
                           });
                           _updateSubtypeDropdown(category);
+                          _resetTrackingState();
                         },
                       ),
                       // Dropdown for subtype selection
@@ -164,6 +226,7 @@ class _EntryViewState extends State<EntryView>{
                           setState(() {
                             subtype = value ?? subtype;
                           });
+                          _estimateEmission();
                         },
                         initialSelection: subtype, 
                         options: subtypeDropdownMenuEntries,
@@ -282,44 +345,6 @@ class _EntryViewState extends State<EntryView>{
                       ),
                     ],
                   ),
-              
-                  const SizedBox(height: 30),
-              
-                  // estimate button
-                  SizedBox(
-                    width: 160,
-                    height: 80,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
-                        foregroundColor: const Color(0xFF386641), // Text color
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                        ),
-                      ),
-                      onPressed: () async {
-                        EmissionEstimate? estimate = await checker.getEmissions(_estimateEmission());
-                        if (estimate != null) {
-                          setState(() {
-                            curEst = estimate.toString();
-                            co2 = estimate.co2;
-                          });
-                        } else {
-                          setState(() {
-                            curEst = 'Please try again later';
-                          });
-                        }
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0), // Padding for better appearance
-                        child: Text(
-                          'Estimate\nEmission',
-                          style: TextStyle(fontSize: 18),
-                          semanticsLabel: 'Estimate Emission',
-                        ),
-                      ),
-                    ),
-                  ),
                 
                 const SizedBox(height: 20),
               
@@ -381,7 +406,7 @@ class _EntryViewState extends State<EntryView>{
 
 
   // dynamic estimation 
-  EmissionFactor _estimateEmission() {
+  EmissionFactor _getEmissionFactor() {
     switch (category) {
       // clothing case
       case EmissionCategory.clothing:
@@ -459,6 +484,7 @@ class _EntryViewState extends State<EntryView>{
   // Saves the current state of the entry and returns to the previous screen.
   void _popback(BuildContext context){
     // Create an updated Entry with current state values
+    print('co2: $co2');
     final curEntry = Entry(
       id: widget.curEntry.id,
       notes: notes,
@@ -469,12 +495,12 @@ class _EntryViewState extends State<EntryView>{
       co2: co2,
       subtype: subtype,
       amount: amount,
-      energyAmount: energyAmount ,
-      distanceUnit: distanceUnit,
-      size: size,
-      moneyUnit: moneyUnit,
-      weightUnit: weightUnit,
-      passengerAmount: passengerAmount,
+      energyAmount: energyAmount ?? EnergyAmount.average,
+      distanceUnit: distanceUnit ?? DistanceUnit.km,
+      size: size ?? VehicleSize.medium,
+      moneyUnit: moneyUnit ?? MoneyUnit.usd,
+      weightUnit: weightUnit ?? WeightUnit.kg,
+      passengerAmount: passengerAmount ?? PassengerAmount.average,
       passengers: passengers,
     );
 
@@ -534,12 +560,13 @@ class _EntryViewState extends State<EntryView>{
                 style: const ButtonStyle(foregroundColor: WidgetStatePropertyAll(Color(0xFF386641)))
               ))
           .toList();
-        subtype = subtype == 'Leather' ? subtypeMap.entries.first.key : subtype;
+        subtype = subtypeMap.entries.first.key;
     });
   }
 
   // Weight Input Section
   Widget _buildWeightInputSection() {
+    print('amount: $amount');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
@@ -549,15 +576,16 @@ class _EntryViewState extends State<EntryView>{
             children: [
               // Weight input field
               AmountInput(
-                initialAmount: amount ?? 0,
+                initialAmount: amount,
                 label: 'Weight:',
                 semanticsLabel: 'Enter weight of $subtype below.',
                 onChanged: (value) {
                   setState(() {
                     amount = double.tryParse(value) ?? 0;
+                    _estimateEmission();
                   });
                 }, 
-                description: '$amount'
+                description: 'Enter weight'
               ),
               const SizedBox(width: 20), // Increased spacing between fields
               // Weight Unit Dropdown
@@ -567,6 +595,7 @@ class _EntryViewState extends State<EntryView>{
                 onChanged: (WeightUnit? value) {
                   setState(() {
                     weightUnit = value ?? weightUnit;
+                    _estimateEmission();
                   });
                 },
                 value: weightUnit,
@@ -577,6 +606,96 @@ class _EntryViewState extends State<EntryView>{
         ],
       ),
     );
+  }
+
+  /// Checks if an emission estimate can be queried with the currently entered info.
+  /// 
+  /// Returns true if enough info has been entered. Returns false otherwise.
+  bool _canQueryAPI() {
+    final EmissionFactor factor = _getEmissionFactor();
+    // check if the current emission factor has enough data to send to the API
+    return switch (factor) {
+      // money emission factors need an amount and currency type
+      MoneyEmissionFactor _ => (amount != null && moneyUnit != null),
+      
+      // weight emission factors need an amount and unit of measurement
+      WeightEmissionFactor _ => (amount != null && weightUnit != null),
+
+      // travel emissions differ depending on the subtype
+      TravelEmissions _ =>
+        // all travel emissions have an amount and distance unit
+        switch (amount != null && distanceUnit != null) {
+          true => switch (subtype) {
+            // hybrid car has no extra parameters
+            'Hybrid Car' => true,
+            'Gas Car' || 'Electric Car' => (passengers != null),
+            'Domestic Flight' || 'International Flight' => (size != null && passengerAmount != null),
+            _ => (passengerAmount != null)
+          },
+          false => false,
+        },
+      
+      // clothing emissions differ depending on the subtype
+      ClothingEmissions _ => 
+        // all clothing emissions have an amount
+        switch (amount != null) {
+          // used clothing uses weight, other clothing uses money
+          true => (subtype == 'Used Clothing')? (weightUnit != null) : (moneyUnit != null),
+          false => false
+        },
+
+      // Energy Emissions need an energy amount
+      EnergyEmissions _ => (energyAmount != null),
+
+      // unrecognized emission factor
+      _ => throw UnsupportedError('Unsupported Emission Factor ${factor.runtimeType}')
+    };
+  }
+
+  void _estimateEmission() async {
+    EmissionFactor factor = _getEmissionFactor();
+    if (_canQueryAPI()) {
+      EmissionEstimate? estimate = await checker.getEmissions(factor);
+
+      // Make sure a valid response is returned
+      if (estimate != null) {
+        // if passengerAmount is set, calculate personal contribution to emissions
+        if (passengerAmount != null) {
+          final double totalCo2 = estimate.co2;
+          final int totalPassengers = (factor as TravelEmissions).passengers ?? 1;
+          final double personalEmissions = totalCo2 / totalPassengers;
+          print('----');
+          print('total co2: ${totalCo2}');
+          estimate = EmissionEstimate(co2: personalEmissions, unit: 'kg');
+          print('personal co2: $personalEmissions');
+          print('-----');
+
+          EmissionEstimate? carComparison = await checker.getEmissions(
+            TravelEmissions.gasCar(
+              distance: factor.distance, 
+              distanceUnit: factor.distanceUnit, 
+              passengers: 1
+            )
+          );
+          print('If you had driven alone for the same distance, you would have emitted ${carComparison?.co2} ${carComparison?.unit} instead');
+        }
+        final double roundedCo2 = (estimate.co2 * 1000).round() / 1000;
+        final String estimateUnit = estimate.unit;
+        setState(() {
+          curEst = '$roundedCo2 $estimateUnit emitted';
+          co2 = roundedCo2;
+        });
+      } else {
+        setState(() {
+          curEst = 'Please try again later';
+        });
+      }
+    } else {
+      setState(() {
+        curEst = 'N/A';
+        co2 = 0;
+      });
+    }
   }
 
   // Money Input Section
@@ -594,6 +713,7 @@ class _EntryViewState extends State<EntryView>{
             onChanged: (value) {
               setState(() {
                 amount = double.tryParse(value) ?? 0;
+                _estimateEmission();
               });
             }, 
             description: 'Enter amount'
@@ -606,6 +726,7 @@ class _EntryViewState extends State<EntryView>{
             onChanged: (MoneyUnit? value) {
               setState(() {
                 moneyUnit = value ?? moneyUnit;
+                _estimateEmission();
               });
             }, 
             value: moneyUnit, 
@@ -630,6 +751,7 @@ class _EntryViewState extends State<EntryView>{
             onChanged: (EnergyAmount? value) {
               setState(() {
                 energyAmount = value!;
+                _estimateEmission();
               });
             }, 
             value: energyAmount, 
@@ -655,6 +777,7 @@ class _EntryViewState extends State<EntryView>{
               onChanged: (value) {
                 setState(() {
                   amount = double.tryParse(value) ?? 0;
+                  _estimateEmission();
                 });
               }, 
               description: 'Distance'
@@ -666,6 +789,7 @@ class _EntryViewState extends State<EntryView>{
               onChanged: (DistanceUnit? value) {
                 setState(() {
                   distanceUnit = value ?? distanceUnit;
+                  _estimateEmission();
                 });
               },
               value: distanceUnit, 
@@ -689,8 +813,11 @@ class _EntryViewState extends State<EntryView>{
                 description: 'Passengers',
                 onChanged: (value) {
                   setState(() {
-                    amount = double.tryParse(value) ?? 0;
+                    passengers = int.tryParse(value) ?? 0;
+                    // set passenger amount ot null
+                    passengerAmount = null;
                   });
+                  _estimateEmission();
                 },
               ),
             ] else if (subtype == 'Hybrid Car') ...[
@@ -705,6 +832,7 @@ class _EntryViewState extends State<EntryView>{
                   setState(() {
                     passengerAmount = value!;
                   });
+                  _estimateEmission();
                 }, 
                 // hintFontSize: 10,
                 value: passengerAmount, 
@@ -721,6 +849,7 @@ class _EntryViewState extends State<EntryView>{
                 onChanged: (VehicleSize? value) {
                   setState(() {
                     size = value!;
+                    _estimateEmission();
                   });
                 }, 
                 value: size, 
