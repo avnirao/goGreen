@@ -20,7 +20,7 @@ class ClothingInfo extends StatelessWidget {
             text: 'You aren\'t directly supporting clothing manufacturing this way, but there are still emissions that come with it, such as collecting and reselling the clothing.\n\n',
           ),
           TextSpan(
-            text: 'These emissions are ',
+            text: 'Used clothing emissions are still ',
           ),
           TextSpan(
             text: 'much lower ',

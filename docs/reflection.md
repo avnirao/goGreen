@@ -66,6 +66,17 @@ API calls via flutter:
 
 Entry & Activity History: Reworked code from Journal
 
+Estimated passenger amounts (in travel_emissions.dart):
+- Average number of people on a ferry: https://data.bts.gov/stories/s/Ferry-Vessels/57sz-yj2t/#:~:text=Vessel%20capacity%2C%20age%2C%20and%20speed,and%20the%20maximum%20is%205%2C200
+- Average number of people on a train: https://en.wikipedia.org/wiki/Passenger_train
+- Average number of people on a light rail: https://en.wikipedia.org/wiki/Link_light_rail#:~:text=The%201%20Line%2C%20formerly%20Central,with%20up%20to%2074%20seats.
+- Average number of people on a plane: 
+    - private/personal plane: https://jettly.com/post/how-many-passengers-can-a-private-jet-carry#:~:text=Seating%20Capacity%3A%204%2D8%20Passengers,for%20small%20groups%20or%20families.
+    - small commercial plane: https://www.cnn.com/travel/article/flying-small-vs-big-airplane-explainer-cmd/index.html#:~:text=A%20small%20plane%20is%20one,private%20aviation%2C%20but%20not%20exclusively.
+    - medium commercial plane: https://aviex.goflexair.com/flight-school-training-faq/how-many-passengers-can-a-commercial-plane-carry
+    - large commercial plane: https://www.aviationjobsearch.com/career-hub/articles/career-advice/general/which-is-the-largest-passenger-plane-in-the-world
+- Average number of people on a bus: https://en.wikipedia.org/wiki/Bus#:~:text=It%20is%20most%20commonly%20used,of%20up%20to%20300%20passengers.
+
 **What do you feel was the most valuable thing you learned in CSE 340 that will help you beyond this class, and why?**  
 Avni: Working with Flutter was a game-changer for me. It’s an intuitive framework that made learning app development far more enjoyable compared to other frameworks like React. Its versatility for cross-platform development and amazing set of widgets made creating applications straightforward and efficient. Beyond the technical skills, I also learned about the importance of UI design, usability, and accessibility.
 

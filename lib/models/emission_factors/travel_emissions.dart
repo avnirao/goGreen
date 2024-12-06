@@ -73,7 +73,7 @@ class TravelEmissions extends EmissionFactor{
           null => 0,
           PassengerAmount.empty => 2,
           PassengerAmount.almostEmpty => 10,
-          PassengerAmount.average => 32,
+          PassengerAmount.average => 30,
           PassengerAmount.almostFull => 50,
           PassengerAmount.full => 63,
           PassengerAmount.overloaded => 85,
@@ -111,7 +111,7 @@ class TravelEmissions extends EmissionFactor{
           PassengerAmount.full => 8,
           PassengerAmount.overloaded => 10,
         },
-        // According to regulations, small planes carry 19 people max
+        // According to regulations, small planes are typically 1-20 people
         VehicleSize.small => switch(passengerAmt) {
           null => 0,
           PassengerAmount.empty => 4,
@@ -121,17 +121,17 @@ class TravelEmissions extends EmissionFactor{
           PassengerAmount.full => 19,
           PassengerAmount.overloaded => 20,
         },
-        // Assumes meduim commercial planes can carry about 175 people
+        // Assumes meduim commercial planes can carry around 150-160 people
         VehicleSize.medium => switch(passengerAmt) {
           null => 0,
           PassengerAmount.empty => 25,
           PassengerAmount.almostEmpty => 50,
           PassengerAmount.average => 100,
           PassengerAmount.almostFull => 125,
-          PassengerAmount.full => 175,
-          PassengerAmount.overloaded => 200,
+          PassengerAmount.full => 150,
+          PassengerAmount.overloaded => 175,
         },
-        // Assumes large commercial planes can carry about 500 people
+        // Assumes large commercial planes can carry upwards of 500 people
         VehicleSize.large => switch(passengerAmt) {
           null => 0,
           PassengerAmount.empty => 50,
@@ -184,7 +184,7 @@ class TravelEmissions extends EmissionFactor{
     required this.distanceUnit,
     required PassengerAmount? passengerAmt, 
     }): passengers = switch (passengerAmt) {
-          // Assumes the average passenger train can carry about 1000 people
+          // Assumes the average passenger/commuter train can carry about 1000 people
           null => 0,
           PassengerAmount.empty => 50,
           PassengerAmount.almostEmpty => 150,
