@@ -11,8 +11,11 @@ This app is mainly built for iOS devices. It can run on Windows and Mac devices,
 Due to issues with the flutter_maps package, the Map page of GoGreen will occasionally get stuck in an infinite loading loop on Android devices. Otherwise, the app is fully functional for Android.
 
 ## How to Build and Run GoGreen
-1. Open the project in VS Code. Make sure to run `flutter pub get` in the terminal.
-2. Select which device to deploy the app to. Type `flutter run --release` in the terminal. Alternatively, select the 'flutter release' configuration in your run settings and run the app from the 'Run' tab in VS Code. The app will build and run on your device.
+Open the project in VS Code by cloning the git repository.  
+1. Replace line 241 in map_view.dart with the MapBox access token (found on EdStem)
+2. 
+3. Make sure to run `flutter pub get` in the terminal.
+4. Select which device to deploy the app to. Type `flutter run --release` in the terminal. Alternatively, select the 'flutter release' configuration in your run settings and run the app from the 'Run' tab in VS Code. The app will build and run on your device.
 
 ## Project Structure
 We used the Model-View-Provider structure for this project, which is contained in the lib folder of this project. 

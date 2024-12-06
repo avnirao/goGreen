@@ -484,7 +484,6 @@ class _EntryViewState extends State<EntryView>{
   // Saves the current state of the entry and returns to the previous screen.
   void _popback(BuildContext context){
     // Create an updated Entry with current state values
-    print('co2: $co2');
     final curEntry = Entry(
       id: widget.curEntry.id,
       notes: notes,
@@ -566,7 +565,6 @@ class _EntryViewState extends State<EntryView>{
 
   // Weight Input Section
   Widget _buildWeightInputSection() {
-    print('amount: $amount');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
@@ -664,11 +662,7 @@ class _EntryViewState extends State<EntryView>{
           final double totalCo2 = estimate.co2;
           final int totalPassengers = (factor as TravelEmissions).passengers ?? 1;
           final double personalEmissions = totalCo2 / totalPassengers;
-          print('----');
-          print('total co2: ${totalCo2}');
           estimate = EmissionEstimate(co2: personalEmissions, unit: 'kg');
-          print('personal co2: $personalEmissions');
-          print('-----');
 
           EmissionEstimate? carComparison = await checker.getEmissions(
             TravelEmissions.gasCar(
@@ -677,7 +671,6 @@ class _EntryViewState extends State<EntryView>{
               passengers: 1
             )
           );
-          print('If you had driven alone for the same distance, you would have emitted ${carComparison?.co2} ${carComparison?.unit} instead');
         }
         final double roundedCo2 = (estimate.co2 * 1000).round() / 1000;
         final String estimateUnit = estimate.unit;
