@@ -5,7 +5,7 @@ import 'package:go_green/views/entry_widgets/customizable_input.dart';
 class AmountInput extends CustomizableInput {
   /// The function called when the input is changed
   final Function(String) onChanged;
-  final double initialAmount;
+  final double? initialAmount;
 
   /// Creates an input field that accepts numbers.
   /// 
@@ -42,23 +42,41 @@ class AmountInput extends CustomizableInput {
         ),
         SizedBox(
           width: width, // Set a uniform width
-          child: TextFormField(
-            initialValue: '$initialAmount',
-            style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize),
-            decoration: InputDecoration(
-              labelText: description,
-              labelStyle: TextStyle(color: const Color(0xFF386641), fontWeight: fontWeight, fontSize: fontSize),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 234, 224, 198),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.0), 
-                borderSide: BorderSide.none,
+          child: (initialAmount != null && initialAmount != 0)? 
+            TextFormField(
+              initialValue: '$initialAmount',
+              style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize),
+              decoration: InputDecoration(
+                labelText: description,
+                labelStyle: TextStyle(color: const Color(0xFF386641), fontWeight: fontWeight, fontSize: fontSize),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 234, 224, 198),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15.0), 
+                  borderSide: BorderSide.none,
+                ),
               ),
-            ),
-            keyboardType: TextInputType.number,
-            onChanged: onChanged,
-            onTapOutside: (event) => FocusScope.of(context).unfocus()
-          ),
+              keyboardType: TextInputType.number,
+              onChanged: onChanged,
+              // onTap: () => _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.value.text.length),
+              onTapOutside: (event) => FocusScope.of(context).unfocus()
+            ) :
+            TextFormField(
+              style: TextStyle(color: const Color(0xFF386641), fontSize: fontSize),
+              decoration: InputDecoration(
+                labelText: description,
+                labelStyle: TextStyle(color: const Color(0xFF386641), fontWeight: fontWeight, fontSize: fontSize),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 234, 224, 198),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15.0), 
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: onChanged,
+              onTapOutside: (event) => FocusScope.of(context).unfocus()
+            )
         ),
       ],
     );

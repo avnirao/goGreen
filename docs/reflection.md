@@ -66,8 +66,6 @@ API calls via flutter:
 
 Entry & Activity History: Reworked code from Journal
 
-
-
 **What do you feel was the most valuable thing you learned in CSE 340 that will help you beyond this class, and why?**  
 Avni: Working with Flutter was a game-changer for me. It’s an intuitive framework that made learning app development far more enjoyable compared to other frameworks like React. Its versatility for cross-platform development and amazing set of widgets made creating applications straightforward and efficient. Beyond the technical skills, I also learned about the importance of UI design, usability, and accessibility.
 

@@ -21,7 +21,7 @@ class EnergyEmissions extends EmissionFactor {
   /// Parameters:
   ///  - energy: an estimate of the amount of energy consumed
   EnergyEmissions.electricity ({
-    required EnergyAmount energy,
+    required EnergyAmount? energy,
   }): energy = switch (energy) {
         // Average amount of electricity used by US household: 899 kWh per month, or ~29.966 kWh per day (https://www.eia.gov/tools/faqs/faq.php?id=97&t=3)
         // Typical family uses between 15-40 kWh per day (https://www.anker.com/blogs/home-power-backup/electricity-usage-how-much-energy-does-an-average-house-use)
@@ -29,7 +29,8 @@ class EnergyEmissions extends EmissionFactor {
         EnergyAmount.belowAverage => 22,
         EnergyAmount.average => 29.966,
         EnergyAmount.aboveAverage => 35,
-        EnergyAmount.wellAboveAverage => 40
+        EnergyAmount.wellAboveAverage => 40,
+        null => 0,
       },
       energyType = 'Electricity',
       super(
@@ -42,14 +43,15 @@ class EnergyEmissions extends EmissionFactor {
   /// Parameters:
   ///  - volume: an estimate of the amount of natural gas consumed
   EnergyEmissions.naturalGas ({
-    required EnergyAmount volume,
+    required EnergyAmount? volume,
   }): energy = switch (volume) {
         // Average amount of natural gas used by US household: 196 cubic ft per day (https://northeastsupplyenhancement.com/wp-content/uploads/2016/11/Natural-Gas-Facts.pdf)
         EnergyAmount.wellBelowAverage => 100,
         EnergyAmount.belowAverage => 150,
         EnergyAmount.average => 196,
         EnergyAmount.aboveAverage => 220,
-        EnergyAmount.wellAboveAverage => 250
+        EnergyAmount.wellAboveAverage => 250,
+        null => 0,
       },
       energyType = 'Natural Gas',
       super(

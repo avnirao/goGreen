@@ -58,18 +58,18 @@ class _EntryViewState extends State<EntryView>{
 
   // for clothing
   double? amount; // also for money, weight, distance
-  MoneyUnit moneyUnit = MoneyUnit.usd;
-  WeightUnit weightUnit = WeightUnit.kg;
+  MoneyUnit? moneyUnit;
+  WeightUnit? weightUnit;
   String curEst = 'N/A';
 
   // for energy
-  EnergyAmount energyAmount = EnergyAmount.average;
+  EnergyAmount? energyAmount;
 
   // for travel
-  DistanceUnit distanceUnit = DistanceUnit.km;
+  DistanceUnit? distanceUnit;
   int? passengers;
-  PassengerAmount passengerAmount = PassengerAmount.average;
-  VehicleSize size = VehicleSize.medium;
+  PassengerAmount? passengerAmount;
+  VehicleSize? size;
 
   void _resetTrackingState() {
     setState(() {
@@ -86,52 +86,78 @@ class _EntryViewState extends State<EntryView>{
     });
   }
 
-  // void _resetTrackingStateExclude({
-  //   double? amount,
-  //   MoneyUnit? moneyUnit,
-  //   WeightUnit? weightUnit,
-  //   EnergyAmount? energyAmount,
-  //   DistanceUnit? distanceUnit,
-  //   int? passengers,
-  //   PassengerAmount? passengerAmount,
-  //   VehicleSize? size,
-  // }) {
-  //   setState(() {
-  //     amount = amount;
-  //     moneyUnit = moneyUnit;
-  //     weightUnit = weightUnit;
-  //     curEst = 'N/A';
-  //     energyAmount = energyAmount;
-  //     distanceUnit = distanceUnit;
-  //     passengers = passengers;
-  //     passengerAmount = passengerAmount;
-  //     size = size;
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
     // Initialize state variables with values from the provided journal entry
+    category = widget.curEntry.category;
+    subtype = widget.curEntry.subtype;
+    amount = widget.curEntry.amount;
     notes = widget.curEntry.notes;
     updatedAt = widget.curEntry.updatedAt;
     createdAt = widget.curEntry.createdAt;
     emissionsDate = widget.curEntry.emissionsDate;
-    category = widget.curEntry.category;
     co2 = widget.curEntry.co2;
-    subtype = widget.curEntry.subtype;
+    curEst = EmissionEstimate(co2: co2, unit: 'kg').toString();
 
-    amount = widget.curEntry.amount;
-    moneyUnit = widget.curEntry.moneyUnit;
-    weightUnit = widget.curEntry.weightUnit;
-    energyAmount = widget.curEntry.energyAmount;
-    distanceUnit = widget.curEntry.distanceUnit;
-    passengers = widget.curEntry.passengers;
-    passengerAmount = widget.curEntry.passengerAmount;
-    size = widget.curEntry.size;
+    final EmissionFactor curFactor = _getEmissionFactor();
+
+    switch (curFactor) {
+      // money emission factors track currency type
+      case MoneyEmissionFactor _:
+        moneyUnit = widget.curEntry.moneyUnit;
+        break;
+
+      // weight emission factors track amount and weight unit
+      case WeightEmissionFactor _:
+        weightUnit = widget.curEntry.weightUnit;
+        break;
+
+      // travel emissions differ depending on type
+      case TravelEmissions _:
+        // all travel emissions track distance units
+        distanceUnit = widget.curEntry.distanceUnit;
+        switch (subtype) {
+          // hybrid cars don't track anything else
+          case 'Hybrid Car': break;
+          // other cars track a specific passenger number
+          case 'Gas Car' || 'Electric Car':
+            passengers = widget.curEntry.passengers;
+            break;
+          // flights track vehicle size and passenger amount
+          case 'Domestic Flight' || 'International Flight':
+            size = widget.curEntry.size;
+            passengerAmount = widget.curEntry.passengerAmount;
+            break;
+          // all other travel types track passenger amount
+          default: 
+            passengerAmount = widget.curEntry.passengerAmount;
+            break;
+        }
+
+      // clothing emissions track either weight or money units
+      case ClothingEmissions _:
+        switch (subtype) {
+          case 'Used Clothing':
+            weightUnit = widget.curEntry.weightUnit;
+            break;
+          default: 
+            moneyUnit = widget.curEntry.moneyUnit;
+            break;
+        }
+
+      // energy emissions track an energy amount and don't track an amount
+      case EnergyEmissions _:
+        energyAmount = widget.curEntry.energyAmount;
+        amount = null;
+      
+      default: throw UnsupportedError('Unsupported Emission Factor ${curFactor.runtimeType}');
+    }
 
     // intialize the dropdown menus
     _updateSubtypeDropdown(category);
+
+    _estimateEmission();
   }
 
 
@@ -319,44 +345,6 @@ class _EntryViewState extends State<EntryView>{
                       ),
                     ],
                   ),
-              
-                  const SizedBox(height: 30),
-              
-                  // estimate button
-                  SizedBox(
-                    width: 160,
-                    height: 80,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 234, 224, 198), // Button background color
-                        foregroundColor: const Color(0xFF386641), // Text color
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                        ),
-                      ),
-                      onPressed: () async {
-                        EmissionEstimate? estimate = await checker.getEmissions(_getEmissionFactor());
-                        if (estimate != null) {
-                          setState(() {
-                            curEst = estimate.toString();
-                            co2 = estimate.co2;
-                          });
-                        } else {
-                          setState(() {
-                            curEst = 'Please try again later';
-                          });
-                        }
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0), // Padding for better appearance
-                        child: Text(
-                          'Estimate\nEmission',
-                          style: TextStyle(fontSize: 18),
-                          semanticsLabel: 'Estimate Emission',
-                        ),
-                      ),
-                    ),
-                  ),
                 
                 const SizedBox(height: 20),
               
@@ -496,6 +484,7 @@ class _EntryViewState extends State<EntryView>{
   // Saves the current state of the entry and returns to the previous screen.
   void _popback(BuildContext context){
     // Create an updated Entry with current state values
+    print('co2: $co2');
     final curEntry = Entry(
       id: widget.curEntry.id,
       notes: notes,
@@ -506,12 +495,12 @@ class _EntryViewState extends State<EntryView>{
       co2: co2,
       subtype: subtype,
       amount: amount,
-      energyAmount: energyAmount ,
-      distanceUnit: distanceUnit,
-      size: size,
-      moneyUnit: moneyUnit,
-      weightUnit: weightUnit,
-      passengerAmount: passengerAmount,
+      energyAmount: energyAmount ?? EnergyAmount.average,
+      distanceUnit: distanceUnit ?? DistanceUnit.km,
+      size: size ?? VehicleSize.medium,
+      moneyUnit: moneyUnit ?? MoneyUnit.usd,
+      weightUnit: weightUnit ?? WeightUnit.kg,
+      passengerAmount: passengerAmount ?? PassengerAmount.average,
       passengers: passengers,
     );
 
@@ -571,12 +560,13 @@ class _EntryViewState extends State<EntryView>{
                 style: const ButtonStyle(foregroundColor: WidgetStatePropertyAll(Color(0xFF386641)))
               ))
           .toList();
-        subtype = subtype == 'Leather' ? subtypeMap.entries.first.key : subtype;
+        subtype = subtypeMap.entries.first.key;
     });
   }
 
   // Weight Input Section
   Widget _buildWeightInputSection() {
+    print('amount: $amount');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
@@ -586,7 +576,7 @@ class _EntryViewState extends State<EntryView>{
             children: [
               // Weight input field
               AmountInput(
-                initialAmount: amount ?? 0,
+                initialAmount: amount,
                 label: 'Weight:',
                 semanticsLabel: 'Enter weight of $subtype below.',
                 onChanged: (value) {
@@ -595,7 +585,7 @@ class _EntryViewState extends State<EntryView>{
                     _estimateEmission();
                   });
                 }, 
-                description: '$amount'
+                description: 'Enter weight'
               ),
               const SizedBox(width: 20), // Increased spacing between fields
               // Weight Unit Dropdown
@@ -693,6 +683,7 @@ class _EntryViewState extends State<EntryView>{
         final String estimateUnit = estimate.unit;
         setState(() {
           curEst = '$roundedCo2 $estimateUnit emitted';
+          co2 = roundedCo2;
         });
       } else {
         setState(() {
