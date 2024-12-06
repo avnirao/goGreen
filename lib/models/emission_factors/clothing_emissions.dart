@@ -21,7 +21,7 @@ class ClothingEmissions extends EmissionFactor {
   ///  - moneyUnit: the type of currency for money
   ClothingEmissions.leather ({
     required double money, 
-    required MoneyUnit moneyUnit
+    required MoneyUnit? moneyUnit
   }): _amount = money,
       _moneyUnit = moneyUnit,
       _weightUnit = null,
@@ -37,7 +37,7 @@ class ClothingEmissions extends EmissionFactor {
   ///  - moneyUnit: the type of currency for money
   ClothingEmissions.footwear({
     required double money, 
-    required MoneyUnit moneyUnit
+    required MoneyUnit? moneyUnit
   }): _amount = money,
       _moneyUnit = moneyUnit,
       _weightUnit = null,
@@ -53,7 +53,7 @@ class ClothingEmissions extends EmissionFactor {
   ///  - moneyUnit: the type of currency for money
   ClothingEmissions.newClothing({
     required double money, 
-    required MoneyUnit moneyUnit
+    required MoneyUnit? moneyUnit
   }): _amount = money,
       _moneyUnit = moneyUnit,
       _weightUnit = null,
@@ -69,7 +69,7 @@ class ClothingEmissions extends EmissionFactor {
   ///  - moneyUnit: the type of currency for money
   ClothingEmissions.infantClothing({
     required double money, 
-    required MoneyUnit moneyUnit
+    required MoneyUnit? moneyUnit
   }): _amount = money,
       _moneyUnit = moneyUnit,
       _weightUnit = null,
@@ -85,7 +85,7 @@ class ClothingEmissions extends EmissionFactor {
   ///  - weightUnit: the unit of measurement for the weight
   ClothingEmissions.usedClothing({
     required double weight, 
-    required WeightUnit weightUnit
+    required WeightUnit? weightUnit
   }): _amount = weight,
       _moneyUnit = null,
       _weightUnit = weightUnit,
@@ -98,10 +98,10 @@ class ClothingEmissions extends EmissionFactor {
 
   /// Returns the amount of money if money is being used instead of weight.
   /// Returns null if weight is being used for this emission factor
-  double? get money => _moneyUnit != null ? _amount : null;
+  double? get money => (_moneyUnit != null) ? _amount : null;
   /// Returns the weight if weight is being used instead of money.
   /// Returns null if money is being used for this emission factor
-  double? get weight => _weightUnit != null ? _amount : null;
+  double? get weight => (_weightUnit != null) ? _amount : null;
   /// Returns the amount, regardless of whether it's money or weight
   double get amount => _amount;
 
