@@ -20,7 +20,9 @@ class MapView extends StatefulWidget {
   final RecyclingCentersDB recyclingCenters;
 
   const MapView({
+    // The PositionProvider instance that provides the user's current location.
     required this.positionProvider,
+    // The RecyclingCentersDB instance that provides the recycling centers and second hand stores.
     required this.recyclingCenters,
     super.key,
   });
@@ -42,8 +44,11 @@ class MapViewState extends State<MapView> {
     stream: Geolocator.getPositionStream(
       // The location settings for the Geolocator.
       locationSettings: const LocationSettings(
+        // The desired accuracy of the location data.
         accuracy: LocationAccuracy.medium,
+        // The distance filter for the location data.
         distanceFilter: 50,
+        // The time limit for the location data.
         timeLimit: Duration(minutes: 1),
       ),
     ),
@@ -117,55 +122,58 @@ Widget build(BuildContext context) {
                   ),
                         const SizedBox(height: 20),
                        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min, // Adjusts to the size of its children
-            children: [
-              const Text(
-                'Unsure of how to dispose of something?',
-                textAlign: TextAlign.center, // Centers the text within its box
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF386641),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min, // Adjusts to the size of its children
+                      children: [
+                        const Text(
+                          'Unsure of how to dispose of something?',
+                          textAlign: TextAlign.center, // Centers the text within its box
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF386641),
+                          ),
+                        ),
+                    const SizedBox(height: 16), // Adds space between text and button
+                    Semantics(
+                            label: 'Click here for more information on how to dispose of things.',
+                            button: true, // Makes the button accessible as a button
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF386641), // Button color
+                                padding: const EdgeInsets.all(16),
+                              ),
+                      onPressed: () async {
+                        // The URL to the Seattle Public Utilities website.
+                        const url = 'https://seattle.gov/utilities/your-services/collection-and-disposal/where-does-it-go#/a-z';
+                        if (await canLaunchUrl(Uri.parse(url))) {
+                          await launchUrl(Uri.parse(url));
+                        } else {
+                          // Show a snackbar if the URL cannot be opened.
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Could not open the link")),
+                          );
+                        }
+                      },
+                      child: const Row(
+                        // Aligns the icon and text in a row
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.search, color: Colors.white), // Search icon
+                          SizedBox(width: 8), // Space between icon and text
+                          Text(
+                            'Click here',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-          const SizedBox(height: 16), // Adds space between text and button
-          Semantics(
-                  label: 'Click here for more information on how to dispose of things.',
-                  button: true, // Makes the button accessible as a button
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF386641), // Button color
-                      padding: const EdgeInsets.all(16),
-                    ),
-            onPressed: () async {
-              const url = 'https://seattle.gov/utilities/your-services/collection-and-disposal/where-does-it-go#/a-z';
-              if (await canLaunchUrl(Uri.parse(url))) {
-                await launchUrl(Uri.parse(url));
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Could not open the link")),
-                );
-              }
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.search, color: Colors.white), // Search icon
-                SizedBox(width: 8), // Space between icon and text
-                Text(
-                  'Click here',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      ),
-    ],
-  ),
-),
+          ),
 
                         const SizedBox(height: 20),
                       ],
@@ -246,9 +254,10 @@ Widget build(BuildContext context) {
 
   // The MarkerClusterLayerWidget that displays the recycling centers and second hand stores.
   // Returns a MarkerClusterLayerWidget.
-  // The context of the widget.
+  // Parameter - The context of the widget.
   MarkerClusterLayerWidget markerWithClusters(BuildContext context) {
-   
+    
+    // The MarkerClusterLayerWidget that displays the recycling centers and second hand stores.
     return MarkerClusterLayerWidget(
       options: MarkerClusterLayerOptions(
         disableClusteringAtZoom: 18,
@@ -258,6 +267,7 @@ Widget build(BuildContext context) {
         padding: const EdgeInsets.all(50),
         maxZoom: 15,
         markers: recyclingCenters.all
+        // The markers for the recycling centers and second hand stores.
             .map(
               (venue) => Marker(
                 point: LatLng(venue.latitude, venue.longitude),
@@ -265,6 +275,7 @@ Widget build(BuildContext context) {
               ),
             )
             .toList(),
+            // The builder for the cluster markers.
         builder: (context, markers) {
           return Container(
             decoration: BoxDecoration(
@@ -304,6 +315,7 @@ Widget build(BuildContext context) {
 
   // The GestureDetector that displays the location button.
   // Returns a GestureDetector.
+  // Parameters: The context of the widget, and the RecyclingCenter instance.
   GestureDetector locationButton(BuildContext context, RecyclingCenter recyclingCenter) {
     return GestureDetector(
     onTapDown: (tapDetails) => openPlacePage(context, tapDetails, recyclingCenter),
@@ -317,8 +329,11 @@ Widget build(BuildContext context) {
 
   // Opens the place page for the recycling center.
   void openPlacePage(
+    // The context of the widget.
   BuildContext context,
+  // The TapDownDetails of the tap.
   TapDownDetails tapDetails,
+  // The RecyclingCenter instance.
   RecyclingCenter recyclingCenter,
 ) {
   final offset = tapDetails.globalPosition;
@@ -335,10 +350,12 @@ Widget build(BuildContext context) {
     value: 1,
     child: InkWell(
       onTap: () async {
+        // Open Google Maps with the recycling center's location.
         if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
           await launchUrl(Uri.parse(googleMapsUrl));
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
+            // Show a snackbar if Google Maps cannot be opened.
             const SnackBar(content: Text("Could not open Google Maps")),
           );
         }
@@ -348,7 +365,6 @@ Widget build(BuildContext context) {
         style: const TextStyle(
           fontSize: 15,
           color: Color(0xFF386641),
-          decoration: TextDecoration.underline, // Makes the text look like a link.
         ),
         textAlign: TextAlign.center,
       ),
@@ -357,12 +373,13 @@ Widget build(BuildContext context) {
   
   menu.add(const PopupMenuDivider(height: 2));
 
-  // Add other menu items, like the recycling center's website if applicable.
+  // The clickable address of the recycling center.
   var website = recyclingCenter.url;
   if (website.isNotEmpty) {
     menu.add(
       PopupMenuItem(
         onTap: () async {
+          // Open the recycling center's website.
           if (await canLaunchUrl(Uri.parse(website))) {
             await launchUrl(Uri.parse(website));
           } else {
@@ -382,6 +399,7 @@ Widget build(BuildContext context) {
   // Show the popup menu at the tap position.
   showMenu(
     context: context,
+    // The position of the menu.
     position: RelativeRect.fromLTRB(offset.dx, offset.dy, offset.dx + 1, offset.dy + 1),
     items: menu,
   );

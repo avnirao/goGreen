@@ -3,7 +3,9 @@ import 'package:isar/isar.dart';
 
 // represents an ActivityHistory
 class ActivityHistory {
+  // the Isar instance
   final Isar _isar;
+  // the list of entries
   final List<Entry> _entries;
 
   ActivityHistory(Isar isar) : _entries = [], _isar = isar; // default constructor

@@ -15,7 +15,9 @@ class ActivityLogView extends StatefulWidget {
 }
 
 class ActivityLogViewState extends State<ActivityLogView> {
+  // The current sorting option for the activity log
   String _sortOption = 'Most Recent'; // default sorting
+  // The current index of the bottom navigation bar
   int _currentIndex = 1;
 
   @override

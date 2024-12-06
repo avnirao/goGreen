@@ -6,9 +6,11 @@ import 'package:go_green/views/entry_view.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+// HomePage is the main page of the app
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
+  // HomePageState is the state of HomePage
   HomePageState createState() => HomePageState();
 }
 
@@ -35,6 +37,7 @@ class HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
+                    // Title of the app
                     'GoGreen',
                     style: TextStyle(
                       fontSize: 28,
@@ -45,6 +48,7 @@ class HomePageState extends State<HomePage> {
                   Semantics(
                     label: 'More info on what your emission plus its color means',
                     child: IconButton(
+                      // Info button that shows a dialog with information about the emission levels
                       icon: const Icon(Icons.info_outline, color: Color(0xFF386641)),
                       onPressed: () {
                         _showInfoDialog(context);
@@ -61,28 +65,31 @@ class HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Consumer<ActivityProvider>(
+                  // Consumer listens to the ActivityProvider and rebuilds when the data changes
                   builder: (context, activityProvider, child) {
                     double co2 = activityProvider.activityHistory.todayCo2;
                     Color emissionColor; 
                     double roundedCo2 = (co2 * 100).round() / 100;
                     double width = MediaQuery.of(context).size.width - 40;
                     String semanticLabel = '';
-                    
-                     if (co2 > 43.8) {
-                  emissionColor = const Color(0xFFBC4749);
-                  semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Red zone";
-                    } else if (co2 >= 20 && co2 <= 43.8) {
-                  emissionColor = const Color(0xFF6A994E); // Light green
-                  semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Light Green zone";
-                    } else {
-                  emissionColor = const Color(0xFF386641); // Dark green
-                  semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Dark Green zone";
-                  }
+
+                      // Set the color and semantic label based on the CO₂ value
+                        if (co2 > 43.8) {
+                      emissionColor = const Color(0xFFBC4749);
+                      semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Red zone";
+                        } else if (co2 >= 20 && co2 <= 43.8) {
+                      emissionColor = const Color(0xFF6A994E); // Light green
+                      semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Light Green zone";
+                        } else {
+                      emissionColor = const Color(0xFF386641); // Dark green
+                      semanticLabel = "Today's Emissions: $roundedCo2 kg CO₂ in Dark Green zone";
+                      }
                      return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: width),
                         child: Semantics(
+                          // Set the semantic label for screen readers
                           label: semanticLabel, // Dynamically set label
                           child: RichText(
                             text: TextSpan(
@@ -132,6 +139,7 @@ class HomePageState extends State<HomePage> {
             const SizedBox(height: 50,),
 
             // Track button
+            // track button that navigates to EntryView to add a new entry
             Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -230,6 +238,9 @@ class HomePageState extends State<HomePage> {
 
   }
   // Show Info Dialog that tells users about what their emission means (changes the color and explains why)
+  // This dialog is shown when the info button is tapped
+  // The dialog contains information about the emission levels and tips to reduce emissions
+  // The dialog is dismissed when the Close button is tapped
   void _showInfoDialog(BuildContext context) {
   showDialog(
     context: context,
