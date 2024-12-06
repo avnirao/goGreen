@@ -62,6 +62,7 @@ class _EntryViewState extends State<EntryView>{
   String subtype = 'Leather';
   double co2 = 0;
   EmissionChecker checker = EmissionChecker();
+  EmissionEstimate? comparisonEstimate;
 
   // for clothing
   double? amount; // also for money, weight, distance
@@ -163,8 +164,6 @@ class _EntryViewState extends State<EntryView>{
 
     // intialize the dropdown menus
     _updateSubtypeDropdown(category);
-
-    _estimateEmission();
   }
 
 
@@ -232,6 +231,12 @@ class _EntryViewState extends State<EntryView>{
                         onSelected: (String? value) {
                           setState(() {
                             subtype = value ?? subtype;
+
+                            // set these to null for cars so that the estimate info screen displays accurate information
+                            if (subtype == 'Electric Car' || subtype == 'Gas Car' || subtype == 'Hybrid Car') {
+                              comparisonEstimate = null;
+                              passengerAmount = null;
+                            }
                           });
                           _estimateEmission();
                         },
@@ -370,16 +375,18 @@ class _EntryViewState extends State<EntryView>{
                     ),
                     child: Row(
                       children: [
-                        Flexible(
-                          child: Semantics(
-                            child: Text(
-                              'Estimate: $curEst',
-                              semanticsLabel: 'Estimate: $curEst',
-                              style: const TextStyle(
-                                fontSize: 22,
-                                color: Colors.black,
+                        Expanded(
+                          child: Flexible(
+                            child: Semantics(
+                              child: Text(
+                                'Estimate: $curEst',
+                                semanticsLabel: 'Estimate: $curEst',
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.black,
+                                ),
+                                
                               ),
-                              
                             ),
                           ),
                         ),
@@ -680,6 +687,9 @@ class _EntryViewState extends State<EntryView>{
   void _estimateEmission() async {
     EmissionFactor factor = _getEmissionFactor();
     if (_canQueryAPI()) {
+      setState(() {
+        curEst = 'Getting Estimate...';
+      });
       EmissionEstimate? estimate = await checker.getEmissions(factor);
 
       // Make sure a valid response is returned
@@ -690,6 +700,15 @@ class _EntryViewState extends State<EntryView>{
           final int totalPassengers = (factor as TravelEmissions).passengers ?? 1;
           final double personalEmissions = totalCo2 / totalPassengers;
           estimate = EmissionEstimate(co2: personalEmissions, unit: 'kg');
+
+          comparisonEstimate = await checker.getEmissions(
+            TravelEmissions.gasCar(
+              distance: factor.distance, 
+              distanceUnit: factor.distanceUnit, 
+              passengers: 1
+            )
+          );
+
         }
         final double roundedCo2 = (estimate.co2 * 1000).round() / 1000;
         final String estimateUnit = estimate.unit;
@@ -819,7 +838,7 @@ class _EntryViewState extends State<EntryView>{
             // Passenger Amount Dropdown
             if (subtype == 'Gas Car' || subtype == 'Electric Car') ...[
               AmountInput(
-                initialAmount: amount ?? 0,
+                initialAmount: double.tryParse('$passengers') ?? 0,
                 label: '# of Passengers:',
                 semanticsLabel: 'Enter number of passengers below.',
                 description: 'Passengers',
@@ -857,6 +876,7 @@ class _EntryViewState extends State<EntryView>{
             if (subtype == 'International Flight' || subtype == 'Domestic Flight') ...[
               CustomDropdown<VehicleSize>(
                 label: 'Plane size:',
+                width: 150,
                 semanticsLabel: 'Select the size of your plane below',
                 onChanged: (VehicleSize? value) {
                   setState(() {
@@ -885,16 +905,18 @@ class _EntryViewState extends State<EntryView>{
             'About Your Emission Estimate',
             style: TextStyle(color: Colors.black), // Black title text
           ),
-          content: switch (category) {
-            EmissionCategory.clothing => const ClothingInfo(),
-            EmissionCategory.energy => const EnergyInfo(),
-            EmissionCategory.food => const FoodInfo(),
-            EmissionCategory.furniture => const FurnitureInfo(),
-            EmissionCategory.personalCareAndAccessories => const PersonalCareInfo(),
-            EmissionCategory.travel => const TravelInfo(comparison: null),
-            EmissionCategory.foodWaste || EmissionCategory.generalWaste || EmissionCategory.electricalWaste => 
-              const WasteInfo(),
-          },
+          content: SingleChildScrollView(
+            child: switch (category) {
+              EmissionCategory.clothing => const ClothingInfo(),
+              EmissionCategory.energy => const EnergyInfo(),
+              EmissionCategory.food => const FoodInfo(),
+              EmissionCategory.furniture => const FurnitureInfo(),
+              EmissionCategory.personalCareAndAccessories => const PersonalCareInfo(),
+              EmissionCategory.travel => TravelInfo(comparison: comparisonEstimate, subtype: subtype,),
+              EmissionCategory.foodWaste || EmissionCategory.generalWaste || EmissionCategory.electricalWaste => 
+                const WasteInfo(),
+            },
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
