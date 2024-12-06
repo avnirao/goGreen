@@ -38,20 +38,27 @@ class Entry {
 
   // for money weight distance
   double? amount;
+  // money unit
   @enumerated
   MoneyUnit moneyUnit;
+  // weight unit
   @enumerated
   WeightUnit weightUnit;
   @enumerated 
+  // energy amount
   // for energy
   EnergyAmount energyAmount;
 
   // for travel
   @enumerated
+  // distance unit
   DistanceUnit distanceUnit;
+  // number of passengers
   int? passengers;
+  // passenger amount (enum)
   @enumerated
   PassengerAmount passengerAmount;
+  // size of vehicle
   @enumerated
   VehicleSize size;
 

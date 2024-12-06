@@ -10,16 +10,19 @@ import 'package:provider/provider.dart';
 class ActivityLogView extends StatefulWidget {
   const ActivityLogView({super.key});
 
+  // creates the log view state
   @override
   ActivityLogViewState createState() => ActivityLogViewState();
 }
 
+// activity log view state
 class ActivityLogViewState extends State<ActivityLogView> {
   // The current sorting option for the activity log
   String _sortOption = 'Most Recent'; // default sorting
   // The current index of the bottom navigation bar
   int _currentIndex = 1;
 
+  // build body
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +56,7 @@ class ActivityLogViewState extends State<ActivityLogView> {
                 }).toList(),
                 onChanged: (String? newValue) {
                   setState(() {
-                    _sortOption = newValue ?? 'Most Recent';
+                    _sortOption = newValue ?? 'Most Recent'; // on change sort option
                   });
                 },
                 dropdownColor: const Color.fromARGB(255, 224, 214, 186),
