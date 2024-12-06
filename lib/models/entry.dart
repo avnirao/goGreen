@@ -1,4 +1,6 @@
 import 'package:go_green/models/emission_data/emission_data_enums.dart';
+import 'package:go_green/models/emission_factors/energy_emissions.dart';
+import 'package:go_green/models/emission_factors/travel_emissions.dart';
 import 'package:isar/isar.dart';
 part 'entry.g.dart';
 
@@ -34,6 +36,26 @@ class Entry {
   /// co2 emissions for this entry
   final double co2;
 
+  // for money weight distance
+  double? amount;
+  @enumerated
+  MoneyUnit moneyUnit;
+  @enumerated
+  WeightUnit weightUnit;
+  @enumerated 
+  // for energy
+  EnergyAmount energyAmount;
+
+  // for travel
+  @enumerated
+  DistanceUnit distanceUnit;
+  int? passengers;
+  @enumerated
+  PassengerAmount passengerAmount;
+  @enumerated
+  VehicleSize size;
+
+
   /// Constructs an Entry using all fields
   Entry({
     required this.id,
@@ -43,7 +65,15 @@ class Entry {
     required this.emissionsDate,
     required this.category,
     required this.subtype,
-    this.co2 = 0
+    this.co2 = 0,
+    this.amount,
+    this.moneyUnit = MoneyUnit.usd,
+    this.weightUnit = WeightUnit.kg ,
+    this.energyAmount = EnergyAmount.average,
+    this.distanceUnit = DistanceUnit.km,
+    this.passengers,
+    this.passengerAmount = PassengerAmount.average,
+    this.size = VehicleSize.medium
   });
 
   /// Constructs a new entry given an emission category.

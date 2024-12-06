@@ -59,43 +59,34 @@ class ActivityLogViewState extends State<ActivityLogView> {
               ),
             ),
             Expanded(
-  child: Stack(
-    children: [
-      Positioned(
-        top: -40.0, // Shifts the content up by 40 pixels
-        left: 0,
-        right: 0,
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height, // Constrain height
-          child: Consumer<ActivityProvider>(
-            builder: (context, activityProvider, child) {
-              List<Entry> entries = activityProvider.activityHistory.entries;
+              child: SafeArea(
+                child: Consumer<ActivityProvider>(
+                  builder: (context, activityProvider, child) {
+                    List<Entry> entries = activityProvider.activityHistory.entries;
 
-                          // Sorting entries based on selected option
-                          if (_sortOption == 'Most Recent') {
-                            entries.sort((a, b) => b.emissionsDate.compareTo(a.emissionsDate));
-                          } else if (_sortOption == 'Least Recent') {
-                            entries.sort((a, b) => a.emissionsDate.compareTo(b.emissionsDate));
-                          } else if (_sortOption == 'Most CO2') {
-                            entries.sort((a, b) => b.co2.compareTo(a.co2));
-                          } else if (_sortOption == 'Least CO2') {
-                            entries.sort((a, b) => a.co2.compareTo(b.co2));
-                          }
+                    // Sorting entries based on selected option
+                    if (_sortOption == 'Most Recent') {
+                      entries.sort((a, b) => b.emissionsDate.compareTo(a.emissionsDate));
+                    } else if (_sortOption == 'Least Recent') {
+                      entries.sort((a, b) => a.emissionsDate.compareTo(b.emissionsDate));
+                    } else if (_sortOption == 'Most CO2') {
+                      entries.sort((a, b) => b.co2.compareTo(a.co2));
+                    } else if (_sortOption == 'Least CO2') {
+                      entries.sort((a, b) => a.co2.compareTo(b.co2));
+                    }
 
-                          // all the entries
-                          return ListView.builder(
-                            itemCount: entries.length,
-                            itemBuilder: (context, index) {
-                              return _createListElementForEntry(context, entries[index]);
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+                    // all the entries
+                    return ListView.builder(
+                      itemCount: entries.length,
+                      itemBuilder: (context, index) {
+                        return _createListElementForEntry(context, entries[index]);
+                      },
+                    );
+                  },
+                ),
               ),
             ),
+
           ],
         ),
       ),

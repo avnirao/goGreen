@@ -17,41 +17,87 @@ const EntrySchema = CollectionSchema(
   name: r'Entry',
   id: 744406108402872943,
   properties: {
-    r'category': PropertySchema(
+    r'amount': PropertySchema(
       id: 0,
+      name: r'amount',
+      type: IsarType.double,
+    ),
+    r'category': PropertySchema(
+      id: 1,
       name: r'category',
       type: IsarType.byte,
       enumMap: _EntrycategoryEnumValueMap,
     ),
     r'co2': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'co2',
       type: IsarType.double,
     ),
     r'createdAt': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
+    r'distanceUnit': PropertySchema(
+      id: 4,
+      name: r'distanceUnit',
+      type: IsarType.byte,
+      enumMap: _EntrydistanceUnitEnumValueMap,
+    ),
     r'emissionsDate': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'emissionsDate',
       type: IsarType.dateTime,
     ),
+    r'energyAmount': PropertySchema(
+      id: 6,
+      name: r'energyAmount',
+      type: IsarType.byte,
+      enumMap: _EntryenergyAmountEnumValueMap,
+    ),
+    r'moneyUnit': PropertySchema(
+      id: 7,
+      name: r'moneyUnit',
+      type: IsarType.byte,
+      enumMap: _EntrymoneyUnitEnumValueMap,
+    ),
     r'notes': PropertySchema(
-      id: 4,
+      id: 8,
       name: r'notes',
       type: IsarType.string,
     ),
+    r'passengerAmount': PropertySchema(
+      id: 9,
+      name: r'passengerAmount',
+      type: IsarType.byte,
+      enumMap: _EntrypassengerAmountEnumValueMap,
+    ),
+    r'passengers': PropertySchema(
+      id: 10,
+      name: r'passengers',
+      type: IsarType.long,
+    ),
+    r'size': PropertySchema(
+      id: 11,
+      name: r'size',
+      type: IsarType.byte,
+      enumMap: _EntrysizeEnumValueMap,
+    ),
     r'subtype': PropertySchema(
-      id: 5,
+      id: 12,
       name: r'subtype',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 6,
+      id: 13,
       name: r'updatedAt',
       type: IsarType.dateTime,
+    ),
+    r'weightUnit': PropertySchema(
+      id: 14,
+      name: r'weightUnit',
+      type: IsarType.byte,
+      enumMap: _EntryweightUnitEnumValueMap,
     )
   },
   estimateSize: _entryEstimateSize,
@@ -85,13 +131,21 @@ void _entrySerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeByte(offsets[0], object.category.index);
-  writer.writeDouble(offsets[1], object.co2);
-  writer.writeDateTime(offsets[2], object.createdAt);
-  writer.writeDateTime(offsets[3], object.emissionsDate);
-  writer.writeString(offsets[4], object.notes);
-  writer.writeString(offsets[5], object.subtype);
-  writer.writeDateTime(offsets[6], object.updatedAt);
+  writer.writeDouble(offsets[0], object.amount);
+  writer.writeByte(offsets[1], object.category.index);
+  writer.writeDouble(offsets[2], object.co2);
+  writer.writeDateTime(offsets[3], object.createdAt);
+  writer.writeByte(offsets[4], object.distanceUnit.index);
+  writer.writeDateTime(offsets[5], object.emissionsDate);
+  writer.writeByte(offsets[6], object.energyAmount.index);
+  writer.writeByte(offsets[7], object.moneyUnit.index);
+  writer.writeString(offsets[8], object.notes);
+  writer.writeByte(offsets[9], object.passengerAmount.index);
+  writer.writeLong(offsets[10], object.passengers);
+  writer.writeByte(offsets[11], object.size.index);
+  writer.writeString(offsets[12], object.subtype);
+  writer.writeDateTime(offsets[13], object.updatedAt);
+  writer.writeByte(offsets[14], object.weightUnit.index);
 }
 
 Entry _entryDeserialize(
@@ -101,15 +155,33 @@ Entry _entryDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Entry(
-    category: _EntrycategoryValueEnumMap[reader.readByteOrNull(offsets[0])] ??
+    amount: reader.readDoubleOrNull(offsets[0]),
+    category: _EntrycategoryValueEnumMap[reader.readByteOrNull(offsets[1])] ??
         EmissionCategory.clothing,
-    co2: reader.readDoubleOrNull(offsets[1]) ?? 0,
-    createdAt: reader.readDateTime(offsets[2]),
-    emissionsDate: reader.readDateTime(offsets[3]),
+    co2: reader.readDoubleOrNull(offsets[2]) ?? 0,
+    createdAt: reader.readDateTime(offsets[3]),
+    distanceUnit:
+        _EntrydistanceUnitValueEnumMap[reader.readByteOrNull(offsets[4])] ??
+            DistanceUnit.km,
+    emissionsDate: reader.readDateTime(offsets[5]),
+    energyAmount:
+        _EntryenergyAmountValueEnumMap[reader.readByteOrNull(offsets[6])] ??
+            EnergyAmount.average,
     id: id,
-    notes: reader.readString(offsets[4]),
-    subtype: reader.readString(offsets[5]),
-    updatedAt: reader.readDateTime(offsets[6]),
+    moneyUnit: _EntrymoneyUnitValueEnumMap[reader.readByteOrNull(offsets[7])] ??
+        MoneyUnit.usd,
+    notes: reader.readString(offsets[8]),
+    passengerAmount:
+        _EntrypassengerAmountValueEnumMap[reader.readByteOrNull(offsets[9])] ??
+            PassengerAmount.average,
+    passengers: reader.readLongOrNull(offsets[10]),
+    size: _EntrysizeValueEnumMap[reader.readByteOrNull(offsets[11])] ??
+        VehicleSize.medium,
+    subtype: reader.readString(offsets[12]),
+    updatedAt: reader.readDateTime(offsets[13]),
+    weightUnit:
+        _EntryweightUnitValueEnumMap[reader.readByteOrNull(offsets[14])] ??
+            WeightUnit.kg,
   );
   return object;
 }
@@ -122,20 +194,43 @@ P _entryDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 1:
       return (_EntrycategoryValueEnumMap[reader.readByteOrNull(offset)] ??
           EmissionCategory.clothing) as P;
-    case 1:
-      return (reader.readDoubleOrNull(offset) ?? 0) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDoubleOrNull(offset) ?? 0) as P;
     case 3:
       return (reader.readDateTime(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (_EntrydistanceUnitValueEnumMap[reader.readByteOrNull(offset)] ??
+          DistanceUnit.km) as P;
     case 5:
-      return (reader.readString(offset)) as P;
-    case 6:
       return (reader.readDateTime(offset)) as P;
+    case 6:
+      return (_EntryenergyAmountValueEnumMap[reader.readByteOrNull(offset)] ??
+          EnergyAmount.average) as P;
+    case 7:
+      return (_EntrymoneyUnitValueEnumMap[reader.readByteOrNull(offset)] ??
+          MoneyUnit.usd) as P;
+    case 8:
+      return (reader.readString(offset)) as P;
+    case 9:
+      return (_EntrypassengerAmountValueEnumMap[
+              reader.readByteOrNull(offset)] ??
+          PassengerAmount.average) as P;
+    case 10:
+      return (reader.readLongOrNull(offset)) as P;
+    case 11:
+      return (_EntrysizeValueEnumMap[reader.readByteOrNull(offset)] ??
+          VehicleSize.medium) as P;
+    case 12:
+      return (reader.readString(offset)) as P;
+    case 13:
+      return (reader.readDateTime(offset)) as P;
+    case 14:
+      return (_EntryweightUnitValueEnumMap[reader.readByteOrNull(offset)] ??
+          WeightUnit.kg) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -162,6 +257,94 @@ const _EntrycategoryValueEnumMap = {
   6: EmissionCategory.foodWaste,
   7: EmissionCategory.generalWaste,
   8: EmissionCategory.electricalWaste,
+};
+const _EntrydistanceUnitEnumValueMap = {
+  'm': 0,
+  'km': 1,
+  'ft': 2,
+  'mi': 3,
+  'nmi': 4,
+};
+const _EntrydistanceUnitValueEnumMap = {
+  0: DistanceUnit.m,
+  1: DistanceUnit.km,
+  2: DistanceUnit.ft,
+  3: DistanceUnit.mi,
+  4: DistanceUnit.nmi,
+};
+const _EntryenergyAmountEnumValueMap = {
+  'wellBelowAverage': 0,
+  'belowAverage': 1,
+  'average': 2,
+  'aboveAverage': 3,
+  'wellAboveAverage': 4,
+};
+const _EntryenergyAmountValueEnumMap = {
+  0: EnergyAmount.wellBelowAverage,
+  1: EnergyAmount.belowAverage,
+  2: EnergyAmount.average,
+  3: EnergyAmount.aboveAverage,
+  4: EnergyAmount.wellAboveAverage,
+};
+const _EntrymoneyUnitEnumValueMap = {
+  'usd': 0,
+  'cad': 1,
+  'eur': 2,
+  'gbd': 3,
+  'nok': 4,
+  'gtq': 5,
+  'mxn': 6,
+};
+const _EntrymoneyUnitValueEnumMap = {
+  0: MoneyUnit.usd,
+  1: MoneyUnit.cad,
+  2: MoneyUnit.eur,
+  3: MoneyUnit.gbd,
+  4: MoneyUnit.nok,
+  5: MoneyUnit.gtq,
+  6: MoneyUnit.mxn,
+};
+const _EntrypassengerAmountEnumValueMap = {
+  'empty': 0,
+  'almostEmpty': 1,
+  'average': 2,
+  'almostFull': 3,
+  'full': 4,
+  'overloaded': 5,
+};
+const _EntrypassengerAmountValueEnumMap = {
+  0: PassengerAmount.empty,
+  1: PassengerAmount.almostEmpty,
+  2: PassengerAmount.average,
+  3: PassengerAmount.almostFull,
+  4: PassengerAmount.full,
+  5: PassengerAmount.overloaded,
+};
+const _EntrysizeEnumValueMap = {
+  'personal': 0,
+  'small': 1,
+  'medium': 2,
+  'large': 3,
+};
+const _EntrysizeValueEnumMap = {
+  0: VehicleSize.personal,
+  1: VehicleSize.small,
+  2: VehicleSize.medium,
+  3: VehicleSize.large,
+};
+const _EntryweightUnitEnumValueMap = {
+  'g': 0,
+  'kg': 1,
+  'lb': 2,
+  't': 3,
+  'ton': 4,
+};
+const _EntryweightUnitValueEnumMap = {
+  0: WeightUnit.g,
+  1: WeightUnit.kg,
+  2: WeightUnit.lb,
+  3: WeightUnit.t,
+  4: WeightUnit.ton,
 };
 
 Id _entryGetId(Entry object) {
@@ -252,6 +435,84 @@ extension EntryQueryWhere on QueryBuilder<Entry, Entry, QWhereClause> {
 }
 
 extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> amountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'amount',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> amountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'amount',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> amountEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'amount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> amountGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'amount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> amountLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'amount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> amountBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'amount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterFilterCondition> categoryEqualTo(
       EmissionCategory value) {
     return QueryBuilder.apply(this, (query) {
@@ -420,6 +681,59 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> distanceUnitEqualTo(
+      DistanceUnit value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'distanceUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> distanceUnitGreaterThan(
+    DistanceUnit value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'distanceUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> distanceUnitLessThan(
+    DistanceUnit value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'distanceUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> distanceUnitBetween(
+    DistanceUnit lower,
+    DistanceUnit upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'distanceUnit',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterFilterCondition> emissionsDateEqualTo(
       DateTime value) {
     return QueryBuilder.apply(this, (query) {
@@ -465,6 +779,59 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'emissionsDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> energyAmountEqualTo(
+      EnergyAmount value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'energyAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> energyAmountGreaterThan(
+    EnergyAmount value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'energyAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> energyAmountLessThan(
+    EnergyAmount value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'energyAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> energyAmountBetween(
+    EnergyAmount lower,
+    EnergyAmount upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'energyAmount',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -533,6 +900,59 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> moneyUnitEqualTo(
+      MoneyUnit value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'moneyUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> moneyUnitGreaterThan(
+    MoneyUnit value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'moneyUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> moneyUnitLessThan(
+    MoneyUnit value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'moneyUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> moneyUnitBetween(
+    MoneyUnit lower,
+    MoneyUnit upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'moneyUnit',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -665,6 +1085,181 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'notes',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengerAmountEqualTo(
+      PassengerAmount value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'passengerAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengerAmountGreaterThan(
+    PassengerAmount value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'passengerAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengerAmountLessThan(
+    PassengerAmount value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'passengerAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengerAmountBetween(
+    PassengerAmount lower,
+    PassengerAmount upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'passengerAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengersIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'passengers',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengersIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'passengers',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengersEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'passengers',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengersGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'passengers',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengersLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'passengers',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> passengersBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'passengers',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> sizeEqualTo(
+      VehicleSize value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'size',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> sizeGreaterThan(
+    VehicleSize value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'size',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> sizeLessThan(
+    VehicleSize value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'size',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> sizeBetween(
+    VehicleSize lower,
+    VehicleSize upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'size',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -851,6 +1446,59 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
       ));
     });
   }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> weightUnitEqualTo(
+      WeightUnit value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'weightUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> weightUnitGreaterThan(
+    WeightUnit value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'weightUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> weightUnitLessThan(
+    WeightUnit value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'weightUnit',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> weightUnitBetween(
+    WeightUnit lower,
+    WeightUnit upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'weightUnit',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension EntryQueryObject on QueryBuilder<Entry, Entry, QFilterCondition> {}
@@ -858,6 +1506,18 @@ extension EntryQueryObject on QueryBuilder<Entry, Entry, QFilterCondition> {}
 extension EntryQueryLinks on QueryBuilder<Entry, Entry, QFilterCondition> {}
 
 extension EntryQuerySortBy on QueryBuilder<Entry, Entry, QSortBy> {
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amount', Sort.desc);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterSortBy> sortByCategory() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'category', Sort.asc);
@@ -894,6 +1554,18 @@ extension EntryQuerySortBy on QueryBuilder<Entry, Entry, QSortBy> {
     });
   }
 
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByDistanceUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'distanceUnit', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByDistanceUnitDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'distanceUnit', Sort.desc);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterSortBy> sortByEmissionsDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'emissionsDate', Sort.asc);
@@ -906,6 +1578,30 @@ extension EntryQuerySortBy on QueryBuilder<Entry, Entry, QSortBy> {
     });
   }
 
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByEnergyAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'energyAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByEnergyAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'energyAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByMoneyUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'moneyUnit', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByMoneyUnitDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'moneyUnit', Sort.desc);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterSortBy> sortByNotes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.asc);
@@ -915,6 +1611,42 @@ extension EntryQuerySortBy on QueryBuilder<Entry, Entry, QSortBy> {
   QueryBuilder<Entry, Entry, QAfterSortBy> sortByNotesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByPassengerAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'passengerAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByPassengerAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'passengerAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByPassengers() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'passengers', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByPassengersDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'passengers', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortBySize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'size', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortBySizeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'size', Sort.desc);
     });
   }
 
@@ -941,9 +1673,33 @@ extension EntryQuerySortBy on QueryBuilder<Entry, Entry, QSortBy> {
       return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByWeightUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'weightUnit', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByWeightUnitDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'weightUnit', Sort.desc);
+    });
+  }
 }
 
 extension EntryQuerySortThenBy on QueryBuilder<Entry, Entry, QSortThenBy> {
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amount', Sort.desc);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterSortBy> thenByCategory() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'category', Sort.asc);
@@ -980,6 +1736,18 @@ extension EntryQuerySortThenBy on QueryBuilder<Entry, Entry, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByDistanceUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'distanceUnit', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByDistanceUnitDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'distanceUnit', Sort.desc);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterSortBy> thenByEmissionsDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'emissionsDate', Sort.asc);
@@ -989,6 +1757,18 @@ extension EntryQuerySortThenBy on QueryBuilder<Entry, Entry, QSortThenBy> {
   QueryBuilder<Entry, Entry, QAfterSortBy> thenByEmissionsDateDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'emissionsDate', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByEnergyAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'energyAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByEnergyAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'energyAmount', Sort.desc);
     });
   }
 
@@ -1004,6 +1784,18 @@ extension EntryQuerySortThenBy on QueryBuilder<Entry, Entry, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByMoneyUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'moneyUnit', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByMoneyUnitDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'moneyUnit', Sort.desc);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterSortBy> thenByNotes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.asc);
@@ -1013,6 +1805,42 @@ extension EntryQuerySortThenBy on QueryBuilder<Entry, Entry, QSortThenBy> {
   QueryBuilder<Entry, Entry, QAfterSortBy> thenByNotesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByPassengerAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'passengerAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByPassengerAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'passengerAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByPassengers() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'passengers', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByPassengersDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'passengers', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenBySize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'size', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenBySizeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'size', Sort.desc);
     });
   }
 
@@ -1039,9 +1867,27 @@ extension EntryQuerySortThenBy on QueryBuilder<Entry, Entry, QSortThenBy> {
       return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByWeightUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'weightUnit', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByWeightUnitDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'weightUnit', Sort.desc);
+    });
+  }
 }
 
 extension EntryQueryWhereDistinct on QueryBuilder<Entry, Entry, QDistinct> {
+  QueryBuilder<Entry, Entry, QDistinct> distinctByAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'amount');
+    });
+  }
+
   QueryBuilder<Entry, Entry, QDistinct> distinctByCategory() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'category');
@@ -1060,9 +1906,27 @@ extension EntryQueryWhereDistinct on QueryBuilder<Entry, Entry, QDistinct> {
     });
   }
 
+  QueryBuilder<Entry, Entry, QDistinct> distinctByDistanceUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'distanceUnit');
+    });
+  }
+
   QueryBuilder<Entry, Entry, QDistinct> distinctByEmissionsDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'emissionsDate');
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QDistinct> distinctByEnergyAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'energyAmount');
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QDistinct> distinctByMoneyUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'moneyUnit');
     });
   }
 
@@ -1070,6 +1934,24 @@ extension EntryQueryWhereDistinct on QueryBuilder<Entry, Entry, QDistinct> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'notes', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QDistinct> distinctByPassengerAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'passengerAmount');
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QDistinct> distinctByPassengers() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'passengers');
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QDistinct> distinctBySize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'size');
     });
   }
 
@@ -1085,12 +1967,24 @@ extension EntryQueryWhereDistinct on QueryBuilder<Entry, Entry, QDistinct> {
       return query.addDistinctBy(r'updatedAt');
     });
   }
+
+  QueryBuilder<Entry, Entry, QDistinct> distinctByWeightUnit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'weightUnit');
+    });
+  }
 }
 
 extension EntryQueryProperty on QueryBuilder<Entry, Entry, QQueryProperty> {
   QueryBuilder<Entry, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Entry, double?, QQueryOperations> amountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'amount');
     });
   }
 
@@ -1112,15 +2006,52 @@ extension EntryQueryProperty on QueryBuilder<Entry, Entry, QQueryProperty> {
     });
   }
 
+  QueryBuilder<Entry, DistanceUnit, QQueryOperations> distanceUnitProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'distanceUnit');
+    });
+  }
+
   QueryBuilder<Entry, DateTime, QQueryOperations> emissionsDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'emissionsDate');
     });
   }
 
+  QueryBuilder<Entry, EnergyAmount, QQueryOperations> energyAmountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'energyAmount');
+    });
+  }
+
+  QueryBuilder<Entry, MoneyUnit, QQueryOperations> moneyUnitProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'moneyUnit');
+    });
+  }
+
   QueryBuilder<Entry, String, QQueryOperations> notesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'notes');
+    });
+  }
+
+  QueryBuilder<Entry, PassengerAmount, QQueryOperations>
+      passengerAmountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'passengerAmount');
+    });
+  }
+
+  QueryBuilder<Entry, int?, QQueryOperations> passengersProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'passengers');
+    });
+  }
+
+  QueryBuilder<Entry, VehicleSize, QQueryOperations> sizeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'size');
     });
   }
 
@@ -1133,6 +2064,12 @@ extension EntryQueryProperty on QueryBuilder<Entry, Entry, QQueryProperty> {
   QueryBuilder<Entry, DateTime, QQueryOperations> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'updatedAt');
+    });
+  }
+
+  QueryBuilder<Entry, WeightUnit, QQueryOperations> weightUnitProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'weightUnit');
     });
   }
 }
