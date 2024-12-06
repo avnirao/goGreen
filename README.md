@@ -12,8 +12,8 @@ Due to issues with the flutter_maps package, the Map page of GoGreen will occasi
 
 ## How to Build and Run GoGreen
 Open the project in VS Code by cloning the git repository.  
-1. Replace line 241 in map_view.dart with the MapBox access token (found on EdStem)
-2. 
+1. Replace line 241 in `./lib/views/map_view.dart` with the MapBox access token (found on EdStem)
+2. Replace `{ACCESS_TOKEN_HERE}` on line 17 in `./lib/climatiq_api/emission_checker.dart` with the Climatiq API key (found on EdStem)
 3. Make sure to run `flutter pub get` in the terminal.
 4. Select which device to deploy the app to. Type `flutter run --release` in the terminal. Alternatively, select the 'flutter release' configuration in your run settings and run the app from the 'Run' tab in VS Code. The app will build and run on your device.
 
