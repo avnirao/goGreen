@@ -32,8 +32,10 @@ import 'package:intl/intl.dart';
 
 /// A StatefulWidget that displays and allows editing of a single Entry.
 class EntryView extends StatefulWidget{
+  //current entry to display
   final Entry curEntry;
 
+  //initialize with current entry
   const EntryView({super.key, required this.curEntry});
 
   @override
@@ -79,6 +81,7 @@ class _EntryViewState extends State<EntryView>{
   PassengerAmount? passengerAmount;
   VehicleSize? size;
 
+  // resets traking state
   void _resetTrackingState() {
     setState(() {
       amount = null;
@@ -337,6 +340,7 @@ class _EntryViewState extends State<EntryView>{
                           semanticsLabel: 'Enter any additional notes below.',
                         ),
                       ),
+                      // notes box to enter notes
                       SizedBox(
                         width: 250,
                         height: 100,

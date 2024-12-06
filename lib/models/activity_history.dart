@@ -8,11 +8,15 @@ class ActivityHistory {
   // the list of entries
   final List<Entry> _entries;
 
+  // initializes with isar
   ActivityHistory(Isar isar) : _entries = [], _isar = isar; // default constructor
 
+  // gets all entries
   List<Entry> get entries => _isar.entrys.where().findAllSync(); //gets entries
 
+  // gets total co2 emissioned
   double get totalCo2 => _entries.fold(0.0, (sum, entry) => sum + entry.co2); // gets total co2
+
   // gets today co2 emissioned
   double get todayCo2 {
     DateTime now = DateTime.now();
