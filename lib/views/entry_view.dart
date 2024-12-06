@@ -18,8 +18,15 @@ import 'package:go_green/models/emission_factors/personal_care_emissions.dart';
 import 'package:go_green/models/emission_factors/travel_emissions.dart';
 import 'package:go_green/models/entry.dart';
 import 'package:go_green/views/entry_widgets/amount_input.dart';
+import 'package:go_green/views/entry_widgets/emission_info/clothing_info.dart';
 import 'package:go_green/views/entry_widgets/custom_dropdown.dart';
 import 'package:go_green/views/entry_widgets/emission_dropdown_menu.dart';
+import 'package:go_green/views/entry_widgets/emission_info/energy_info.dart';
+import 'package:go_green/views/entry_widgets/emission_info/food_info.dart';
+import 'package:go_green/views/entry_widgets/emission_info/furniture_info.dart';
+import 'package:go_green/views/entry_widgets/emission_info/personal_care_info.dart';
+import 'package:go_green/views/entry_widgets/emission_info/travel_info.dart';
+import 'package:go_green/views/entry_widgets/emission_info/waste_info.dart';
 import 'package:intl/intl.dart';
 
 
@@ -349,22 +356,42 @@ class _EntryViewState extends State<EntryView>{
                 const SizedBox(height: 20),
               
                 // Box to Display Estimated Emission
-                Container(
-                  padding: const EdgeInsets.all(15.0),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 224, 214, 186), // Background color
-                    borderRadius: BorderRadius.circular(15.0), // Rounded corners
-                    border: Border.all(
-                      color: const Color(0xFF386641),
-                      width: 1.5,
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Container(
+                    padding: const EdgeInsets.all(15.0),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 224, 214, 186), // Background color
+                      borderRadius: BorderRadius.circular(15.0), // Rounded corners
+                      border: Border.all(
+                        color: const Color(0xFF386641),
+                        width: 1.5,
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'Estimate: $curEst',
-                    semanticsLabel: 'Estimate: $curEst',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.black,
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Semantics(
+                            child: Text(
+                              'Estimate: $curEst',
+                              semanticsLabel: 'Estimate: $curEst',
+                              style: const TextStyle(
+                                fontSize: 22,
+                                color: Colors.black,
+                              ),
+                              
+                            ),
+                          ),
+                        ),
+                        Semantics(
+                          child: IconButton(
+                            icon: const Icon(Icons.info_outline, color: Color(0xFF386641)),
+                            onPressed: () {
+                              _showInfoDialog(context, _getEmissionFactor());
+                            },
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
@@ -484,7 +511,6 @@ class _EntryViewState extends State<EntryView>{
   // Saves the current state of the entry and returns to the previous screen.
   void _popback(BuildContext context){
     // Create an updated Entry with current state values
-    print('co2: $co2');
     final curEntry = Entry(
       id: widget.curEntry.id,
       notes: notes,
@@ -566,7 +592,6 @@ class _EntryViewState extends State<EntryView>{
 
   // Weight Input Section
   Widget _buildWeightInputSection() {
-    print('amount: $amount');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0), // Increased vertical padding
       child: Column(
@@ -664,20 +689,7 @@ class _EntryViewState extends State<EntryView>{
           final double totalCo2 = estimate.co2;
           final int totalPassengers = (factor as TravelEmissions).passengers ?? 1;
           final double personalEmissions = totalCo2 / totalPassengers;
-          print('----');
-          print('total co2: ${totalCo2}');
           estimate = EmissionEstimate(co2: personalEmissions, unit: 'kg');
-          print('personal co2: $personalEmissions');
-          print('-----');
-
-          EmissionEstimate? carComparison = await checker.getEmissions(
-            TravelEmissions.gasCar(
-              distance: factor.distance, 
-              distanceUnit: factor.distanceUnit, 
-              passengers: 1
-            )
-          );
-          print('If you had driven alone for the same distance, you would have emitted ${carComparison?.co2} ${carComparison?.unit} instead');
         }
         final double roundedCo2 = (estimate.co2 * 1000).round() / 1000;
         final String estimateUnit = estimate.unit;
@@ -859,6 +871,41 @@ class _EntryViewState extends State<EntryView>{
           ],
         )
       ],
+    );
+  }
+
+  // Show Info Dialog that tells users more info about what their emission estimate.
+  void _showInfoDialog(BuildContext context, EmissionFactor factor) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFFF2E8CF), // Same background as the app
+          title: const Text(
+            'About Your Emission Estimate',
+            style: TextStyle(color: Colors.black), // Black title text
+          ),
+          content: switch (category) {
+            EmissionCategory.clothing => const ClothingInfo(),
+            EmissionCategory.energy => const EnergyInfo(),
+            EmissionCategory.food => const FoodInfo(),
+            EmissionCategory.furniture => const FurnitureInfo(),
+            EmissionCategory.personalCareAndAccessories => const PersonalCareInfo(),
+            EmissionCategory.travel => const TravelInfo(comparison: null),
+            EmissionCategory.foodWaste || EmissionCategory.generalWaste || EmissionCategory.electricalWaste => 
+              const WasteInfo(),
+          },
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Close',
+                style: TextStyle(color: Color(0xFF386641)), // Green for "Close"
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
