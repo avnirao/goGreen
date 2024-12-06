@@ -14,10 +14,9 @@ class TravelInfo extends StatelessWidget {
       text: const TextSpan(
         style: TextStyle(color: Colors.black, fontSize: 16), 
         children: [
-          TextSpan(text: 'Travel emissions are based on how far you travelled.'),
+          TextSpan(text: 'Travel emissions are calculated based on how far you travelled. '),
           TextSpan(
-            text: 'If you used a shared vehicle other than a car (such as a bus or plane), the emissions from the full vehicle are calculated first.',
-            style: TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
+            text: 'If you used a shared vehicle other than a car (such as a bus or plane), the emissions from the full vehicle are calculated first. ',
           ),
           TextSpan(
             text: 'Then, we use the estimated number of passengers on the vehicle to calculate how much you personally contributed.\n\n',

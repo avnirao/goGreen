@@ -13,7 +13,7 @@ class EnergyInfo extends StatelessWidget {
         children: [
           TextSpan(text: 'Energy estimates are based on the amount of electricity or natural gas you used in a day.\n\n'),
           TextSpan(
-            text: 'Carbon emissions from natural gas are generally lower than emissions from electricity.',
+            text: 'Carbon emissions from natural gas are generally lower than emissions from electricity. ',
             style: TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
           ),
           TextSpan(

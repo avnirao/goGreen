@@ -26,7 +26,7 @@ class ClothingInfo extends StatelessWidget {
             text: 'much lower ',
             style: TextStyle(color: Color(0xFF386641), fontWeight: FontWeight.bold),
           ),
-          TextSpan(text: 'than the emissions from buying new clothes.'),
+          TextSpan(text: 'than the emissions from buying new clothes. '),
           TextSpan(text: 'Whenever you can, seek out opportunities to get used clothing, and give away the clothing you no longer need.\n\n'),
           TextSpan(text: 'All emission estimates are calculated by Climatiq.'),
         ],

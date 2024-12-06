@@ -13,7 +13,7 @@ class WasteInfo extends StatelessWidget {
         children: [
           TextSpan(text: 'Waste estimates are based on types of items you dispose of.\n\n'),
           TextSpan(
-            text: 'You can reduce your waste emissions by composting or recycling your disposale items.',
+            text: 'You can reduce your waste emissions by composting or recycling your disposale items. ',
           ),
           TextSpan(
             text: 'Refer to your area\'s guidelines for how to properly dispose of waste.\n\n',
